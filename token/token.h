@@ -7,7 +7,9 @@ enum TokenType {
     tok_eof = 257,
     tok_int, 
     tok_void,
+    tok_char,
     tok_number,
+    tok_string_literal,
 
     tok_identifier,
     tok_const,
@@ -40,20 +42,8 @@ enum TokenType {
     tok_break, // break
     tok_continue, // continue
     tok_return, // return
-};
-
-class Token {
-    private:
-        int type;
-        std::string value;
-    public:
-        Token(int type, std::string value) : type(type), value(value) {}
-        int getType() {
-            return type;
-        }
-        const std::string getValue() const {
-            return value;
-        }
+    
+    tok_unknown
 };
 
 #endif
