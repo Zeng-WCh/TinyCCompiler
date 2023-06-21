@@ -1091,28 +1091,30 @@ YY_RULE_SETUP
     int len = strlen(yytext);
     char *str = (char *)malloc(len + 1);
     strcpy(str, yytext);
+    yylval.strVal = str;
     return tok_string_literal;
 }
 	YY_BREAK
 case 42:
 YY_RULE_SETUP
-#line 193 "./src/scanner.l"
+#line 194 "./src/scanner.l"
 {
     int len = strlen(yytext);
     char *str = (char *)malloc(len + 1);
     strcpy(str, yytext);
+    yylval.strVal = str;
     return tok_identifier;
 }
 	YY_BREAK
 case YY_STATE_EOF(INITIAL):
-#line 200 "./src/scanner.l"
+#line 202 "./src/scanner.l"
 { 
     return YYEOF; 
 }
 	YY_BREAK
 case 43:
 YY_RULE_SETUP
-#line 204 "./src/scanner.l"
+#line 206 "./src/scanner.l"
 {
     fprintf(stderr, "unknown %s\n", yytext);
     return tok_unknown;
@@ -1120,10 +1122,10 @@ YY_RULE_SETUP
 	YY_BREAK
 case 44:
 YY_RULE_SETUP
-#line 209 "./src/scanner.l"
+#line 211 "./src/scanner.l"
 ECHO;
 	YY_BREAK
-#line 1127 "scanner.cpp"
+#line 1129 "scanner.cpp"
 
 	case YY_END_OF_BUFFER:
 		{
@@ -2126,5 +2128,5 @@ void yyfree (void * ptr )
 
 #define YYTABLES_NAME "yytables"
 
-#line 209 "./src/scanner.l"
+#line 211 "./src/scanner.l"
 

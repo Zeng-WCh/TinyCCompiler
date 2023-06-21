@@ -17,11 +17,16 @@ class FuncType;
 class Block;
 class Cond;
 class AddExp;
+class MulExp;
+class Stmt;
+class LOrExp;
 
 class AST {
     public:
-        virtual ~AST() = default;
+        virtual ~AST() = 0;
 };
+
+AST::~AST() {}
 
 class CompUnit : public AST {
     private:
@@ -152,10 +157,9 @@ class ConstDef : public AST {
 };
 
 class ConstSelector: public AST {
-    private:
+    public:
         // AST should be const exp
         std::vector<AST*> selects;
-    public:
         ConstSelector() = default;
         ~ConstSelector() {
             for(auto select : selects) {
@@ -187,18 +191,13 @@ class ConstInitVal : public AST {
 
 class ConstExp : public AST {
     private:
-        // AST should be Addexp
-        std::vector<AST*> _const_exps;
+        AddExp *add;
     public:
-        ConstExp() = default;
-        ConstExp(const std::vector<AST*> &const_exps) : _const_exps(const_exps) {}
+        ConstExp(AddExp *add) : add(add) {}
         ~ConstExp() {
-            for (auto const_exp : _const_exps) {
-                delete const_exp;
+            if (this->add) {
+                delete this->add;
             }
-        }
-        void add_const_exp(AST* const_exp) {
-            _const_exps.push_back(const_exp);
         }
 };
 
@@ -274,7 +273,7 @@ class FuncFParam : public AST {
         std::vector<AST*> _dims;
     public:
         FuncFParam(const std::string& name) : ident(name) {}
-        FuncFParam(const std::string& name, const std::vector<int> &_dim) : ident(name), _dims(_dim) {}
+        FuncFParam(const std::string& name, const std::vector<AST*> &_dim) : ident(name), _dims(_dim) {}
         void add_dim(AST* dim) {
             _dims.push_back(dim);
         }
@@ -438,7 +437,21 @@ class Stmt : public AST {
 };
 
 class AddExp : public AST {
-
+    private:
+        char op;
+        AddExp *add_exp;
+        MulExp *mul_exp;
+    public:
+        AddExp(MulExp *mul_exp) : mul_exp(mul_exp) {}
+        AddExp(AddExp* add_exp, char op, MulExp* mul_exp) : add_exp(add_exp), op(op), mul_exp(mul_exp) {}
+        ~AddExp() {
+            if (add_exp) {
+                delete add_exp;
+            }
+            if (mul_exp) {
+                delete mul_exp;
+            }
+        }
 };
 
 class Exp : public AST {
@@ -453,13 +466,9 @@ class Exp : public AST {
         }
 };
 
-class LOrExp : public AST {
-
-};
-
 class Cond : public AST {
     private:
-        LOrExp *lor_exp;
+        LOrExp *lor_exp = nullptr;
     public:
         Cond(LOrExp* lor_exp) : lor_exp(lor_exp) {}
         ~Cond() {
@@ -484,39 +493,135 @@ class LVal : public AST {
 };
 
 class PrimaryExp : public AST {
-
-};
-
-class Number : public AST {
-
+    private:
+        int num = 0;
+        Exp* exp = nullptr;
+        LVal* lval = nullptr;
+    public:
+        PrimaryExp(int num) : num(num) {}
+        PrimaryExp(Exp* exp) : exp(exp) {}
+        PrimaryExp(LVal* lval) : lval(lval) {}
+        ~PrimaryExp() {
+            if (exp) {
+                delete exp;
+            }
+            if (lval) {
+                delete lval;
+            }
+        }
 };
 
 class UnaryExp : public AST {
-
-};
-
-class UnaryOp : public AST {
-
-};
-
-class FuncRParams : public AST {
+    private:
+        PrimaryExp *primary_exp = nullptr;
+        std::string callee;
+        std::vector<AST*> rparams;
+        char op = 0;
+        UnaryExp *unary_exp = nullptr;
+    public:
+        UnaryExp(PrimaryExp* primary_exp) : primary_exp(primary_exp) {}
+        UnaryExp(const std::string& callee, const std::vector<AST*>& rparams) : callee(callee), rparams(rparams) {}
+        UnaryExp(char op, UnaryExp* unary_exp) : op(op), unary_exp(unary_exp) {}
+        ~UnaryExp() {
+            if (primary_exp) {
+                delete primary_exp;
+            }
+            if (unary_exp) {
+                delete unary_exp;
+            }
+            for (auto rparam : rparams) {
+                delete rparam;
+            }
+        }
 
 };
 
 class MulExp : public AST {
-
+    private:
+        UnaryExp *unary_exp = nullptr;
+        MulExp *mul_exp = nullptr;
+        char op = 0;
+    public:
+        MulExp(UnaryExp* unary_exp) : unary_exp(unary_exp) {}
+        MulExp(MulExp* mul_exp, char op, UnaryExp* unary_exp) : mul_exp(mul_exp), op(op), unary_exp(unary_exp) {}
+        ~MulExp() {
+            if (unary_exp) {
+                delete unary_exp;
+            }
+            if (mul_exp) {
+                delete mul_exp;
+            }
+        }
 };
 
 class RelExp : public AST {
-
+    private:
+        AddExp *add = nullptr;
+        std::string op;
+        RelExp *rel = nullptr;
+    public:
+        RelExp(AddExp *add) : add(add) {}
+        RelExp(RelExp *rel, const std::string& op, AddExp *add) : add(add), op(op), rel(rel) {}
+        ~RelExp() {
+            if (add) {
+                delete add;
+            }
+            if (rel) {
+                delete rel;
+            }
+        }
 };
 
 class EqExp : public AST {
-
+    private:
+        RelExp *rel = nullptr;
+        std::string op;
+        EqExp *eq = nullptr;
+    public:
+        EqExp(RelExp *re) : rel(re) {}
+        EqExp(EqExp *eq, const std::string& op, RelExp *rel) : eq(eq), op(op), rel(rel) {}
+        ~EqExp() {
+            if (rel) {
+                delete rel;
+            }
+            if (eq) {
+                delete eq;
+            }
+        }
 };
 
 class LAndExp : public AST {
+    private:
+        EqExp *eq = nullptr;
+        LAndExp *land = nullptr;
+    public:
+        LAndExp(EqExp *eq) : eq(eq) {}
+        LAndExp(LAndExp *land, EqExp *eq) : land(land), eq(eq) {}
+        ~LAndExp() {
+            if (eq) {
+                delete eq;
+            }
+            if (land) {
+                delete land;
+            }
+        }
+};
 
+class LOrExp : public AST {
+    private:
+        LAndExp *land = nullptr;
+        LOrExp *lor = nullptr;
+    public:
+        LOrExp(LAndExp *land) : land(land) {}
+        LOrExp(LOrExp *lor, LAndExp *land) : lor(lor), land(land) {}
+        ~LOrExp() {
+            if (land) {
+                delete land;
+            }
+            if (lor) {
+                delete lor;
+            }
+        }
 };
 
 class LValSelector : public AST {
@@ -527,6 +632,18 @@ class LValSelector : public AST {
         }
         void add_selector(AST* selector) {
             _selectors.push_back(selector);
+        }
+};
+
+class FuncRParams : public AST {
+    public:
+        std::vector<AST*> _params;
+        FuncRParams() = default;
+        FuncRParams(const std::vector<AST*>& params) : _params(params) {}
+        ~FuncRParams() {
+        }
+        void add_param(AST* param) {
+            _params.push_back(param);
         }
 };
 

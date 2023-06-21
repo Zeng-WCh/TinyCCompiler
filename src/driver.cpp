@@ -2,6 +2,9 @@
 #include <string>
 #include "token.h"
 #include "scanner.h"
+#include "ast.h"
+
+extern AST* result;
 
 const char *token_to_string(int tok)
 {
@@ -110,11 +113,18 @@ int parser_mode(const char *filename) {
         fprintf(stderr, "Error: cannot open file %s\n", filename);
         return 1;
     }
+    fprintf(stderr, "Parsing file %s\n", filename);
+    
+    yyparse();
+    
+    fprintf(stderr, "0x%lx\n", (long)result);
+
     return 0;
 }
 
 int main(int argc, const char **argv)
 {
+    yydebug = 1;
     if (argc < 2)
     {
         fprintf(stderr, "Usage: %s --[lexer|parser] <file>\n", argv[0]);

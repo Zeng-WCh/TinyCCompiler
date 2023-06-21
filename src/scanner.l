@@ -187,6 +187,7 @@ COMMENT {COMMENT_LINE}|{COMMENT_BLOCK}
     int len = strlen(yytext);
     char *str = (char *)malloc(len + 1);
     strcpy(str, yytext);
+    yylval.strVal = str;
     return tok_string_literal;
 }
 
@@ -194,6 +195,7 @@ COMMENT {COMMENT_LINE}|{COMMENT_BLOCK}
     int len = strlen(yytext);
     char *str = (char *)malloc(len + 1);
     strcpy(str, yytext);
+    yylval.strVal = str;
     return tok_identifier;
 }
 

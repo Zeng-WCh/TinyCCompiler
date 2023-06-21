@@ -10,6 +10,8 @@
     do {\
         fprintf(stderr, "error: %s\n", x); \
     } while(0)
+
+    AST* result = nullptr;
 %}
 
 %output "parser.cpp"
@@ -26,27 +28,33 @@
 %token tok_plus tok_minus tok_star tok_slash tok_mod
 %token tok_lparen tok_rparen tok_lbrace tok_rbrace tok_lbracket tok_rbracket
 %token tok_lt tok_gt tok_le tok_ge tok_eq tok_ne
-%token tok_and tok_or tok_not
-%token tok_if tok_else tok_while tok_break tok_continue tok_return
+%token tok_and tok_or tok_not tok_else
+%token tok_while tok_break tok_continue tok_return
 %token tok_unknown
-%token <strVal> tok_identifier
+%right tok_if
+%right tok_else
+%right <strVal> tok_identifier
 %token <intVal> tok_number
 
-%type <ast> CompUnits CompUnit Decl FuncDef ConstDecl ConstDecls VarDecl ConstDefs ConstDef ConstSelector ConstInitVal ConstInits VarDecls VarDef InitVal InitVals FuncFParams FuncFParam Block BlockItems BlockItem Stmt Exp Cond LVal LVals PrimaryExp UnaryExp Args MulExp AddExp RelExp EqExp LAndExp LOrExp ConstExp
-%type <ast> FuncType
+%type <ast> CompUnits CompUnit Decl FuncDef ConstDecl ConstDecls VarDecl ConstDef ConstSelector ConstInitVal ConstInits VarDecls VarDef InitVal InitVals FuncFParams FuncFParam Block BlockItems BlockItem Stmt Exp Cond LVal PrimaryExp UnaryExp FuncRParams MulExp AddExp RelExp EqExp LAndExp LOrExp ConstExp
 %type <ast> FuncFParamList
 %type <ast> FuncFParamDim
 %type <ast> LValSelector
 
-%start CompUnits
+%start Program
 
 %%
+
+Program: CompUnits {
+    result = (AST*) $1;
+}
 
 CompUnits: CompUnit { 
     auto tmp = new CompUnit();
     tmp->add_comp_unit((AST*) $1);
+    $$ = (void*) tmp;
  }
-| CompUnits CompUnits {
+| CompUnits CompUnit {
     auto tmp = (CompUnit*) $1;
     tmp->add_comp_unit((AST*) $2);
     $$ = (void*) tmp;
@@ -77,18 +85,18 @@ ConstDecl: tok_const tok_int ConstDecls tok_semicolon {
     auto tmp = ((ConstDecls*) $3)->_const_decls;
     auto const_ = new ConstDecl(tmp);
     $$ = (void*) const_;
-    delete $3;
+    delete (ConstDecls*)$3;
 }
 ;
 
 ConstDecls: ConstDef {
     auto tmp = new ConstDecls();
-    tmp->add_const_def((ConstDef*) $1);
+    tmp->add_const_decl((ConstDef*) $1);
     $$ = (void*) tmp;
 }
 | ConstDecls tok_comma ConstDef {
     auto tmp = (ConstDecls*) $1;
-    tmp->add_const_def((ConstDef*) $3);
+    tmp->add_const_decl((ConstDef*) $3);
     $$ = (void*) tmp;
 }
 ;
@@ -116,7 +124,7 @@ ConstSelector: {
 
 ConstInitVal: ConstExp {
     auto tmp = new ConstInitVal();
-    tmp->add_init_val((ConstExp*) $1);
+    tmp->add_const_val((ConstExp*) $1);
     $$ = (void*) tmp;
 }
 | tok_lbrace tok_rbrace {
@@ -127,17 +135,17 @@ ConstInitVal: ConstExp {
     auto tmp = ((ConstInits*) $2)->_const_inits;
     auto init_val = new ConstInitVal(tmp);
     $$ = (void*) init_val;
-    delete $2;
+    delete (ConstInits*) $2;
 };
 
 ConstInits: ConstInitVal {
     auto tmp = new ConstInits();
-    tmp->add_const_init_val((ConstInitVal*) $1);
+    tmp->add_const_init((ConstInitVal*) $1);
     $$ = (void*) tmp;
 }
 | ConstInits tok_comma ConstInitVal {
     auto tmp = (ConstInits*) $1;
-    tmp->add_const_init_val((ConstInitVal*) $3);
+    tmp->add_const_init((ConstInitVal*) $3);
     $$ = (void*) tmp;
 };
 
@@ -145,17 +153,17 @@ VarDecl: tok_int VarDecls tok_semicolon {
     auto tmp = ((VarDecls*) $2)->_var_decls;
     auto var = new VarDecl(tmp);
     $$ = (void*) var;
-    delete $2;
+    delete (VarDecls*) $2;
 };
 
 VarDecls: VarDef {
     auto tmp = new VarDecls();
-    tmp->add_var_def((VarDef*) $1);
+    tmp->add_var_decl((VarDef*) $1);
     $$ = (void*) tmp;
 }
 | VarDecls tok_comma VarDef {
     auto tmp = (VarDecls*) $1;
-    tmp->add_var_def((VarDef*) $3);
+    tmp->add_var_decl((VarDef*) $3);
     $$ = (void*) tmp;
 };
 
@@ -187,12 +195,12 @@ InitVal: Exp {
     auto tmp = ((InitVals*) $2)->_init_vals;
     auto init_val = new InitVal(tmp);
     $$ = (void*) init_val;
-    delete $2;
+    delete (InitVals*)$2;
 };
 
 InitVals: InitVal {
     auto tmp = new InitVals();
-    tmp->add_init_val((InitVal*) $1);
+    tmp->add_init_val((AST*) $1);
     $$ = (void*) tmp;
 }
 | InitVals tok_comma InitVal {
@@ -201,22 +209,25 @@ InitVals: InitVal {
     $$ = (void*) tmp;
 };
 
-FuncDef: FuncType tok_identifier tok_lparen FuncFParams tok_rparen Block {
+FuncDef: tok_int tok_identifier tok_lparen FuncFParams tok_rparen Block {
     std::string ident($2);
-    delete $2;
-    auto func_type = (FuncType*) $1;
+    delete (char*)$2;
+    auto func_type = new FuncType(1);
     auto func_fparams = (FuncFParams*) $4;
     auto block = (Block*) $6;
-    auto tmp = new FuncDef(ident, func_type, func_fparams, block);
+    auto tmp = new FuncDef(func_type, ident, func_fparams, block);
     $$ = (void*) tmp;
-};
-
-FuncType: tok_int {
-    $$ = (void*)(new FuncType(1));
 }
-| tok_void {
-    $$ = (void*)(new FuncType(0));
-};
+| tok_void tok_identifier tok_lparen FuncFParams tok_rparen Block {
+    std::string ident($2);
+    delete (char*)$2;
+    auto func_type = new FuncType(0);
+    auto func_fparams = (FuncFParams*) $4;
+    auto block = (Block*) $6;
+    auto tmp = new FuncDef(func_type, ident, func_fparams, block);
+    $$ = (void*) tmp;
+}
+;
 
 FuncFParams: {
     auto tmp = new FuncFParams();
@@ -230,24 +241,24 @@ FuncFParams: {
 
 FuncFParamList: FuncFParam {
     auto tmp = new FuncFParamList();
-    tmp->add_func_fparam((FuncFParam*) $1);
+    tmp->add_param((FuncFParam*) $1);
     $$ = (void*) tmp;
 } 
 | FuncFParamList tok_comma FuncFParam {
     auto tmp = (FuncFParamList*) $1;
-    tmp->add_func_fparam((FuncFParam*) $3);
+    tmp->add_param((FuncFParam*) $3);
     $$ = (void*) tmp;
 };
 
 FuncFParam: tok_int tok_identifier {
     std::string ident($2);
-    delete $2;
+    delete (char*)$2;
     $$ = (void*) (new FuncFParam(ident));
 }
 | tok_int tok_identifier tok_lbracket tok_rbracket FuncFParamDim {
     std::string ident($2);
-    delete $2;
-    auto dim = (FuncFParamDim*) $5;
+    delete (char*)$2;
+    auto dim = (Dim*) $5;
     auto _dim = dim->_dim;
     std::vector<AST*> d;
     d.push_back(nullptr);
@@ -259,19 +270,19 @@ FuncFParam: tok_int tok_identifier {
 };
 
 FuncFParamDim: {
-    auto tmp = new FuncFParamDim();
+    auto tmp = new Dim();
     $$ = (void*) tmp;
 }
 | FuncFParamDim tok_lbracket Exp tok_rbracket {
-    auto tmp = (FuncFParamDim*) $1;
+    auto tmp = (Dim*) $1;
     tmp->add_dim((AST*) $3);
     $$ = (void*) tmp;
 };
 
 Block: tok_lbrace BlockItems tok_rbrace {
     auto tmp = ((BlockItems*) $2) -> _block_items;
-    delete $2;
     auto block = new Block(tmp);
+    delete (BlockItems*)$2;
     $$ = (void*) block;
 };
 
@@ -306,13 +317,11 @@ Stmt: LVal tok_assign Exp tok_semicolon {
 }
 | Exp tok_semicolon {
     auto exp = (Exp*) $1;
-    auto tmp = new ExpStmt(exp);
-    $$ = (void*) (new Stmt(tmp));
+    $$ = (void*) (exp);
 }
 | Block {
     auto block = (Block*) $1;
-    auto tmp = new BlockStmt(block);
-    $$ = (void*) (new Stmt(tmp));
+    $$ = (void*) (new Stmt(block));
 }
 | tok_if tok_lparen Cond tok_rparen Stmt {
     auto cond = (Cond*) $3;
@@ -356,18 +365,141 @@ Cond: LOrExp {
 };
 
 LVal: tok_identifier LValSelector {
-
-}
-| tok_identifier {
     std::string ident($1);
-    delete $1;
-    $$ = (void*) (new LVal(ident));
-};
+    delete (char*)$1;
+    auto tmp = ((LValSelector*) $2) -> _selectors;
+    auto lval = new LVal(ident, tmp);
+    $$ = (void*) lval;
+    delete $2;
+}
+;
 
 LValSelector: {
     auto tmp = new LValSelector();
     $$ = (void*) tmp;
-};
+}
+| LValSelector tok_lbracket Exp tok_rbracket {
+    auto tmp = (LValSelector*) $1;
+    tmp->add_selector((AST*) $3);
+    $$ = (void*) tmp;
+}
+;
+
+PrimaryExp: tok_lparen Exp tok_rparen {
+    $$ = (void*) (new PrimaryExp((Exp*) $2));
+}
+| LVal {
+    $$ = (void*) (new PrimaryExp((LVal*) $1));
+}
+| tok_number {
+    $$ = (void*) (new PrimaryExp($1));
+}
+;
+
+UnaryExp: PrimaryExp {
+    $$ = (void*) (new UnaryExp((PrimaryExp*) $1));
+}
+| tok_identifier tok_lparen FuncRParams tok_rparen {
+    std::string ident($1);
+    delete (char*)$1;
+    auto tmp = ((FuncRParams*) $3) -> _params;
+    $$ = (void*) (new UnaryExp(ident, tmp));
+    delete $3;
+}
+| tok_plus UnaryExp {
+    $$ = (void*) (new UnaryExp('+', (UnaryExp*) $2));
+}
+| tok_minus UnaryExp {
+    $$ = (void*) (new UnaryExp('-', (UnaryExp*) $2));
+}
+| tok_not UnaryExp {
+    $$ = (void*) (new UnaryExp('!', (UnaryExp*) $2));
+}
+;
+
+FuncRParams: {
+    $$ = (void*) (new FuncRParams());
+}
+| FuncRParams tok_comma Exp {
+    auto tmp = (FuncRParams*) $1;
+    tmp->add_param((AST*) $3);
+    $$ = (void*) tmp;
+}
+;
+
+MulExp: UnaryExp {
+    $$ = (void*) (new MulExp((UnaryExp*) $1));
+}
+| MulExp tok_star UnaryExp {
+    $$ = (void*) (new MulExp((MulExp*) $1, '*', (UnaryExp*) $3));
+}
+| MulExp tok_slash UnaryExp {
+    $$ = (void*) (new MulExp((MulExp*) $1, '/', (UnaryExp*) $3));
+}
+| MulExp tok_mod UnaryExp {
+    $$ = (void*) (new MulExp((MulExp*) $1, '%', (UnaryExp*) $3));
+}
+;
+
+AddExp: MulExp {
+    $$ = (void*) (new AddExp((MulExp*) $1));
+}
+| AddExp tok_plus MulExp {
+    $$ = (void*) (new AddExp((AddExp*) $1, '+', (MulExp*) $3));
+}
+| AddExp tok_minus MulExp {
+    $$ = (void*) (new AddExp((AddExp*) $1, '-', (MulExp*) $3));
+}
+;
+
+RelExp: AddExp {
+    $$ = (void*) (new RelExp((AddExp*)$1));
+}
+| RelExp tok_gt AddExp {
+    $$ = (void*) (new RelExp((RelExp*)$1, ">", (AddExp*)$3));
+}
+| RelExp tok_lt AddExp {
+    $$ = (void*) (new RelExp((RelExp*)$1, "<", (AddExp*)$3));
+}
+| RelExp tok_ge AddExp {
+    $$ = (void*) (new RelExp((RelExp*)$1, ">=", (AddExp*)$3));
+}
+| RelExp tok_le AddExp {
+    $$ = (void*) (new RelExp((RelExp*)$1, "<=", (AddExp*)$3));
+}
+;
+
+EqExp: RelExp {
+    $$ = (void*) (new EqExp((RelExp*)$1));
+}
+| EqExp tok_eq RelExp {
+    $$ = (void*) (new EqExp((EqExp*)$1, "==", (RelExp*)$3));
+}
+| EqExp tok_ne RelExp {
+    $$ = (void*) (new EqExp((EqExp*)$1, "!=", (RelExp*)$3));
+}
+;
+
+LAndExp: EqExp {
+    $$ = (void*) (new LAndExp((EqExp*)$1));
+}
+| LAndExp tok_and EqExp {
+    $$ = (void*) (new LAndExp((LAndExp*)$1, (EqExp*)$3));
+}
+;
+
+LOrExp: LAndExp {
+    $$ = (void*) (new LOrExp((LAndExp*)$1));
+}
+| LOrExp tok_or LAndExp {
+    $$ = (void*) (new LOrExp((LOrExp*)$1, (LAndExp*)$3));
+}
+;
+
+ConstExp: AddExp {
+    $$ = (void*) (new ConstExp((AddExp*) $1));
+}
+;
 
 
 %%

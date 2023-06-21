@@ -1,5 +1,5 @@
 FLEX_COMPILER=flex
-INCLUDES=-I./include
+INCLUDES=-I./include -g
 SRCDIR=./src
 LIBDIR=./lib
 FLEXSRC=scanner.l
@@ -27,7 +27,7 @@ lex: ${SRCDIR}/${FLEXSRC}
 
 parser:
 	@mkdir -p ./lib
-	${BISON_COMPILER} -d ${SRCDIR}/${BISONSRC} -Wconflicts-sr
+	${BISON_COMPILER} -y -d -t -v ${SRCDIR}/${BISONSRC} -Wconflicts-sr
 	@mv token.h ./include
 	@mv ${BISONSRC:.y=.cpp} ${SRCDIR}
 	${COMPILER} ${INCLUDES} -shared -fPIC -o ${LIBDIR}/libparser.so ${SRCDIR}/${BISONSRC:.y=.cpp}
