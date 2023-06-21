@@ -69,7 +69,7 @@
 /* First part of user prologue.  */
 #line 1 "./src/parser.y"
 
-    #include "ast.hpp"
+    #include "ast.h"
     #include "token.h"  
     #include <cstdio> 
 

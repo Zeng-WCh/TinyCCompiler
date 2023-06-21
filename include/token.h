@@ -103,7 +103,7 @@ union YYSTYPE
 
     int intVal;
     char *strVal;
-    AST *ast;
+    void *ast;
 
 #line 109 "token.h"
 

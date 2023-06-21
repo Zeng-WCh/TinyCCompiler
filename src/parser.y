@@ -1,5 +1,5 @@
 %{
-    #include "ast.hpp"
+    #include "ast.h"
     #include "token.h"  
     #include <cstdio> 
 
@@ -17,7 +17,7 @@
 %union {
     int intVal;
     char *strVal;
-    AST *ast;
+    void *ast;
 }
 
 %token tok_int tok_void tok_char tok_number tok_string_literal
@@ -35,5 +35,94 @@
 
 %%
 
-CompUnits: tok_int {};
+CompUnits: CompUnits CompUnit {}
+         | CompUnit {}
+         ;
+
+CompUnit: Decl {}
+        | FuncDef {}
+        ;
+
+Decl: ConstDecl {}
+    | VarDecl {}
+    ;
+
+ConstDecl: tok_const tok_int ConstDecls tok_semicolon{};
+
+ConstDecls: ConstDefs tok_comma ConstDef {}
+          | ConstDef {}
+          ;
+
+ConstDef: tok_identifier tok_assign ConstInitVal {}
+        | tok_identifier ConstSelector tok_assign ConstInitVal {}
+        ;
+
+ConstSelector: tok_lbracket ConstExp tok_rbracket {}
+             | ConstSelector tok_lbracket ConstExp tok_rbracket {}
+             ;
+
+ConstInitVal: ConstExp {}
+            | tok_lbrace tok_rbrace
+            | tok_lbrace ConstInits tok_rbrace
+            ;
+
+ConstInits: ConstInitVal {}
+          | ConstInits tok_comma ConstInitVal {}
+          ;
+
+VarDecl: tok_int VarDecls tok_semicolon{};
+
+VarDecls: tok_lbracket ConstExp tok_rbracket {}
+        | VarDecls tok_lbracket ConstExp tok_rbracket {}
+        ;
+
+VarDef: tok_identifier {}
+      | tok_identifier tok_assign InitVal {}
+      | tok_identifier VarDecls {}
+      | tok_identifier VarDecls tok_assign InitVal {}
+      ;
+    
+InitVal: Exp {}
+       | tok_lbrace tok_rbrace
+       | tok_lbrace Inits tok_rbrace
+       ;
+
+Inits: InitVal {}
+     | Inits tok_comma InitVal {}
+     ;
+
+FuncDef: tok_int tok_identifier tok_lparen tok_rparen Block
+       | tok_int tok_identifier tok_lparen Params tok_rparen Block
+       | tok_void tok_identifier tok_lparen tok_rparen Block
+       | tok_void tok_identifier tok_lparen Params tok_rparen Block
+       ;
+
+Params: Param {}
+      | Params tok_comma Param {}
+      ;
+
+Param: tok_int tok_identifier {}
+     | tok_int tok_identifier tok_lbracket tok_rbracket {}
+     | tok_int tok_identifier tok_lbracket tok_rbracket LVals {}
+     ;
+
+Block: tok_lbrace tok_rbrace
+     | tok_lbrace BlockItems tok_rbrace
+     ;
+
+BlockItems: BlockItem {}
+          | BlockItems BlockItem {}
+          ;
+
+BlockItem: Decl {}
+         | Stmt {}
+         ;
+
+Stmt: LVal tok_assign Exp tok_semicolon
+    | Exp tok_semicolon
+    | tok_semicolon
+    | Block
+    | tok_if tok_lparen Cond tok_rparen Stmt
+    | 
+
 %%

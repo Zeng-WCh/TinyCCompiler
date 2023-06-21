@@ -520,7 +520,7 @@ char *yytext;
 #line 2 "./src/scanner.l"
     #include <cstdio>
     #include "token.h"
-    #include "ast.hpp"
+    #include "ast.h"
     #include <cstring>
 #line 526 "scanner.cpp"
 #line 527 "scanner.cpp"

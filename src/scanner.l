@@ -1,7 +1,7 @@
 %{
     #include <cstdio>
     #include "token.h"
-    #include "ast.hpp"
+    #include "ast.h"
     #include <cstring>
 %}
 
