@@ -7,7 +7,7 @@ const char *token_to_string(int tok)
 {
     switch (tok)
     {
-    case tok_eof:
+    case YYEOF:
         return "eof";
     case tok_int:
         return "int";
@@ -99,7 +99,7 @@ int lexer_mode(const char *filename)
     {
         tok = yylex();
         fprintf(stderr, "token: %s\n", token_to_string(tok));
-    } while (tok != tok_eof);
+    } while (tok != YYEOF);
     return 0;
 }
 

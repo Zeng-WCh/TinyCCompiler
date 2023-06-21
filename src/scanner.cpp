@@ -1,6 +1,6 @@
-#line 2 "scanner.c"
+#line 2 "scanner.cpp"
 
-#line 4 "scanner.c"
+#line 4 "scanner.cpp"
 
 #define  YY_INT_ALIGNED short int
 
@@ -520,9 +520,10 @@ char *yytext;
 #line 2 "./src/scanner.l"
     #include <cstdio>
     #include "token.h"
+    #include "ast.hpp"
     #include <cstring>
-#line 525 "scanner.c"
-#line 526 "scanner.c"
+#line 526 "scanner.cpp"
+#line 527 "scanner.cpp"
 
 #define INITIAL 0
 
@@ -739,10 +740,10 @@ YY_DECL
 		}
 
 	{
-#line 22 "./src/scanner.l"
+#line 23 "./src/scanner.l"
 
 
-#line 746 "scanner.c"
+#line 747 "scanner.cpp"
 
 	while ( /*CONSTCOND*/1 )		/* loops until end-of-file is reached */
 		{
@@ -802,18 +803,18 @@ do_action:	/* This label is used only to access EOF actions. */
 case 1:
 /* rule 1 can match eol */
 YY_RULE_SETUP
-#line 24 "./src/scanner.l"
+#line 25 "./src/scanner.l"
 { /* ignore */ }
 	YY_BREAK
 case 2:
 /* rule 2 can match eol */
 YY_RULE_SETUP
-#line 26 "./src/scanner.l"
+#line 27 "./src/scanner.l"
 { /* ignore */ }
 	YY_BREAK
 case 3:
 YY_RULE_SETUP
-#line 28 "./src/scanner.l"
+#line 29 "./src/scanner.l"
 {
     yylval.intVal = 0;
     return tok_number;
@@ -821,7 +822,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 4:
 YY_RULE_SETUP
-#line 33 "./src/scanner.l"
+#line 34 "./src/scanner.l"
 {
     yylval.intVal = strtol(yytext, NULL, 8);
     return tok_number;
@@ -829,7 +830,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 5:
 YY_RULE_SETUP
-#line 38 "./src/scanner.l"
+#line 39 "./src/scanner.l"
 {
     yylval.intVal = strtol(yytext, NULL, 16);
     return tok_number;
@@ -837,7 +838,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 6:
 YY_RULE_SETUP
-#line 43 "./src/scanner.l"
+#line 44 "./src/scanner.l"
 {
     yylval.intVal = strtol(yytext, NULL, 2);
     return tok_number;
@@ -845,7 +846,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 7:
 YY_RULE_SETUP
-#line 48 "./src/scanner.l"
+#line 49 "./src/scanner.l"
 {
     yylval.intVal = strtol(yytext, NULL, 10);
     return tok_number;
@@ -853,231 +854,231 @@ YY_RULE_SETUP
 	YY_BREAK
 case 8:
 YY_RULE_SETUP
-#line 53 "./src/scanner.l"
+#line 54 "./src/scanner.l"
 {
     return tok_int;
 }
 	YY_BREAK
 case 9:
 YY_RULE_SETUP
-#line 57 "./src/scanner.l"
+#line 58 "./src/scanner.l"
 {
     return tok_void;
 }
 	YY_BREAK
 case 10:
 YY_RULE_SETUP
-#line 61 "./src/scanner.l"
+#line 62 "./src/scanner.l"
 {
     return tok_char;
 }
 	YY_BREAK
 case 11:
 YY_RULE_SETUP
-#line 65 "./src/scanner.l"
+#line 66 "./src/scanner.l"
 {
     return tok_const;
 }
 	YY_BREAK
 case 12:
 YY_RULE_SETUP
-#line 69 "./src/scanner.l"
+#line 70 "./src/scanner.l"
 {
     return tok_comma;
 }
 	YY_BREAK
 case 13:
 YY_RULE_SETUP
-#line 73 "./src/scanner.l"
+#line 74 "./src/scanner.l"
 {
     return tok_semicolon;
 }
 	YY_BREAK
 case 14:
 YY_RULE_SETUP
-#line 77 "./src/scanner.l"
+#line 78 "./src/scanner.l"
 {
     return tok_assign;
 }
 	YY_BREAK
 case 15:
 YY_RULE_SETUP
-#line 81 "./src/scanner.l"
+#line 82 "./src/scanner.l"
 {
     return tok_plus;
 }
 	YY_BREAK
 case 16:
 YY_RULE_SETUP
-#line 85 "./src/scanner.l"
+#line 86 "./src/scanner.l"
 {
     return tok_minus;
 }
 	YY_BREAK
 case 17:
 YY_RULE_SETUP
-#line 89 "./src/scanner.l"
+#line 90 "./src/scanner.l"
 {
     return tok_star;
 }
 	YY_BREAK
 case 18:
 YY_RULE_SETUP
-#line 93 "./src/scanner.l"
+#line 94 "./src/scanner.l"
 {
     return tok_slash;
 }
 	YY_BREAK
 case 19:
 YY_RULE_SETUP
-#line 97 "./src/scanner.l"
+#line 98 "./src/scanner.l"
 {
     return tok_mod;
 }
 	YY_BREAK
 case 20:
 YY_RULE_SETUP
-#line 101 "./src/scanner.l"
+#line 102 "./src/scanner.l"
 { 
     return tok_lparen; 
 }
 	YY_BREAK
 case 21:
 YY_RULE_SETUP
-#line 105 "./src/scanner.l"
+#line 106 "./src/scanner.l"
 { 
     return tok_rparen; 
 }
 	YY_BREAK
 case 22:
 YY_RULE_SETUP
-#line 109 "./src/scanner.l"
+#line 110 "./src/scanner.l"
 {
     return tok_lbracket;
 }
 	YY_BREAK
 case 23:
 YY_RULE_SETUP
-#line 113 "./src/scanner.l"
+#line 114 "./src/scanner.l"
 {
     return tok_rbracket;
 }
 	YY_BREAK
 case 24:
 YY_RULE_SETUP
-#line 117 "./src/scanner.l"
+#line 118 "./src/scanner.l"
 {
     return tok_lbrace;
 }
 	YY_BREAK
 case 25:
 YY_RULE_SETUP
-#line 121 "./src/scanner.l"
+#line 122 "./src/scanner.l"
 {
     return tok_rbrace;
 }
 	YY_BREAK
 case 26:
 YY_RULE_SETUP
-#line 125 "./src/scanner.l"
+#line 126 "./src/scanner.l"
 {
     return tok_lt;
 }
 	YY_BREAK
 case 27:
 YY_RULE_SETUP
-#line 129 "./src/scanner.l"
+#line 130 "./src/scanner.l"
 {
     return tok_le;
 }
 	YY_BREAK
 case 28:
 YY_RULE_SETUP
-#line 133 "./src/scanner.l"
+#line 134 "./src/scanner.l"
 {
     return tok_gt;
 }
 	YY_BREAK
 case 29:
 YY_RULE_SETUP
-#line 137 "./src/scanner.l"
+#line 138 "./src/scanner.l"
 {
     return tok_ge;
 }
 	YY_BREAK
 case 30:
 YY_RULE_SETUP
-#line 141 "./src/scanner.l"
+#line 142 "./src/scanner.l"
 {
     return tok_eq;
 }
 	YY_BREAK
 case 31:
 YY_RULE_SETUP
-#line 145 "./src/scanner.l"
+#line 146 "./src/scanner.l"
 {
     return tok_ne;
 }
 	YY_BREAK
 case 32:
 YY_RULE_SETUP
-#line 149 "./src/scanner.l"
+#line 150 "./src/scanner.l"
 {
     return tok_and;
 }
 	YY_BREAK
 case 33:
 YY_RULE_SETUP
-#line 153 "./src/scanner.l"
+#line 154 "./src/scanner.l"
 {
     return tok_or;
 }
 	YY_BREAK
 case 34:
 YY_RULE_SETUP
-#line 157 "./src/scanner.l"
+#line 158 "./src/scanner.l"
 {
     return tok_not;
 }
 	YY_BREAK
 case 35:
 YY_RULE_SETUP
-#line 161 "./src/scanner.l"
+#line 162 "./src/scanner.l"
 {
     return tok_if;
 }
 	YY_BREAK
 case 36:
 YY_RULE_SETUP
-#line 165 "./src/scanner.l"
+#line 166 "./src/scanner.l"
 {
     return tok_else;
 }
 	YY_BREAK
 case 37:
 YY_RULE_SETUP
-#line 169 "./src/scanner.l"
+#line 170 "./src/scanner.l"
 {
     return tok_while;
 }
 	YY_BREAK
 case 38:
 YY_RULE_SETUP
-#line 173 "./src/scanner.l"
+#line 174 "./src/scanner.l"
 {
     return tok_break;
 }
 	YY_BREAK
 case 39:
 YY_RULE_SETUP
-#line 177 "./src/scanner.l"
+#line 178 "./src/scanner.l"
 {
     return tok_continue;
 }
 	YY_BREAK
 case 40:
 YY_RULE_SETUP
-#line 181 "./src/scanner.l"
+#line 182 "./src/scanner.l"
 {
     return tok_return;
 }
@@ -1085,7 +1086,7 @@ YY_RULE_SETUP
 case 41:
 /* rule 41 can match eol */
 YY_RULE_SETUP
-#line 185 "./src/scanner.l"
+#line 186 "./src/scanner.l"
 {
     int len = strlen(yytext);
     char *str = (char *)malloc(len + 1);
@@ -1095,7 +1096,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 42:
 YY_RULE_SETUP
-#line 192 "./src/scanner.l"
+#line 193 "./src/scanner.l"
 {
     int len = strlen(yytext);
     char *str = (char *)malloc(len + 1);
@@ -1104,14 +1105,14 @@ YY_RULE_SETUP
 }
 	YY_BREAK
 case YY_STATE_EOF(INITIAL):
-#line 199 "./src/scanner.l"
+#line 200 "./src/scanner.l"
 { 
-    return tok_eof; 
+    return YYEOF; 
 }
 	YY_BREAK
 case 43:
 YY_RULE_SETUP
-#line 203 "./src/scanner.l"
+#line 204 "./src/scanner.l"
 {
     fprintf(stderr, "unknown %s\n", yytext);
     return tok_unknown;
@@ -1119,10 +1120,10 @@ YY_RULE_SETUP
 	YY_BREAK
 case 44:
 YY_RULE_SETUP
-#line 208 "./src/scanner.l"
+#line 209 "./src/scanner.l"
 ECHO;
 	YY_BREAK
-#line 1126 "scanner.c"
+#line 1127 "scanner.cpp"
 
 	case YY_END_OF_BUFFER:
 		{
@@ -2125,5 +2126,5 @@ void yyfree (void * ptr )
 
 #define YYTABLES_NAME "yytables"
 
-#line 208 "./src/scanner.l"
+#line 209 "./src/scanner.l"
 

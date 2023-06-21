@@ -22,15 +22,15 @@ lex: ${SRCDIR}/${FLEXSRC}
 	@mkdir -p ./lib
 	${FLEX_COMPILER} ${SRCDIR}/${FLEXSRC}
 	@mv ${FLEXSRC:.l=.h} ./include
-	@mv ${FLEXSRC:.l=.c} ${SRCDIR}
-	${COMPILER} ${INCLUDES} -shared -fPIC -o ${LIBDIR}/libscanner.so ${SRCDIR}/${FLEXSRC:.l=.c}
+	@mv ${FLEXSRC:.l=.cpp} ${SRCDIR}
+	${COMPILER} ${INCLUDES} -shared -fPIC -o ${LIBDIR}/libscanner.so ${SRCDIR}/${FLEXSRC:.l=.cpp}
 
 parser:
 	@mkdir -p ./lib
 	${BISON_COMPILER} -d ${SRCDIR}/${BISONSRC}
 	@mv token.h ./include
-	@mv ${BISONSRC:.y=.c} ${SRCDIR}
-	${COMPILER} ${INCLUDES} -shared -fPIC -o ${LIBDIR}/libparser.so ${SRCDIR}/${BISONSRC:.y=.c}
+	@mv ${BISONSRC:.y=.cpp} ${SRCDIR}
+	${COMPILER} ${INCLUDES} -shared -fPIC -o ${LIBDIR}/libparser.so ${SRCDIR}/${BISONSRC:.y=.cpp}
 
 driver:
 	${COMPILER} ${INCLUDES} -o tcc ${SRCDIR}/driver.cpp -L${LIBDIR} -lscanner -lparser

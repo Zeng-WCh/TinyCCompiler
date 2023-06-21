@@ -1,11 +1,12 @@
 %{
     #include <cstdio>
     #include "token.h"
+    #include "ast.hpp"
     #include <cstring>
 %}
 
 %option noyywrap
-%option outfile="scanner.c" header-file="scanner.h"
+%option outfile="scanner.cpp" header-file="scanner.h"
 
 ZERO 0
 OCTAL 0[0-7]+
@@ -197,7 +198,7 @@ COMMENT {COMMENT_LINE}|{COMMENT_BLOCK}
 }
 
 <<EOF>> { 
-    return tok_eof; 
+    return YYEOF; 
 }
 
 . {
