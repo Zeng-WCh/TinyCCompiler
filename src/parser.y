@@ -2,6 +2,7 @@
     #include "ast.h"
     #include "token.h"  
     #include <cstdio> 
+    #include <vector>
 
     int yylex();
 
@@ -20,102 +21,102 @@
     void *ast;
 }
 
-%token tok_int tok_void tok_char tok_number tok_string_literal
-%token tok_identifier tok_const tok_comma tok_semicolon tok_assign
+%token tok_int tok_void tok_char tok_string_literal
+%token tok_const tok_comma tok_semicolon tok_assign
 %token tok_plus tok_minus tok_star tok_slash tok_mod
 %token tok_lparen tok_rparen tok_lbrace tok_rbrace tok_lbracket tok_rbracket
 %token tok_lt tok_gt tok_le tok_ge tok_eq tok_ne
 %token tok_and tok_or tok_not
 %token tok_if tok_else tok_while tok_break tok_continue tok_return
 %token tok_unknown
+%token <strVal> tok_identifier
+%token <intVal> tok_number
 
-%type <ast> CompUnits CompUnit Decl FuncDef ConstDecl VarDecl ConstDefs ConstDef ConstSelector ConstInitVal ConstInits VarDecls VarDef InitVal Inits Params Param Block BlockItems BlockItem Stmt Exp Cond LVal LVals PrimaryExp UnaryExp Args MulExp AddExp RelExp EqExp LAndExp LOrExp ConstExp
+%type <ast> CompUnits CompUnit Decl FuncDef ConstDecl ConstDecls VarDecl ConstDefs ConstDef ConstSelector ConstInitVal ConstInits VarDecls VarDef InitVal InitVals FuncFParams FuncFParam Block BlockItems BlockItem Stmt Exp Cond LVal LVals PrimaryExp UnaryExp Args MulExp AddExp RelExp EqExp LAndExp LOrExp ConstExp
+%type <ast> FuncType
+%type <ast> FuncFParamList
+%type <ast> FuncFParamDim
+%type <ast> LValSelector
 
 %start CompUnits
 
 %%
 
-CompUnits: 
-CompUnits CompUnit {
-    auto tmp = (CompUnit*) $1;
-    tmp->add_comp_unit((AST*) $2);
-    $$ = (void*)tmp;
-}
-| CompUnit {
+CompUnits: CompUnit { 
     auto tmp = new CompUnit();
     tmp->add_comp_unit((AST*) $1);
-    $$ = (void*)tmp;
+ }
+| CompUnits CompUnits {
+    auto tmp = (CompUnit*) $1;
+    tmp->add_comp_unit((AST*) $2);
+    $$ = (void*) tmp;
 }
 ;
 
-CompUnit: 
-Decl {
-    auto tmp = new CompUnit();
-    tmp->add_comp_unit((AST*) $1);
-    $$ = (void*)tmp;
+CompUnit: Decl {
+    $$ = (void*) $1;
 }
 | FuncDef {
-    auto tmp = new CompUnit();
-    tmp->add_comp_unit((AST*) $1);
-    $$ = (void*)tmp;
+    $$ = (void*) $1;
 }
 ;
 
 Decl: ConstDecl {
-    auto tmp = (ConstDecl*) $1;
-    auto ret = new Decl(tmp);
-    $$ = (void*)ret;
+    auto const_ = (ConstDecl*) $1;
+    auto tmp = new Decl(const_);
+    $$ = (void*) tmp;
 }
 | VarDecl {
-    auto tmp = (VarDecl*) $1;
-    auto ret = new Decl(tmp);
-    $$ = (void*)ret;
+    auto var = (VarDecl*) $1;
+    auto tmp = new Decl(var);
+    $$ = (void*) tmp;
 }
 ;
 
-ConstDecl: 
-tok_const tok_int ConstDefs tok_semicolon {
-    auto tmp = (ConstDefs*) $3;
-    auto ret = new ConstDecl(tmp);
-    $$ = (void*) ret;
-};
-
-ConstDefs: 
-ConstDef {
-    auto tmp = new ConstDefs();
-    tmp->add_const((AST*) $1);
-    $$ = (void*)tmp;
-}
-| ConstDefs tok_comma ConstDef {
-    auto tmp = (ConstDefs*) $1;
-    tmp->add_const((AST*) $3);
-    $$ = (void*)tmp;
+ConstDecl: tok_const tok_int ConstDecls tok_semicolon {
+    auto tmp = ((ConstDecls*) $3)->_const_decls;
+    auto const_ = new ConstDecl(tmp);
+    $$ = (void*) const_;
+    delete $3;
 }
 ;
 
-ConstDef: 
-tok_identifier tok_assign ConstInitVal {}
-| tok_identifier ConstSelector tok_assign ConstInitVal {}
+ConstDecls: ConstDef {
+    auto tmp = new ConstDecls();
+    tmp->add_const_def((ConstDef*) $1);
+    $$ = (void*) tmp;
+}
+| ConstDecls tok_comma ConstDef {
+    auto tmp = (ConstDecls*) $1;
+    tmp->add_const_def((ConstDef*) $3);
+    $$ = (void*) tmp;
+}
 ;
 
-ConstSelector: 
-tok_lbracket ConstExp tok_rbracket {
-    auto tmp = (AST*) $2;
-    auto ret = new ConstSelector();
-    ret->add_selector(tmp);
-    $$ = (void*)ret;
+ConstDef: tok_identifier ConstSelector tok_assign ConstInitVal {
+    std::string name($1);
+    delete $1;
+    auto selector = (ConstSelector*) $2;
+    auto init_val = (ConstInitVal*) $4;
+    auto tmp = new ConstDef(name, selector, init_val);
+    $$ = (void*) tmp;
+}
+;
+
+ConstSelector: {
+    $$ = nullptr;
 }
 | ConstSelector tok_lbracket ConstExp tok_rbracket {
     auto tmp = (ConstSelector*) $1;
-    tmp->add_selector((AST*) $3);
-    $$ = (void*)tmp;
-}
-;
+    if (tmp == nullptr)
+        tmp = new ConstSelector();
+    tmp->add_selector((ConstExp*) $3);
+    $$ = (void*) tmp;
+};
 
-ConstInitVal: 
-ConstExp {
+ConstInitVal: ConstExp {
     auto tmp = new ConstInitVal();
-    tmp->add_const_val((AST*) $1);
+    tmp->add_init_val((ConstExp*) $1);
     $$ = (void*) tmp;
 }
 | tok_lbrace tok_rbrace {
@@ -123,154 +124,250 @@ ConstExp {
     $$ = (void*) tmp;
 }
 | tok_lbrace ConstInits tok_rbrace {
-    auto& l = ((ConstInits*) $2)->get_const_vals();
-    auto tmp = new ConstInitVal();
-    for (auto i : l) {
-        tmp->add_const_val(i);
-    }
-    l.clear();
+    auto tmp = ((ConstInits*) $2)->_const_inits;
+    auto init_val = new ConstInitVal(tmp);
+    $$ = (void*) init_val;
     delete $2;
-    $$ = (void*) tmp;
-}
-;
+};
 
 ConstInits: ConstInitVal {
     auto tmp = new ConstInits();
-    tmp->add_const_val((AST*) $1);
+    tmp->add_const_init_val((ConstInitVal*) $1);
     $$ = (void*) tmp;
 }
 | ConstInits tok_comma ConstInitVal {
     auto tmp = (ConstInits*) $1;
-    tmp->add_const_val((AST*) $3);
+    tmp->add_const_init_val((ConstInitVal*) $3);
     $$ = (void*) tmp;
+};
+
+VarDecl: tok_int VarDecls tok_semicolon {
+    auto tmp = ((VarDecls*) $2)->_var_decls;
+    auto var = new VarDecl(tmp);
+    $$ = (void*) var;
+    delete $2;
+};
+
+VarDecls: VarDef {
+    auto tmp = new VarDecls();
+    tmp->add_var_def((VarDef*) $1);
+    $$ = (void*) tmp;
+}
+| VarDecls tok_comma VarDef {
+    auto tmp = (VarDecls*) $1;
+    tmp->add_var_def((VarDef*) $3);
+    $$ = (void*) tmp;
+};
+
+VarDef: tok_identifier ConstSelector {
+    std::string ident($1);
+    delete $1;
+    auto selector = (ConstSelector*) $2;
+    auto tmp = new VarDef(ident, selector, nullptr);
+}
+| tok_identifier ConstSelector tok_assign InitVal {
+    std::string ident($1);
+    delete $1;
+    auto selector = (ConstSelector*) $2;
+    auto init_val = (InitVal*) $4;
+    auto tmp = new VarDef(ident, selector, init_val);
+    $$ = (void*) tmp;
+};
+
+InitVal: Exp {
+    auto tmp = new InitVal();
+    tmp->add_init_val((Exp*) $1);
+    $$ = (void*) tmp;
+}
+| tok_lbrace tok_rbrace {
+    auto tmp = new InitVal();
+    $$ = (void*) tmp;
+}
+| tok_lbrace InitVals tok_rbrace {
+    auto tmp = ((InitVals*) $2)->_init_vals;
+    auto init_val = new InitVal(tmp);
+    $$ = (void*) init_val;
+    delete $2;
+};
+
+InitVals: InitVal {
+    auto tmp = new InitVals();
+    tmp->add_init_val((InitVal*) $1);
+    $$ = (void*) tmp;
+}
+| InitVals tok_comma InitVal {
+    auto tmp = (InitVals*) $1;
+    tmp->add_init_val((InitVal*) $3);
+    $$ = (void*) tmp;
+};
+
+FuncDef: FuncType tok_identifier tok_lparen FuncFParams tok_rparen Block {
+    std::string ident($2);
+    delete $2;
+    auto func_type = (FuncType*) $1;
+    auto func_fparams = (FuncFParams*) $4;
+    auto block = (Block*) $6;
+    auto tmp = new FuncDef(ident, func_type, func_fparams, block);
+    $$ = (void*) tmp;
+};
+
+FuncType: tok_int {
+    $$ = (void*)(new FuncType(1));
+}
+| tok_void {
+    $$ = (void*)(new FuncType(0));
+};
+
+FuncFParams: {
+    auto tmp = new FuncFParams();
+    $$ = (void*) tmp;
+}
+| FuncFParamList {
+    auto t = ((FuncFParamList*) $1)->_params;
+    auto tmp = new FuncFParams(t);
+    $$ = (void*) tmp;
+};
+
+FuncFParamList: FuncFParam {
+    auto tmp = new FuncFParamList();
+    tmp->add_func_fparam((FuncFParam*) $1);
+    $$ = (void*) tmp;
+} 
+| FuncFParamList tok_comma FuncFParam {
+    auto tmp = (FuncFParamList*) $1;
+    tmp->add_func_fparam((FuncFParam*) $3);
+    $$ = (void*) tmp;
+};
+
+FuncFParam: tok_int tok_identifier {
+    std::string ident($2);
+    delete $2;
+    $$ = (void*) (new FuncFParam(ident));
+}
+| tok_int tok_identifier tok_lbracket tok_rbracket FuncFParamDim {
+    std::string ident($2);
+    delete $2;
+    auto dim = (FuncFParamDim*) $5;
+    auto _dim = dim->_dim;
+    std::vector<AST*> d;
+    d.push_back(nullptr);
+    for (int i = 0; i < _dim.size(); i++) {
+        d.push_back(_dim[i]);
+    }
+    delete dim;
+    $$ = (void*) (new FuncFParam(ident, d));
+};
+
+FuncFParamDim: {
+    auto tmp = new FuncFParamDim();
+    $$ = (void*) tmp;
+}
+| FuncFParamDim tok_lbracket Exp tok_rbracket {
+    auto tmp = (FuncFParamDim*) $1;
+    tmp->add_dim((AST*) $3);
+    $$ = (void*) tmp;
+};
+
+Block: tok_lbrace BlockItems tok_rbrace {
+    auto tmp = ((BlockItems*) $2) -> _block_items;
+    delete $2;
+    auto block = new Block(tmp);
+    $$ = (void*) block;
+};
+
+BlockItems: {
+    auto tmp = new BlockItems();
+    $$ = (void*) tmp;
+}
+| BlockItems BlockItem {
+    auto tmp = (BlockItems*) $1;
+    tmp->add_block_item((BlockItem*) $2);
+    $$ = (void*) tmp;
+};
+
+BlockItem: Stmt {
+    auto tmp = (Stmt*) $1;
+    $$ = (void*) (new BlockItem(tmp));
+}
+| Decl {
+    auto tmp = (Decl*) $1;
+    $$ = (void*) (new BlockItem(tmp));
 }
 ;
 
-VarDecl: tok_int VarDecls tok_semicolon{
-    
+Stmt: LVal tok_assign Exp tok_semicolon {
+    auto lval = (LVal*) $1;
+    auto exp = (Exp*) $3;
+    auto tmp = new Assignment(lval, exp);
+    $$ = (void*) (new Stmt(tmp));
+}
+| tok_semicolon {
+    $$ = (void*) (new Stmt());
+}
+| Exp tok_semicolon {
+    auto exp = (Exp*) $1;
+    auto tmp = new ExpStmt(exp);
+    $$ = (void*) (new Stmt(tmp));
+}
+| Block {
+    auto block = (Block*) $1;
+    auto tmp = new BlockStmt(block);
+    $$ = (void*) (new Stmt(tmp));
+}
+| tok_if tok_lparen Cond tok_rparen Stmt {
+    auto cond = (Cond*) $3;
+    auto stmt = (Stmt*) $5;
+    auto tmp = new IfStmt(cond, stmt);
+    $$ = (void*) (new Stmt(tmp));
+}
+| tok_if tok_lparen Cond tok_rparen Stmt tok_else Stmt {
+    auto cond = (Cond*) $3;
+    auto stmt1 = (Stmt*) $5;
+    auto stmt2 = (Stmt*) $7;
+    auto tmp = new IfStmt(cond, stmt1, stmt2);
+    $$ = (void*) (new Stmt(tmp));
+}
+| tok_while tok_lparen Cond tok_rparen Stmt{
+    auto cond = (Cond*) $3;
+    auto stmt = (Stmt*) $5;
+    auto tmp = new WhileStmt(cond, stmt);
+    $$ = (void*) (new Stmt(tmp));
+}
+| tok_break tok_semicolon {
+    $$ = (void*) (new Stmt(1));
+}
+| tok_continue tok_semicolon {
+    $$ = (void*) (new Stmt(2));
+}
+| tok_return Exp tok_semicolon {
+    $$ = (void*) (new Stmt(0, (Exp*) $2));
+}
+| tok_return tok_semicolon {
+    $$ = (void*) (new Stmt(0));
+}
+;
+
+Exp: AddExp {
+    $$ = (void*) (new Exp((AddExp*) $1));
 };
 
-VarDecls: VarDef {}
-        | VarDecls tok_comma VarDef {}
-        ;
+Cond: LOrExp {
+    $$ = (void*) (new Cond((LOrExp*) $1));
+};
 
-VarDefs: tok_lbracket ConstExp tok_rbracket {}
-        | VarDecls tok_lbracket ConstExp tok_rbracket {}
-        ;
+LVal: tok_identifier LValSelector {
 
-VarDef: tok_identifier {}
-      | tok_identifier tok_assign InitVal {}
-      | tok_identifier VarDefs {}
-      | tok_identifier VarDefs tok_assign InitVal {}
-      ;
-    
-InitVal: Exp {}
-       | tok_lbrace tok_rbrace {}
-       | tok_lbrace Inits tok_rbrace {}
-       ;
+}
+| tok_identifier {
+    std::string ident($1);
+    delete $1;
+    $$ = (void*) (new LVal(ident));
+};
 
-Inits: InitVal {}
-     | Inits tok_comma InitVal {}
-     ;
+LValSelector: {
+    auto tmp = new LValSelector();
+    $$ = (void*) tmp;
+};
 
-FuncDef: tok_int tok_identifier tok_lparen tok_rparen Block {}
-       | tok_int tok_identifier tok_lparen Params tok_rparen Block {}
-       | tok_void tok_identifier tok_lparen tok_rparen Block {}
-       | tok_void tok_identifier tok_lparen Params tok_rparen Block {}
-       ;
-
-Params: Param {}
-      | Params tok_comma Param {}
-      ;
-
-Param: tok_int tok_identifier {}
-     | tok_int tok_identifier tok_lbracket tok_rbracket {}
-     | tok_int tok_identifier tok_lbracket tok_rbracket LVals {}
-     ;
-
-Block: tok_lbrace tok_rbrace {}
-     | tok_lbrace BlockItems tok_rbrace {}
-     ;
-
-BlockItems: BlockItem {}
-          | BlockItems BlockItem {}
-          ;
-
-BlockItem: Decl {}
-         | Stmt {}
-         ;
-
-Stmt: LVal tok_assign Exp tok_semicolon {}
-    | Exp tok_semicolon {}
-    | tok_semicolon {}
-    | Block {}
-    | tok_if tok_lparen Cond tok_rparen Stmt {}
-    | tok_if tok_lparen Cond tok_rparen Stmt tok_else Stmt {}
-    | tok_while tok_lparen Cond tok_rparen Stmt {}
-    | tok_break tok_semicolon {}
-    | tok_continue tok_semicolon {}
-    | tok_return Exp tok_semicolon {}
-    | tok_return tok_semicolon {}
-    ;
-
-Exp: AddExp {};
-
-Cond: LOrExp {};
-
-LVal: tok_identifier {} {}
-    | tok_identifier LVals {};
-
-LVals: tok_lbracket Exp tok_rbracket {}
-     | LVals tok_lbracket Exp tok_rbracket {}
-     ;
-
-PrimaryExp: tok_lparen Exp tok_rparen {}
-          | LVal {}
-          | tok_number {}
-
-UnaryExp: PrimaryExp {}
-        | tok_identifier tok_lparen tok_rparen {}
-        | tok_identifier tok_lparen Args tok_rparen {}
-        | tok_plus UnaryExp {}
-        | tok_minus UnaryExp {}
-        | tok_not UnaryExp {}
-        ;
-
-Args: Exp {}
-    | Args tok_comma Exp {}
-    ;
-
-MulExp: UnaryExp {}
-      | MulExp tok_star UnaryExp {}
-      | MulExp tok_slash UnaryExp {}
-      | MulExp tok_mod UnaryExp {}
-      ;
-
-AddExp: MulExp {}
-      | AddExp tok_plus MulExp {}
-      | AddExp tok_minus MulExp {}
-      ;
-
-RelExp: AddExp {}
-      | RelExp tok_lt AddExp {}
-      | RelExp tok_gt AddExp {}
-      | RelExp tok_le AddExp {}
-      | RelExp tok_ge AddExp {}
-      ;
-
-EqExp: RelExp {}
-     | EqExp tok_eq RelExp {}
-     | EqExp tok_ne RelExp {}
-     ;
-
-LAndExp: EqExp {}
-       | LAndExp tok_and EqExp {}
-       ;
-
-LOrExp: LAndExp {}
-      | LOrExp tok_or LAndExp {}
-      ;
-
-ConstExp: AddExp {};
 
 %%

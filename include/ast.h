@@ -9,6 +9,14 @@ class VarDecl;
 class ConstDefs;
 class ConstInitVal;
 class ConstSelector;
+class InitVal;
+class LVal;
+class Exp;
+class FuncFParams;
+class FuncType;
+class Block;
+class Cond;
+class AddExp;
 
 class AST {
     public:
@@ -17,6 +25,7 @@ class AST {
 
 class CompUnit : public AST {
     private:
+        // AST shoule be decl or func_def
         std::vector<AST*> _comp_units;
     public:
         CompUnit() = default;
@@ -52,18 +61,40 @@ class Decl : public AST {
 };
 
 class FuncDef : public AST {
-
+    private:
+        std::string ident;
+        FuncType *type;
+        FuncFParams *params;
+        Block* block;
+    public:
+        FuncDef(FuncType *type, const std::string& ident, FuncFParams *params, Block* block) : type(type), ident(ident), params(params), block(block) {}
+        ~FuncDef() {
+            if (this->type) {
+                delete this->type;
+            }
+            if (this->params) {
+                delete this->params;
+            }
+            if (this->block) {
+                delete this->block;
+            }
+        }
 };
 
 class ConstDecl : public AST {
     private:
-        ConstDefs* _const_defs;
+        // AST should be const_def
+        std::vector<AST*> _const_defs;
     public:
-        ConstDecl(ConstDefs* const_defs) : _const_defs(const_defs) {}
+        ConstDecl() = default;
+        ConstDecl(const std::vector<AST*>& const_defs) : _const_defs(const_defs) {}
         ~ConstDecl() {
-            if (_const_defs != nullptr) {
-                delete _const_defs;
+            for (auto const_def : _const_defs) {
+                delete const_def;
             }
+        }
+        void add_const_decl(AST* const_def) {
+            _const_defs.push_back(const_def);
         }
 };
 
@@ -72,6 +103,7 @@ class VarDecl : public AST {
         std::vector<AST*> _var_defs;
     public:
         VarDecl() = default;
+        VarDecl(const std::vector<AST*>& var_defs) : _var_defs(var_defs) {}
         ~VarDecl() {
             for (auto var_def : _var_defs) {
                 delete var_def;
@@ -79,22 +111,26 @@ class VarDecl : public AST {
         }
 };
 
-class BType : public AST {
-
+class VarDecls : public AST {
+    public:
+        // AST should be var_def
+        std::vector<AST*> _var_decls;
+        VarDecls() = default;
+        ~VarDecls() {
+        }
+        void add_var_decl(AST* var_decl) {
+            _var_decls.push_back(var_decl);
+        }
 };
 
-class ConstDefs : public AST {
-    private:
-        std::vector<AST*> _const_defs;
+class ConstDecls : public AST {
     public:
-        ConstDefs() = default;
-        ~ConstDefs() {
-            for (auto ast : _const_defs) {
-                delete ast;
-            }
+        std::vector<AST*> _const_decls;
+        ConstDecls() = default;
+        ~ConstDecls() {
         }
-        void add_const(AST *const_def) {
-            _const_defs.push_back(const_def);
+        void add_const_decl(AST* const_decl) {
+            _const_decls.push_back(const_decl);
         }
 };
 
@@ -104,7 +140,7 @@ class ConstDef : public AST {
         ConstInitVal* iv;
         ConstSelector* s;
     public:
-        ConstDef(const std::string& name, ConstInitVal* init_val, ConstSelector* selector) : ident(name), iv(init_val), s(selector) {}
+        ConstDef(const std::string& name, ConstSelector* selector, ConstInitVal* init_val) : ident(name), iv(init_val), s(selector) {}
         ~ConstDef() {
             if (this->iv) {
                 delete this->iv;
@@ -117,6 +153,7 @@ class ConstDef : public AST {
 
 class ConstSelector: public AST {
     private:
+        // AST should be const exp
         std::vector<AST*> selects;
     public:
         ConstSelector() = default;
@@ -132,9 +169,11 @@ class ConstSelector: public AST {
 
 class ConstInitVal : public AST {
     private:
+        // AST should be const exp
         std::vector<AST*> _init_vals;
     public:
         ConstInitVal() = default;
+        ConstInitVal(const std::vector<AST*> &init_vals) : _init_vals(init_vals) {}
         ~ConstInitVal() {
             for (auto init_val : _init_vals) {
                 delete init_val;
@@ -147,68 +186,300 @@ class ConstInitVal : public AST {
 };
 
 class ConstExp : public AST {
-
+    private:
+        // AST should be Addexp
+        std::vector<AST*> _const_exps;
+    public:
+        ConstExp() = default;
+        ConstExp(const std::vector<AST*> &const_exps) : _const_exps(const_exps) {}
+        ~ConstExp() {
+            for (auto const_exp : _const_exps) {
+                delete const_exp;
+            }
+        }
+        void add_const_exp(AST* const_exp) {
+            _const_exps.push_back(const_exp);
+        }
 };
 
 class ConstInits : public AST {
-    private:
-        std::vector<AST*> _const_inits;
     public:
+        std::vector<AST*> _const_inits;
         ConstInits() = default;
         ~ConstInits() {
-            for (auto const_init : _const_inits) {
-                delete const_init;
-            }
         }
         void add_const_init(AST* const_init) {
             _const_inits.push_back(const_init);
         }
-        std::vector<AST*>& get_const_inits() {
-            return _const_inits;
-        }
 };
 
 class VarDef : public AST {
-
+    private:
+        std::string ident;
+        ConstSelector *s;
+        InitVal *iv;
+    public:
+        VarDef(const std::string& name, ConstSelector* selector, InitVal* init_val) : ident(name), s(selector), iv(init_val) {}
+        ~VarDef() {
+            if (this->s) {
+                delete this->s;
+            }
+            if (this->iv) {
+                delete this->iv;
+            }
+        }
 };
 
 class InitVal : public AST {
+    private:
+        // AST should be exp
+        std::vector<AST*> _init_vals;
+    public:
+        InitVal() = default;
+        InitVal(const std::vector<AST*>& init_vals) : _init_vals(init_vals) {}
+        ~InitVal() {
+            for (auto init_val : _init_vals) {
+                delete init_val;
+            }
+        }
+        void add_init_val(AST* init_val) {
+            _init_vals.push_back(init_val);
+        }
+};
 
+class InitVals : public AST {
+    public:
+        std::vector<AST*> _init_vals;
+        InitVals() = default;
+        ~InitVals() {
+        }
+        void add_init_val(AST* init_val) {
+            _init_vals.push_back(init_val);
+        }
 };
 
 class FuncType : public AST {
-
-};
-
-class FuncFParams : public AST {
-
+    private:
+        // 1 for int, 0 for void
+        int type;
+    public:
+        FuncType(int type) : type(type) {}
 };
 
 class FuncFParam : public AST {
-
+    private:
+        std::string ident;
+        // nullptr means unspecified,
+        // only 0 index can be nullptr, others must be positive
+        std::vector<AST*> _dims;
+    public:
+        FuncFParam(const std::string& name) : ident(name) {}
+        FuncFParam(const std::string& name, const std::vector<int> &_dim) : ident(name), _dims(_dim) {}
+        void add_dim(AST* dim) {
+            _dims.push_back(dim);
+        }
 };
 
-class Block : public AST {
+class Dim : public AST {
+    public:
+        std::vector<AST*> _dim;
+        Dim() = default;
+        ~Dim() {
+        }
+        void add_dim(AST* dim) {
+            _dim.push_back(dim);
+        }
+};
 
+class FuncFParamList : public AST {
+    public:
+        // AST should be like func_fparam
+        std::vector<AST*> _params;
+        FuncFParamList() = default;
+        ~FuncFParamList() {
+        }
+        void add_param(AST* param) {
+            _params.push_back(param);
+        }
+};
+
+class FuncFParams : public AST {
+    private:
+        // AST should be like func_fparam
+        std::vector<AST*> _params;
+    public:
+        FuncFParams() = default;
+        FuncFParams(const std::vector<AST*>& params) : _params(params) {}
+        ~FuncFParams() {
+            for (auto param : _params) {
+                delete param;
+            }
+        }
+        void add_param(AST* param) {
+            _params.push_back(param);
+        }
 };
 
 class BlockItem : public AST {
+    private:
+        Stmt *_stmt;
+        Decl *_decl;
+    public:
+        BlockItem(Stmt* stmt) : _stmt(stmt) {}
+        BlockItem(Decl* decl) : _decl(decl) {}
+        ~BlockItem() {
+            if (_stmt) {
+                delete _stmt;
+            }
+            if (_decl) {
+                delete _decl;
+            }
+        }
+};
 
+class BlockItems : public AST {
+    public:
+        std::vector<AST*> _block_items;
+        BlockItems() = default;
+        ~BlockItems() {
+        }
+        void add_block_item(AST* item) {
+            _block_items.push_back(item);
+        }
+};
+
+
+class Block : public AST {
+    private:
+        std::vector<AST*> _block_items;
+    public:
+        Block() = default;
+        Block(const std::vector<AST*>& block_items) : _block_items(block_items) {}
+        ~Block() {
+            for (auto item : _block_items) {
+                delete item;
+            }
+        }
+        void add_block_item(AST* item) {
+            _block_items.push_back(item);
+        }
+};
+
+class Assignment : public AST {
+    private:
+        LVal *_lval;
+        Exp *_exp;
+    public:
+        Assignment(LVal* lval, Exp* exp) : _lval(lval), _exp(exp) {}
+        ~Assignment() {
+            if (_lval) {
+                delete _lval;
+            }
+            if (_exp) {
+                delete _exp;
+            }
+        }
+};
+
+class IfStmt : public AST {
+    private:
+        Cond *condition;
+        Stmt *true_part;
+        Stmt *false_part;
+    public:
+        IfStmt(Cond* condition, Stmt* true_part, Stmt* false_part) : condition(condition), true_part(true_part), false_part(false_part) {}
+        IfStmt(Cond* condition, Stmt* true_part) : condition(condition), true_part(true_part), false_part(nullptr) {}
+        ~IfStmt() {
+            if (condition) {
+                delete condition;
+            }
+            if (true_part) {
+                delete true_part;
+            }
+            if (false_part) {
+                delete false_part;
+            }
+        }
+};
+
+class WhileStmt : public AST {
+    private:
+        Cond* condition;
+        Stmt* body;
+    public:
+        WhileStmt(Cond* condition, Stmt* body) : condition(condition), body(body) {}
+        ~WhileStmt() {
+            if (condition) {
+                delete condition;
+            }
+            if (body) {
+                delete body;
+            }
+        }
 };
 
 class Stmt : public AST {
+    private:
+        Assignment *asg = nullptr;
+        Exp *exp = nullptr;
+        Block *block = nullptr;
+        IfStmt *ifs = nullptr;
+        WhileStmt *whiles = nullptr;
+        // 0 for return, 1 for break, 2 for continue
+        int type = -1;
+    public:
+        Stmt() = default;
+        Stmt(Assignment* asg) : asg(asg) {}
+        Stmt(Exp* exp) : exp(exp) {}
+        Stmt(Block* block) : block(block) {}
+        Stmt(IfStmt* ifs) : ifs(ifs) {}
+        Stmt(WhileStmt* whiles) : whiles(whiles) {}
+        Stmt(int type, Exp* exp = nullptr) : type(type), exp(exp) {}
+};
+
+class AddExp : public AST {
 
 };
 
 class Exp : public AST {
+    private:
+        AddExp *add_exp;
+    public:
+        Exp(AddExp* add_exp) : add_exp(add_exp) {}
+        ~Exp() {
+            if (add_exp) {
+                delete add_exp;
+            }
+        }
+};
+
+class LOrExp : public AST {
 
 };
 
 class Cond : public AST {
-
+    private:
+        LOrExp *lor_exp;
+    public:
+        Cond(LOrExp* lor_exp) : lor_exp(lor_exp) {}
+        ~Cond() {
+            if (lor_exp) {
+                delete lor_exp;
+            }
+        }
 };
 
 class LVal : public AST {
+    private:
+        std::string ident;
+        std::vector<AST*> selectors;
+    public:
+        LVal(const std::string& ident, const std::vector<AST*>& selectors) : ident(ident), selectors(selectors) {}
+        ~LVal() {
+            for (auto selector : selectors) {
+                delete selector;
+            }
+        }
 
 };
 
@@ -236,10 +507,6 @@ class MulExp : public AST {
 
 };
 
-class AddExp : public AST {
-
-};
-
 class RelExp : public AST {
 
 };
@@ -252,8 +519,15 @@ class LAndExp : public AST {
 
 };
 
-class LOrExp : public AST {
-
+class LValSelector : public AST {
+    public:
+        std::vector<AST*> _selectors;
+        LValSelector() = default;
+        ~LValSelector() {
+        }
+        void add_selector(AST* selector) {
+            _selectors.push_back(selector);
+        }
 };
 
 #endif
