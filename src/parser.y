@@ -40,7 +40,7 @@ Decl: ConstDecl {}
     | VarDecl {}
     ;
 
-ConstDecl: tok_const BTYPE ConstDecls tok_semicolon{};
+ConstDecl: tok_const tok_int ConstDecls tok_semicolon{};
 
 ConstDecls: ConstDefs tok_comma ConstDef {}
           | ConstDef {}
@@ -63,8 +63,58 @@ ConstInits: ConstInitVal {}
           | ConstInits tok_comma ConstInitVal {}
           ;
 
-VarDecl: BTYPE VarDecls tok_semicolon{};
+VarDecl: tok_int VarDecls tok_semicolon{};
 
-VarDecls: VarDef 
+VarDecls: tok_lbracket ConstExp tok_rbracket {}
+        | VarDecls tok_lbracket ConstExp tok_rbracket {}
+        ;
+
+VarDef: tok_identifier {}
+      | tok_identifier tok_assign InitVal {}
+      | tok_identifier VarDecls {}
+      | tok_identifier VarDecls tok_assign InitVal {}
+      ;
+    
+InitVal: Exp {}
+       | tok_lbrace tok_rbrace
+       | tok_lbrace Inits tok_rbrace
+       ;
+
+Inits: InitVal {}
+     | Inits tok_comma InitVal {}
+     ;
+
+FuncDef: tok_int tok_identifier tok_lparen tok_rparen Block
+       | tok_int tok_identifier tok_lparen Params tok_rparen Block
+       | tok_void tok_identifier tok_lparen tok_rparen Block
+       | tok_void tok_identifier tok_lparen Params tok_rparen Block
+       ;
+
+Params: Param {}
+      | Params tok_comma Param {}
+      ;
+
+Param: tok_int tok_identifier {}
+     | tok_int tok_identifier tok_lbracket tok_rbracket {}
+     | tok_int tok_identifier tok_lbracket tok_rbracket LVals {}
+     ;
+
+Block: tok_lbrace tok_rbrace
+     | tok_lbrace BlockItems tok_rbrace
+     ;
+
+BlockItems: BlockItem {}
+          | BlockItems BlockItem {}
+          ;
+
+BlockItem: Decl {}
+         | Stmt {}
+         ;
+
+Stmt: LVal tok_assign Exp tok_semicolon
+    | Exp tok_semicolon
+    | tok_semicolon
+    | Block
+    | tok_if tok_lparen Cond tok_rparen Stmt
 
 %%
