@@ -110,7 +110,7 @@ int parser_mode(const char *filename) {
         fprintf(stderr, "Error: cannot open file %s\n", filename);
         return 1;
     }
-    
+    return 0;
 }
 
 int main(int argc, const char **argv)

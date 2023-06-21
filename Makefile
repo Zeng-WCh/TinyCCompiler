@@ -27,7 +27,7 @@ lex: ${SRCDIR}/${FLEXSRC}
 
 parser:
 	@mkdir -p ./lib
-	${BISON_COMPILER} -d ${SRCDIR}/${BISONSRC}
+	${BISON_COMPILER} -d ${SRCDIR}/${BISONSRC} -Wconflicts-sr
 	@mv token.h ./include
 	@mv ${BISONSRC:.y=.cpp} ${SRCDIR}
 	${COMPILER} ${INCLUDES} -shared -fPIC -o ${LIBDIR}/libparser.so ${SRCDIR}/${BISONSRC:.y=.cpp}

@@ -149,7 +149,43 @@ enum yysymbol_kind_t
   YYSYMBOL_tok_return = 38,                /* tok_return  */
   YYSYMBOL_tok_unknown = 39,               /* tok_unknown  */
   YYSYMBOL_YYACCEPT = 40,                  /* $accept  */
-  YYSYMBOL_CompUnits = 41                  /* CompUnits  */
+  YYSYMBOL_CompUnits = 41,                 /* CompUnits  */
+  YYSYMBOL_CompUnit = 42,                  /* CompUnit  */
+  YYSYMBOL_Decl = 43,                      /* Decl  */
+  YYSYMBOL_ConstDecl = 44,                 /* ConstDecl  */
+  YYSYMBOL_ConstDecls = 45,                /* ConstDecls  */
+  YYSYMBOL_ConstDef = 46,                  /* ConstDef  */
+  YYSYMBOL_ConstSelector = 47,             /* ConstSelector  */
+  YYSYMBOL_ConstInitVal = 48,              /* ConstInitVal  */
+  YYSYMBOL_ConstInits = 49,                /* ConstInits  */
+  YYSYMBOL_VarDecl = 50,                   /* VarDecl  */
+  YYSYMBOL_VarDecls = 51,                  /* VarDecls  */
+  YYSYMBOL_VarDefs = 52,                   /* VarDefs  */
+  YYSYMBOL_VarDef = 53,                    /* VarDef  */
+  YYSYMBOL_InitVal = 54,                   /* InitVal  */
+  YYSYMBOL_Inits = 55,                     /* Inits  */
+  YYSYMBOL_FuncDef = 56,                   /* FuncDef  */
+  YYSYMBOL_Params = 57,                    /* Params  */
+  YYSYMBOL_Param = 58,                     /* Param  */
+  YYSYMBOL_Block = 59,                     /* Block  */
+  YYSYMBOL_BlockItems = 60,                /* BlockItems  */
+  YYSYMBOL_BlockItem = 61,                 /* BlockItem  */
+  YYSYMBOL_Stmt = 62,                      /* Stmt  */
+  YYSYMBOL_Exp = 63,                       /* Exp  */
+  YYSYMBOL_Cond = 64,                      /* Cond  */
+  YYSYMBOL_LVal = 65,                      /* LVal  */
+  YYSYMBOL_66_1 = 66,                      /* $@1  */
+  YYSYMBOL_LVals = 67,                     /* LVals  */
+  YYSYMBOL_PrimaryExp = 68,                /* PrimaryExp  */
+  YYSYMBOL_UnaryExp = 69,                  /* UnaryExp  */
+  YYSYMBOL_Args = 70,                      /* Args  */
+  YYSYMBOL_MulExp = 71,                    /* MulExp  */
+  YYSYMBOL_AddExp = 72,                    /* AddExp  */
+  YYSYMBOL_RelExp = 73,                    /* RelExp  */
+  YYSYMBOL_EqExp = 74,                     /* EqExp  */
+  YYSYMBOL_LAndExp = 75,                   /* LAndExp  */
+  YYSYMBOL_LOrExp = 76,                    /* LOrExp  */
+  YYSYMBOL_ConstExp = 77                   /* ConstExp  */
 };
 typedef enum yysymbol_kind_t yysymbol_kind_t;
 
@@ -266,7 +302,7 @@ typedef int yytype_uint16;
 
 
 /* Stored state numbers (used for stacks). */
-typedef yytype_int8 yy_state_t;
+typedef yytype_uint8 yy_state_t;
 
 /* State numbers in computations.  */
 typedef int yy_state_fast_t;
@@ -469,18 +505,18 @@ union yyalloc
 #endif /* !YYCOPY_NEEDED */
 
 /* YYFINAL -- State number of the termination state.  */
-#define YYFINAL  3
+#define YYFINAL  15
 /* YYLAST -- Last index in YYTABLE.  */
-#define YYLAST   1
+#define YYLAST   259
 
 /* YYNTOKENS -- Number of terminals.  */
 #define YYNTOKENS  40
 /* YYNNTS -- Number of nonterminals.  */
-#define YYNNTS  2
+#define YYNNTS  38
 /* YYNRULES -- Number of rules.  */
-#define YYNRULES  2
+#define YYNRULES  97
 /* YYNSTATES -- Number of states.  */
-#define YYNSTATES  4
+#define YYNSTATES  186
 
 /* YYMAXUTOK -- Last valid token kind.  */
 #define YYMAXUTOK   294
@@ -531,9 +567,18 @@ static const yytype_int8 yytranslate[] =
 
 #if YYDEBUG
   /* YYRLINE[YYN] -- Source line where rule number YYN was defined.  */
-static const yytype_int8 yyrline[] =
+static const yytype_uint8 yyrline[] =
 {
-       0,    38,    38
+       0,    39,    39,    40,    43,    44,    47,    48,    51,    53,
+      54,    57,    58,    61,    62,    65,    66,    67,    70,    71,
+      74,    76,    77,    80,    81,    84,    85,    86,    87,    90,
+      91,    92,    95,    96,    99,   100,   101,   102,   105,   106,
+     109,   110,   111,   114,   115,   118,   119,   122,   123,   126,
+     127,   128,   129,   130,   131,   132,   133,   134,   135,   136,
+     139,   141,   143,   143,   144,   146,   147,   150,   151,   152,
+     154,   155,   156,   157,   158,   159,   162,   163,   166,   167,
+     168,   169,   172,   173,   174,   177,   178,   179,   180,   181,
+     184,   185,   186,   189,   190,   193,   194,   197
 };
 #endif
 
@@ -556,7 +601,13 @@ static const char *const yytname[] =
   "tok_rparen", "tok_lbrace", "tok_rbrace", "tok_lbracket", "tok_rbracket",
   "tok_lt", "tok_gt", "tok_le", "tok_ge", "tok_eq", "tok_ne", "tok_and",
   "tok_or", "tok_not", "tok_if", "tok_else", "tok_while", "tok_break",
-  "tok_continue", "tok_return", "tok_unknown", "$accept", "CompUnits", YY_NULLPTR
+  "tok_continue", "tok_return", "tok_unknown", "$accept", "CompUnits",
+  "CompUnit", "Decl", "ConstDecl", "ConstDecls", "ConstDef",
+  "ConstSelector", "ConstInitVal", "ConstInits", "VarDecl", "VarDecls",
+  "VarDefs", "VarDef", "InitVal", "Inits", "FuncDef", "Params", "Param",
+  "Block", "BlockItems", "BlockItem", "Stmt", "Exp", "Cond", "LVal", "$@1",
+  "LVals", "PrimaryExp", "UnaryExp", "Args", "MulExp", "AddExp", "RelExp",
+  "EqExp", "LAndExp", "LOrExp", "ConstExp", YY_NULLPTR
 };
 
 static const char *
@@ -578,7 +629,7 @@ static const yytype_int16 yytoknum[] =
 };
 #endif
 
-#define YYPACT_NINF (-4)
+#define YYPACT_NINF (-149)
 
 #define yypact_value_is_default(Yyn) \
   ((Yyn) == YYPACT_NINF)
@@ -590,9 +641,27 @@ static const yytype_int16 yytoknum[] =
 
   /* YYPACT[STATE-NUM] -- Index in YYTABLE of the portion describing
      STATE-NUM.  */
-static const yytype_int8 yypact[] =
+static const yytype_int16 yypact[] =
 {
-      -3,    -4,     1,    -4
+      95,    12,    15,    24,   200,  -149,  -149,  -149,  -149,  -149,
+      66,    82,  -149,    21,    46,  -149,  -149,    10,    44,     9,
+     227,    16,    47,    48,  -149,    11,    29,   131,  -149,  -149,
+       3,   227,   227,   227,    69,   227,  -149,  -149,  -149,  -149,
+    -149,   115,   112,    53,    86,    75,  -149,   112,   113,   227,
+      44,  -149,    86,   109,    89,   227,    41,    46,  -149,   202,
+     227,  -149,    64,  -149,  -149,   124,  -149,  -149,    45,  -149,
+     227,   227,   227,   227,   227,   134,   102,  -149,   156,    86,
+    -149,   138,  -149,  -149,    86,   193,  -149,  -149,   154,    89,
+     227,  -149,  -149,  -149,   114,   171,   227,  -149,    44,  -149,
+    -149,  -149,  -149,   115,   115,   179,    48,  -149,  -149,   161,
+     165,   194,   201,   218,  -149,  -149,   149,  -149,  -149,   206,
+     207,  -149,  -149,  -149,  -149,  -149,  -149,    50,  -149,  -149,
+     195,   227,  -149,  -149,   199,  -149,   150,   227,   227,  -149,
+    -149,  -149,   212,  -149,  -149,  -149,   227,    89,  -149,  -149,
+    -149,  -149,    64,   208,   112,   164,   125,   198,   211,   219,
+    -149,   226,  -149,   160,   227,   227,   227,   227,   227,   227,
+     227,   227,   160,  -149,   196,   112,   112,   112,   112,   164,
+     164,   125,   198,  -149,   160,  -149
 };
 
   /* YYDEFACT[STATE-NUM] -- Default reduction number in state STATE-NUM.
@@ -600,51 +669,161 @@ static const yytype_int8 yypact[] =
      means the default is an error.  */
 static const yytype_int8 yydefact[] =
 {
-       0,     2,     0,     1
+       0,     0,     0,     0,     0,     3,     4,     6,     7,     5,
+      25,     0,    21,     0,     0,     1,     2,    25,     0,     0,
+       0,     0,    27,     0,    20,     0,     0,     0,    10,    69,
+      62,     0,     0,     0,     0,     0,    26,    29,    68,    70,
+      78,    82,    60,     0,     0,     0,    38,    97,     0,     0,
+       0,    22,     0,     0,     0,     0,     0,     0,     8,     0,
+       0,    63,    64,    73,    74,     0,    30,    32,     0,    75,
+       0,     0,     0,     0,     0,    40,     0,    34,     0,     0,
+      23,     0,    28,    36,     0,     0,    11,    15,     0,     0,
+       0,     9,    71,    76,     0,     0,     0,    67,     0,    31,
+      79,    80,    81,    83,    84,     0,     0,    51,    43,     0,
+       0,     0,     0,     0,    47,    52,     0,    45,    48,     0,
+      68,    39,    35,    24,    37,    16,    18,     0,    13,    12,
+       0,     0,    72,    65,     0,    33,    41,     0,     0,    56,
+      57,    59,     0,    44,    46,    50,     0,     0,    17,    14,
+      77,    66,    42,     0,    85,    90,    93,    95,    61,     0,
+      58,     0,    19,     0,     0,     0,     0,     0,     0,     0,
+       0,     0,     0,    49,    53,    86,    87,    88,    89,    91,
+      92,    94,    96,    55,     0,    54
 };
 
   /* YYPGOTO[NTERM-NUM].  */
-static const yytype_int8 yypgoto[] =
+static const yytype_int16 yypgoto[] =
 {
-      -4,    -4
+    -149,  -149,   235,   -67,  -149,  -149,   186,  -149,   -79,  -149,
+    -149,    63,  -149,   221,   -31,  -149,  -149,   222,   168,   -39,
+    -149,   132,  -148,   -17,   111,   -72,  -149,   116,  -149,   -24,
+    -149,    91,   -20,     7,    81,    83,  -149,   -18
 };
 
   /* YYDEFGOTO[NTERM-NUM].  */
-static const yytype_int8 yydefgoto[] =
+static const yytype_uint8 yydefgoto[] =
 {
-       0,     2
+       0,     4,     5,     6,     7,    27,    28,    56,    86,   127,
+       8,    11,    22,    12,    36,    68,     9,    45,    46,   115,
+     116,   117,   118,   119,   153,    38,    61,    62,    39,    40,
+      94,    41,    42,   155,   156,   157,   158,    87
 };
 
   /* YYTABLE[YYPACT[STATE-NUM]] -- What to do in state STATE-NUM.  If
      positive, shift that token.  If negative, reduce the rule whose
      number is the opposite.  If YYTABLE_NINF, syntax error.  */
-static const yytype_int8 yytable[] =
+static const yytype_uint8 yytable[] =
 {
-       1,     3
+      47,    37,    48,    67,   120,    77,   126,    63,    64,   114,
+     129,    69,    43,    83,    43,   174,    65,    37,    17,    82,
+      10,    59,    18,    13,   183,    60,    23,    14,    44,    47,
+      52,    81,    20,    37,    47,    47,   185,    88,    49,    25,
+     122,    54,    93,    95,   120,   124,   100,   101,   102,   114,
+      29,    55,    30,    89,    26,    98,    17,    31,    32,    50,
+     147,    75,    33,    90,    34,    47,    99,   135,   162,    47,
+      47,   148,   130,    21,    17,    29,    35,    30,    18,   134,
+      21,    37,    31,    32,    19,    78,    96,    33,    20,    34,
+      66,   120,    23,    24,    79,    29,   142,    30,     1,     2,
+     120,    35,    31,    32,     3,   106,    76,    33,    29,    85,
+      30,     3,   120,   107,   150,    31,    32,   154,   154,    78,
+      33,    35,    76,   108,   131,    73,    74,    47,    84,   161,
+      70,    71,    72,   132,    35,   109,    80,   110,   111,   112,
+     113,    57,    58,    97,   175,   176,   177,   178,   154,   154,
+     154,   154,   106,   168,   169,    29,   105,    30,     3,    43,
+     107,   123,    31,    32,   103,   104,    29,    33,    30,    76,
+     143,   107,    60,    31,    32,   179,   180,   128,    33,   137,
+      76,    35,   109,   138,   110,   111,   112,   113,   164,   165,
+     166,   167,    35,   109,   133,   110,   111,   112,   113,    29,
+      15,    30,   136,     1,     2,   139,    31,    32,    29,     3,
+      30,    33,   140,    85,   125,    31,    32,   145,   149,   146,
+      33,    92,   151,   160,    29,    35,    30,   163,   170,   141,
+     184,    31,    32,    29,    35,    30,    33,   173,   172,    16,
+      31,    32,   171,    91,    51,    33,   121,    53,   144,   159,
+      35,   181,   152,     0,   182,     0,     0,     0,     0,    35
 };
 
-static const yytype_int8 yycheck[] =
+static const yytype_int16 yycheck[] =
 {
-       3,     0
+      20,    18,    20,    34,    76,    44,    85,    31,    32,    76,
+      89,    35,     3,    52,     3,   163,    33,    34,     8,    50,
+       8,    18,    12,     8,   172,    22,    10,     3,    19,    49,
+      19,    49,    22,    50,    54,    55,   184,    55,    22,    18,
+      79,    12,    59,    60,   116,    84,    70,    71,    72,   116,
+       6,    22,     8,    12,     8,    10,     8,    13,    14,    12,
+      10,     8,    18,    22,    20,    85,    21,    98,   147,    89,
+      90,    21,    90,    10,     8,     6,    32,     8,    12,    96,
+      17,    98,    13,    14,    18,    10,    22,    18,    22,    20,
+      21,   163,    10,    11,    19,     6,   113,     8,     3,     4,
+     172,    32,    13,    14,     9,     3,    20,    18,     6,    20,
+       8,     9,   184,    11,   131,    13,    14,   137,   138,    10,
+      18,    32,    20,    21,    10,    13,    14,   147,    19,   146,
+      15,    16,    17,    19,    32,    33,    23,    35,    36,    37,
+      38,    10,    11,    19,   164,   165,   166,   167,   168,   169,
+     170,   171,     3,    28,    29,     6,    22,     8,     9,     3,
+      11,    23,    13,    14,    73,    74,     6,    18,     8,    20,
+      21,    11,    22,    13,    14,   168,   169,    23,    18,    18,
+      20,    32,    33,    18,    35,    36,    37,    38,    24,    25,
+      26,    27,    32,    33,    23,    35,    36,    37,    38,     6,
+       0,     8,    23,     3,     4,    11,    13,    14,     6,     9,
+       8,    18,    11,    20,    21,    13,    14,    11,    23,    12,
+      18,    19,    23,    11,     6,    32,     8,    19,    30,    11,
+      34,    13,    14,     6,    32,     8,    18,    11,    19,     4,
+      13,    14,    31,    57,    23,    18,    78,    25,   116,   138,
+      32,   170,   136,    -1,   171,    -1,    -1,    -1,    -1,    32
 };
 
   /* YYSTOS[STATE-NUM] -- The (internal number of the) accessing
      symbol of state STATE-NUM.  */
 static const yytype_int8 yystos[] =
 {
-       0,     3,    41,     0
+       0,     3,     4,     9,    41,    42,    43,    44,    50,    56,
+       8,    51,    53,     8,     3,     0,    42,     8,    12,    18,
+      22,    51,    52,    10,    11,    18,     8,    45,    46,     6,
+       8,    13,    14,    18,    20,    32,    54,    63,    65,    68,
+      69,    71,    72,     3,    19,    57,    58,    72,    77,    22,
+      12,    53,    19,    57,    12,    22,    47,    10,    11,    18,
+      22,    66,    67,    69,    69,    63,    21,    54,    55,    69,
+      15,    16,    17,    13,    14,     8,    20,    59,    10,    19,
+      23,    77,    54,    59,    19,    20,    48,    77,    77,    12,
+      22,    46,    19,    63,    70,    63,    22,    19,    10,    21,
+      69,    69,    69,    71,    71,    22,     3,    11,    21,    33,
+      35,    36,    37,    38,    43,    59,    60,    61,    62,    63,
+      65,    58,    59,    23,    59,    21,    48,    49,    23,    48,
+      77,    10,    19,    23,    63,    54,    23,    18,    18,    11,
+      11,    11,    63,    21,    61,    11,    12,    10,    21,    23,
+      63,    23,    67,    64,    72,    73,    74,    75,    76,    64,
+      11,    63,    48,    19,    24,    25,    26,    27,    28,    29,
+      30,    31,    19,    11,    62,    72,    72,    72,    72,    73,
+      73,    74,    75,    62,    34,    62
 };
 
   /* YYR1[YYN] -- Symbol number of symbol that rule YYN derives.  */
 static const yytype_int8 yyr1[] =
 {
-       0,    40,    41
+       0,    40,    41,    41,    42,    42,    43,    43,    44,    45,
+      45,    46,    46,    47,    47,    48,    48,    48,    49,    49,
+      50,    51,    51,    52,    52,    53,    53,    53,    53,    54,
+      54,    54,    55,    55,    56,    56,    56,    56,    57,    57,
+      58,    58,    58,    59,    59,    60,    60,    61,    61,    62,
+      62,    62,    62,    62,    62,    62,    62,    62,    62,    62,
+      63,    64,    66,    65,    65,    67,    67,    68,    68,    68,
+      69,    69,    69,    69,    69,    69,    70,    70,    71,    71,
+      71,    71,    72,    72,    72,    73,    73,    73,    73,    73,
+      74,    74,    74,    75,    75,    76,    76,    77
 };
 
   /* YYR2[YYN] -- Number of symbols on the right hand side of rule YYN.  */
 static const yytype_int8 yyr2[] =
 {
-       0,     2,     1
+       0,     2,     2,     1,     1,     1,     1,     1,     4,     3,
+       1,     3,     4,     3,     4,     1,     2,     3,     1,     3,
+       3,     1,     3,     3,     4,     1,     3,     2,     4,     1,
+       2,     3,     1,     3,     5,     6,     5,     6,     1,     3,
+       2,     4,     5,     2,     3,     1,     2,     1,     1,     4,
+       2,     1,     1,     5,     7,     5,     2,     2,     3,     2,
+       1,     1,     0,     2,     2,     3,     4,     3,     1,     1,
+       1,     3,     4,     2,     2,     2,     1,     3,     1,     3,
+       3,     3,     1,     3,     3,     1,     3,     3,     3,     3,
+       1,     3,     3,     1,     3,     1,     3,     1
 };
 
 
@@ -1111,14 +1290,584 @@ yyreduce:
   YY_REDUCE_PRINT (yyn);
   switch (yyn)
     {
-  case 2: /* CompUnits: tok_int  */
-#line 38 "./src/parser.y"
-                   {}
-#line 1118 "parser.cpp"
+  case 2: /* CompUnits: CompUnits CompUnit  */
+#line 39 "./src/parser.y"
+                              {}
+#line 1297 "parser.cpp"
+    break;
+
+  case 3: /* CompUnits: CompUnit  */
+#line 40 "./src/parser.y"
+                    {}
+#line 1303 "parser.cpp"
+    break;
+
+  case 4: /* CompUnit: Decl  */
+#line 43 "./src/parser.y"
+               {}
+#line 1309 "parser.cpp"
+    break;
+
+  case 5: /* CompUnit: FuncDef  */
+#line 44 "./src/parser.y"
+                  {}
+#line 1315 "parser.cpp"
+    break;
+
+  case 6: /* Decl: ConstDecl  */
+#line 47 "./src/parser.y"
+                {}
+#line 1321 "parser.cpp"
+    break;
+
+  case 7: /* Decl: VarDecl  */
+#line 48 "./src/parser.y"
+              {}
+#line 1327 "parser.cpp"
+    break;
+
+  case 8: /* ConstDecl: tok_const tok_int ConstDecls tok_semicolon  */
+#line 51 "./src/parser.y"
+                                                     {}
+#line 1333 "parser.cpp"
+    break;
+
+  case 9: /* ConstDecls: ConstDecls tok_comma ConstDef  */
+#line 53 "./src/parser.y"
+                                          {}
+#line 1339 "parser.cpp"
+    break;
+
+  case 10: /* ConstDecls: ConstDef  */
+#line 54 "./src/parser.y"
+                     {}
+#line 1345 "parser.cpp"
+    break;
+
+  case 11: /* ConstDef: tok_identifier tok_assign ConstInitVal  */
+#line 57 "./src/parser.y"
+                                                 {}
+#line 1351 "parser.cpp"
+    break;
+
+  case 12: /* ConstDef: tok_identifier ConstSelector tok_assign ConstInitVal  */
+#line 58 "./src/parser.y"
+                                                               {}
+#line 1357 "parser.cpp"
+    break;
+
+  case 13: /* ConstSelector: tok_lbracket ConstExp tok_rbracket  */
+#line 61 "./src/parser.y"
+                                                  {}
+#line 1363 "parser.cpp"
+    break;
+
+  case 14: /* ConstSelector: ConstSelector tok_lbracket ConstExp tok_rbracket  */
+#line 62 "./src/parser.y"
+                                                                {}
+#line 1369 "parser.cpp"
+    break;
+
+  case 15: /* ConstInitVal: ConstExp  */
+#line 65 "./src/parser.y"
+                       {}
+#line 1375 "parser.cpp"
+    break;
+
+  case 16: /* ConstInitVal: tok_lbrace tok_rbrace  */
+#line 66 "./src/parser.y"
+                                    {}
+#line 1381 "parser.cpp"
+    break;
+
+  case 17: /* ConstInitVal: tok_lbrace ConstInits tok_rbrace  */
+#line 67 "./src/parser.y"
+                                               {}
+#line 1387 "parser.cpp"
+    break;
+
+  case 18: /* ConstInits: ConstInitVal  */
+#line 70 "./src/parser.y"
+                         {}
+#line 1393 "parser.cpp"
+    break;
+
+  case 19: /* ConstInits: ConstInits tok_comma ConstInitVal  */
+#line 71 "./src/parser.y"
+                                              {}
+#line 1399 "parser.cpp"
+    break;
+
+  case 20: /* VarDecl: tok_int VarDecls tok_semicolon  */
+#line 74 "./src/parser.y"
+                                       {}
+#line 1405 "parser.cpp"
+    break;
+
+  case 21: /* VarDecls: VarDef  */
+#line 76 "./src/parser.y"
+                 {}
+#line 1411 "parser.cpp"
+    break;
+
+  case 22: /* VarDecls: VarDecls tok_comma VarDef  */
+#line 77 "./src/parser.y"
+                                    {}
+#line 1417 "parser.cpp"
+    break;
+
+  case 23: /* VarDefs: tok_lbracket ConstExp tok_rbracket  */
+#line 80 "./src/parser.y"
+                                            {}
+#line 1423 "parser.cpp"
+    break;
+
+  case 24: /* VarDefs: VarDecls tok_lbracket ConstExp tok_rbracket  */
+#line 81 "./src/parser.y"
+                                                      {}
+#line 1429 "parser.cpp"
+    break;
+
+  case 25: /* VarDef: tok_identifier  */
+#line 84 "./src/parser.y"
+                       {}
+#line 1435 "parser.cpp"
+    break;
+
+  case 26: /* VarDef: tok_identifier tok_assign InitVal  */
+#line 85 "./src/parser.y"
+                                          {}
+#line 1441 "parser.cpp"
+    break;
+
+  case 27: /* VarDef: tok_identifier VarDefs  */
+#line 86 "./src/parser.y"
+                               {}
+#line 1447 "parser.cpp"
+    break;
+
+  case 28: /* VarDef: tok_identifier VarDefs tok_assign InitVal  */
+#line 87 "./src/parser.y"
+                                                  {}
+#line 1453 "parser.cpp"
+    break;
+
+  case 29: /* InitVal: Exp  */
+#line 90 "./src/parser.y"
+             {}
+#line 1459 "parser.cpp"
+    break;
+
+  case 30: /* InitVal: tok_lbrace tok_rbrace  */
+#line 91 "./src/parser.y"
+                               {}
+#line 1465 "parser.cpp"
+    break;
+
+  case 31: /* InitVal: tok_lbrace Inits tok_rbrace  */
+#line 92 "./src/parser.y"
+                                     {}
+#line 1471 "parser.cpp"
+    break;
+
+  case 32: /* Inits: InitVal  */
+#line 95 "./src/parser.y"
+               {}
+#line 1477 "parser.cpp"
+    break;
+
+  case 33: /* Inits: Inits tok_comma InitVal  */
+#line 96 "./src/parser.y"
+                               {}
+#line 1483 "parser.cpp"
+    break;
+
+  case 34: /* FuncDef: tok_int tok_identifier tok_lparen tok_rparen Block  */
+#line 99 "./src/parser.y"
+                                                            {}
+#line 1489 "parser.cpp"
+    break;
+
+  case 35: /* FuncDef: tok_int tok_identifier tok_lparen Params tok_rparen Block  */
+#line 100 "./src/parser.y"
+                                                                   {}
+#line 1495 "parser.cpp"
+    break;
+
+  case 36: /* FuncDef: tok_void tok_identifier tok_lparen tok_rparen Block  */
+#line 101 "./src/parser.y"
+                                                             {}
+#line 1501 "parser.cpp"
+    break;
+
+  case 37: /* FuncDef: tok_void tok_identifier tok_lparen Params tok_rparen Block  */
+#line 102 "./src/parser.y"
+                                                                    {}
+#line 1507 "parser.cpp"
+    break;
+
+  case 38: /* Params: Param  */
+#line 105 "./src/parser.y"
+              {}
+#line 1513 "parser.cpp"
+    break;
+
+  case 39: /* Params: Params tok_comma Param  */
+#line 106 "./src/parser.y"
+                               {}
+#line 1519 "parser.cpp"
+    break;
+
+  case 40: /* Param: tok_int tok_identifier  */
+#line 109 "./src/parser.y"
+                              {}
+#line 1525 "parser.cpp"
+    break;
+
+  case 41: /* Param: tok_int tok_identifier tok_lbracket tok_rbracket  */
+#line 110 "./src/parser.y"
+                                                        {}
+#line 1531 "parser.cpp"
+    break;
+
+  case 42: /* Param: tok_int tok_identifier tok_lbracket tok_rbracket LVals  */
+#line 111 "./src/parser.y"
+                                                              {}
+#line 1537 "parser.cpp"
+    break;
+
+  case 43: /* Block: tok_lbrace tok_rbrace  */
+#line 114 "./src/parser.y"
+                             {}
+#line 1543 "parser.cpp"
+    break;
+
+  case 44: /* Block: tok_lbrace BlockItems tok_rbrace  */
+#line 115 "./src/parser.y"
+                                        {}
+#line 1549 "parser.cpp"
+    break;
+
+  case 45: /* BlockItems: BlockItem  */
+#line 118 "./src/parser.y"
+                      {}
+#line 1555 "parser.cpp"
+    break;
+
+  case 46: /* BlockItems: BlockItems BlockItem  */
+#line 119 "./src/parser.y"
+                                 {}
+#line 1561 "parser.cpp"
+    break;
+
+  case 47: /* BlockItem: Decl  */
+#line 122 "./src/parser.y"
+                {}
+#line 1567 "parser.cpp"
+    break;
+
+  case 48: /* BlockItem: Stmt  */
+#line 123 "./src/parser.y"
+                {}
+#line 1573 "parser.cpp"
+    break;
+
+  case 49: /* Stmt: LVal tok_assign Exp tok_semicolon  */
+#line 126 "./src/parser.y"
+                                        {}
+#line 1579 "parser.cpp"
+    break;
+
+  case 50: /* Stmt: Exp tok_semicolon  */
+#line 127 "./src/parser.y"
+                        {}
+#line 1585 "parser.cpp"
+    break;
+
+  case 51: /* Stmt: tok_semicolon  */
+#line 128 "./src/parser.y"
+                    {}
+#line 1591 "parser.cpp"
+    break;
+
+  case 52: /* Stmt: Block  */
+#line 129 "./src/parser.y"
+            {}
+#line 1597 "parser.cpp"
+    break;
+
+  case 53: /* Stmt: tok_if tok_lparen Cond tok_rparen Stmt  */
+#line 130 "./src/parser.y"
+                                             {}
+#line 1603 "parser.cpp"
+    break;
+
+  case 54: /* Stmt: tok_if tok_lparen Cond tok_rparen Stmt tok_else Stmt  */
+#line 131 "./src/parser.y"
+                                                           {}
+#line 1609 "parser.cpp"
+    break;
+
+  case 55: /* Stmt: tok_while tok_lparen Cond tok_rparen Stmt  */
+#line 132 "./src/parser.y"
+                                                {}
+#line 1615 "parser.cpp"
+    break;
+
+  case 56: /* Stmt: tok_break tok_semicolon  */
+#line 133 "./src/parser.y"
+                              {}
+#line 1621 "parser.cpp"
+    break;
+
+  case 57: /* Stmt: tok_continue tok_semicolon  */
+#line 134 "./src/parser.y"
+                                 {}
+#line 1627 "parser.cpp"
+    break;
+
+  case 58: /* Stmt: tok_return Exp tok_semicolon  */
+#line 135 "./src/parser.y"
+                                   {}
+#line 1633 "parser.cpp"
+    break;
+
+  case 59: /* Stmt: tok_return tok_semicolon  */
+#line 136 "./src/parser.y"
+                               {}
+#line 1639 "parser.cpp"
+    break;
+
+  case 60: /* Exp: AddExp  */
+#line 139 "./src/parser.y"
+            {}
+#line 1645 "parser.cpp"
+    break;
+
+  case 61: /* Cond: LOrExp  */
+#line 141 "./src/parser.y"
+             {}
+#line 1651 "parser.cpp"
+    break;
+
+  case 62: /* $@1: %empty  */
+#line 143 "./src/parser.y"
+                     {}
+#line 1657 "parser.cpp"
+    break;
+
+  case 63: /* LVal: tok_identifier $@1  */
+#line 143 "./src/parser.y"
+                        {}
+#line 1663 "parser.cpp"
+    break;
+
+  case 64: /* LVal: tok_identifier LVals  */
+#line 144 "./src/parser.y"
+                           {}
+#line 1669 "parser.cpp"
+    break;
+
+  case 65: /* LVals: tok_lbracket Exp tok_rbracket  */
+#line 146 "./src/parser.y"
+                                     {}
+#line 1675 "parser.cpp"
+    break;
+
+  case 66: /* LVals: LVals tok_lbracket Exp tok_rbracket  */
+#line 147 "./src/parser.y"
+                                           {}
+#line 1681 "parser.cpp"
+    break;
+
+  case 67: /* PrimaryExp: tok_lparen Exp tok_rparen  */
+#line 150 "./src/parser.y"
+                                      {}
+#line 1687 "parser.cpp"
+    break;
+
+  case 68: /* PrimaryExp: LVal  */
+#line 151 "./src/parser.y"
+                 {}
+#line 1693 "parser.cpp"
+    break;
+
+  case 69: /* PrimaryExp: tok_number  */
+#line 152 "./src/parser.y"
+                       {}
+#line 1699 "parser.cpp"
+    break;
+
+  case 70: /* UnaryExp: PrimaryExp  */
+#line 154 "./src/parser.y"
+                     {}
+#line 1705 "parser.cpp"
+    break;
+
+  case 71: /* UnaryExp: tok_identifier tok_lparen tok_rparen  */
+#line 155 "./src/parser.y"
+                                               {}
+#line 1711 "parser.cpp"
+    break;
+
+  case 72: /* UnaryExp: tok_identifier tok_lparen Args tok_rparen  */
+#line 156 "./src/parser.y"
+                                                    {}
+#line 1717 "parser.cpp"
+    break;
+
+  case 73: /* UnaryExp: tok_plus UnaryExp  */
+#line 157 "./src/parser.y"
+                            {}
+#line 1723 "parser.cpp"
+    break;
+
+  case 74: /* UnaryExp: tok_minus UnaryExp  */
+#line 158 "./src/parser.y"
+                             {}
+#line 1729 "parser.cpp"
+    break;
+
+  case 75: /* UnaryExp: tok_not UnaryExp  */
+#line 159 "./src/parser.y"
+                           {}
+#line 1735 "parser.cpp"
+    break;
+
+  case 76: /* Args: Exp  */
+#line 162 "./src/parser.y"
+          {}
+#line 1741 "parser.cpp"
+    break;
+
+  case 77: /* Args: Args tok_comma Exp  */
+#line 163 "./src/parser.y"
+                         {}
+#line 1747 "parser.cpp"
+    break;
+
+  case 78: /* MulExp: UnaryExp  */
+#line 166 "./src/parser.y"
+                 {}
+#line 1753 "parser.cpp"
+    break;
+
+  case 79: /* MulExp: MulExp tok_star UnaryExp  */
+#line 167 "./src/parser.y"
+                                 {}
+#line 1759 "parser.cpp"
+    break;
+
+  case 80: /* MulExp: MulExp tok_slash UnaryExp  */
+#line 168 "./src/parser.y"
+                                  {}
+#line 1765 "parser.cpp"
+    break;
+
+  case 81: /* MulExp: MulExp tok_mod UnaryExp  */
+#line 169 "./src/parser.y"
+                                {}
+#line 1771 "parser.cpp"
+    break;
+
+  case 82: /* AddExp: MulExp  */
+#line 172 "./src/parser.y"
+               {}
+#line 1777 "parser.cpp"
+    break;
+
+  case 83: /* AddExp: AddExp tok_plus MulExp  */
+#line 173 "./src/parser.y"
+                               {}
+#line 1783 "parser.cpp"
+    break;
+
+  case 84: /* AddExp: AddExp tok_minus MulExp  */
+#line 174 "./src/parser.y"
+                                {}
+#line 1789 "parser.cpp"
+    break;
+
+  case 85: /* RelExp: AddExp  */
+#line 177 "./src/parser.y"
+               {}
+#line 1795 "parser.cpp"
+    break;
+
+  case 86: /* RelExp: RelExp tok_lt AddExp  */
+#line 178 "./src/parser.y"
+                             {}
+#line 1801 "parser.cpp"
+    break;
+
+  case 87: /* RelExp: RelExp tok_gt AddExp  */
+#line 179 "./src/parser.y"
+                             {}
+#line 1807 "parser.cpp"
+    break;
+
+  case 88: /* RelExp: RelExp tok_le AddExp  */
+#line 180 "./src/parser.y"
+                             {}
+#line 1813 "parser.cpp"
+    break;
+
+  case 89: /* RelExp: RelExp tok_ge AddExp  */
+#line 181 "./src/parser.y"
+                             {}
+#line 1819 "parser.cpp"
+    break;
+
+  case 90: /* EqExp: RelExp  */
+#line 184 "./src/parser.y"
+              {}
+#line 1825 "parser.cpp"
+    break;
+
+  case 91: /* EqExp: EqExp tok_eq RelExp  */
+#line 185 "./src/parser.y"
+                           {}
+#line 1831 "parser.cpp"
+    break;
+
+  case 92: /* EqExp: EqExp tok_ne RelExp  */
+#line 186 "./src/parser.y"
+                           {}
+#line 1837 "parser.cpp"
+    break;
+
+  case 93: /* LAndExp: EqExp  */
+#line 189 "./src/parser.y"
+               {}
+#line 1843 "parser.cpp"
+    break;
+
+  case 94: /* LAndExp: LAndExp tok_and EqExp  */
+#line 190 "./src/parser.y"
+                               {}
+#line 1849 "parser.cpp"
+    break;
+
+  case 95: /* LOrExp: LAndExp  */
+#line 193 "./src/parser.y"
+                {}
+#line 1855 "parser.cpp"
+    break;
+
+  case 96: /* LOrExp: LOrExp tok_or LAndExp  */
+#line 194 "./src/parser.y"
+                              {}
+#line 1861 "parser.cpp"
+    break;
+
+  case 97: /* ConstExp: AddExp  */
+#line 197 "./src/parser.y"
+                 {}
+#line 1867 "parser.cpp"
     break;
 
 
-#line 1122 "parser.cpp"
+#line 1871 "parser.cpp"
 
       default: break;
     }
@@ -1312,4 +2061,4 @@ yyreturn:
   return yyresult;
 }
 
-#line 39 "./src/parser.y"
+#line 199 "./src/parser.y"

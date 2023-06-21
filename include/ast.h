@@ -4,6 +4,9 @@
 class AST {
     public:
         virtual ~AST() = default;
+        virtual void print();
+        // code-gen  
+        virtual void eval();
 };
 
 class CompUnit : public AST {
