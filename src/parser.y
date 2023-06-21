@@ -13,7 +13,6 @@
 
 %output "parser.cpp"
 %defines "token.h"
-%left tok_lbrace
 
 %union {
     int intVal;
@@ -30,48 +29,126 @@
 %token tok_if tok_else tok_while tok_break tok_continue tok_return
 %token tok_unknown
 
-%type <ast> CompUnits CompUnit Decl FuncDef ConstDecl VarDecl ConstDecls ConstDef ConstSelector ConstInitVal ConstInits VarDecls VarDef InitVal Inits Params Param Block BlockItems BlockItem Stmt Exp Cond LVal LVals PrimaryExp UnaryExp Args MulExp AddExp RelExp EqExp LAndExp LOrExp ConstExp
+%type <ast> CompUnits CompUnit Decl FuncDef ConstDecl VarDecl ConstDefs ConstDef ConstSelector ConstInitVal ConstInits VarDecls VarDef InitVal Inits Params Param Block BlockItems BlockItem Stmt Exp Cond LVal LVals PrimaryExp UnaryExp Args MulExp AddExp RelExp EqExp LAndExp LOrExp ConstExp
 
 %start CompUnits
 
 %%
 
-CompUnits: CompUnits CompUnit {}
-         | CompUnit {}
-         ;
+CompUnits: 
+CompUnits CompUnit {
+    auto tmp = (CompUnit*) $1;
+    tmp->add_comp_unit((AST*) $2);
+    $$ = (void*)tmp;
+}
+| CompUnit {
+    auto tmp = new CompUnit();
+    tmp->add_comp_unit((AST*) $1);
+    $$ = (void*)tmp;
+}
+;
 
-CompUnit: Decl {}
-        | FuncDef {}
-        ;
+CompUnit: 
+Decl {
+    auto tmp = new CompUnit();
+    tmp->add_comp_unit((AST*) $1);
+    $$ = (void*)tmp;
+}
+| FuncDef {
+    auto tmp = new CompUnit();
+    tmp->add_comp_unit((AST*) $1);
+    $$ = (void*)tmp;
+}
+;
 
-Decl: ConstDecl {}
-    | VarDecl {}
-    ;
+Decl: ConstDecl {
+    auto tmp = (ConstDecl*) $1;
+    auto ret = new Decl(tmp);
+    $$ = (void*)ret;
+}
+| VarDecl {
+    auto tmp = (VarDecl*) $1;
+    auto ret = new Decl(tmp);
+    $$ = (void*)ret;
+}
+;
 
-ConstDecl: tok_const tok_int ConstDecls tok_semicolon{};
+ConstDecl: 
+tok_const tok_int ConstDefs tok_semicolon {
+    auto tmp = (ConstDefs*) $3;
+    auto ret = new ConstDecl(tmp);
+    $$ = (void*) ret;
+};
 
-ConstDecls: ConstDecls tok_comma ConstDef {}
-          | ConstDef {}
-          ;
+ConstDefs: 
+ConstDef {
+    auto tmp = new ConstDefs();
+    tmp->add_const((AST*) $1);
+    $$ = (void*)tmp;
+}
+| ConstDefs tok_comma ConstDef {
+    auto tmp = (ConstDefs*) $1;
+    tmp->add_const((AST*) $3);
+    $$ = (void*)tmp;
+}
+;
 
-ConstDef: tok_identifier tok_assign ConstInitVal {}
-        | tok_identifier ConstSelector tok_assign ConstInitVal {}
-        ;
+ConstDef: 
+tok_identifier tok_assign ConstInitVal {}
+| tok_identifier ConstSelector tok_assign ConstInitVal {}
+;
 
-ConstSelector: tok_lbracket ConstExp tok_rbracket {}
-             | ConstSelector tok_lbracket ConstExp tok_rbracket {}
-             ;
+ConstSelector: 
+tok_lbracket ConstExp tok_rbracket {
+    auto tmp = (AST*) $2;
+    auto ret = new ConstSelector();
+    ret->add_selector(tmp);
+    $$ = (void*)ret;
+}
+| ConstSelector tok_lbracket ConstExp tok_rbracket {
+    auto tmp = (ConstSelector*) $1;
+    tmp->add_selector((AST*) $3);
+    $$ = (void*)tmp;
+}
+;
 
-ConstInitVal: ConstExp {}
-            | tok_lbrace tok_rbrace {}
-            | tok_lbrace ConstInits tok_rbrace {}
-            ;
+ConstInitVal: 
+ConstExp {
+    auto tmp = new ConstInitVal();
+    tmp->add_const_val((AST*) $1);
+    $$ = (void*) tmp;
+}
+| tok_lbrace tok_rbrace {
+    auto tmp = new ConstInitVal();
+    $$ = (void*) tmp;
+}
+| tok_lbrace ConstInits tok_rbrace {
+    auto& l = ((ConstInits*) $2)->get_const_vals();
+    auto tmp = new ConstInitVal();
+    for (auto i : l) {
+        tmp->add_const_val(i);
+    }
+    l.clear();
+    delete $2;
+    $$ = (void*) tmp;
+}
+;
 
-ConstInits: ConstInitVal {}
-          | ConstInits tok_comma ConstInitVal {}
-          ;
+ConstInits: ConstInitVal {
+    auto tmp = new ConstInits();
+    tmp->add_const_val((AST*) $1);
+    $$ = (void*) tmp;
+}
+| ConstInits tok_comma ConstInitVal {
+    auto tmp = (ConstInits*) $1;
+    tmp->add_const_val((AST*) $3);
+    $$ = (void*) tmp;
+}
+;
 
-VarDecl: tok_int VarDecls tok_semicolon{};
+VarDecl: tok_int VarDecls tok_semicolon{
+    
+};
 
 VarDecls: VarDef {}
         | VarDecls tok_comma VarDef {}

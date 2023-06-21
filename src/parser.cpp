@@ -153,7 +153,7 @@ enum yysymbol_kind_t
   YYSYMBOL_CompUnit = 42,                  /* CompUnit  */
   YYSYMBOL_Decl = 43,                      /* Decl  */
   YYSYMBOL_ConstDecl = 44,                 /* ConstDecl  */
-  YYSYMBOL_ConstDecls = 45,                /* ConstDecls  */
+  YYSYMBOL_ConstDefs = 45,                 /* ConstDefs  */
   YYSYMBOL_ConstDef = 46,                  /* ConstDef  */
   YYSYMBOL_ConstSelector = 47,             /* ConstSelector  */
   YYSYMBOL_ConstInitVal = 48,              /* ConstInitVal  */
@@ -569,16 +569,16 @@ static const yytype_int8 yytranslate[] =
   /* YYRLINE[YYN] -- Source line where rule number YYN was defined.  */
 static const yytype_uint8 yyrline[] =
 {
-       0,    39,    39,    40,    43,    44,    47,    48,    51,    53,
-      54,    57,    58,    61,    62,    65,    66,    67,    70,    71,
-      74,    76,    77,    80,    81,    84,    85,    86,    87,    90,
-      91,    92,    95,    96,    99,   100,   101,   102,   105,   106,
-     109,   110,   111,   114,   115,   118,   119,   122,   123,   126,
-     127,   128,   129,   130,   131,   132,   133,   134,   135,   136,
-     139,   141,   143,   143,   144,   146,   147,   150,   151,   152,
-     154,   155,   156,   157,   158,   159,   162,   163,   166,   167,
-     168,   169,   172,   173,   174,   177,   178,   179,   180,   181,
-     184,   185,   186,   189,   190,   193,   194,   197
+       0,    39,    39,    44,    52,    57,    64,    69,    77,    84,
+      89,    97,    98,   102,   108,   115,   116,   117,   120,   121,
+     124,   126,   127,   130,   131,   134,   135,   136,   137,   140,
+     141,   142,   145,   146,   149,   150,   151,   152,   155,   156,
+     159,   160,   161,   164,   165,   168,   169,   172,   173,   176,
+     177,   178,   179,   180,   181,   182,   183,   184,   185,   186,
+     189,   191,   193,   193,   194,   196,   197,   200,   201,   202,
+     204,   205,   206,   207,   208,   209,   212,   213,   216,   217,
+     218,   219,   222,   223,   224,   227,   228,   229,   230,   231,
+     234,   235,   236,   239,   240,   243,   244,   247
 };
 #endif
 
@@ -602,7 +602,7 @@ static const char *const yytname[] =
   "tok_lt", "tok_gt", "tok_le", "tok_ge", "tok_eq", "tok_ne", "tok_and",
   "tok_or", "tok_not", "tok_if", "tok_else", "tok_while", "tok_break",
   "tok_continue", "tok_return", "tok_unknown", "$accept", "CompUnits",
-  "CompUnit", "Decl", "ConstDecl", "ConstDecls", "ConstDef",
+  "CompUnit", "Decl", "ConstDecl", "ConstDefs", "ConstDef",
   "ConstSelector", "ConstInitVal", "ConstInits", "VarDecl", "VarDecls",
   "VarDefs", "VarDef", "InitVal", "Inits", "FuncDef", "Params", "Param",
   "Block", "BlockItems", "BlockItem", "Stmt", "Exp", "Cond", "LVal", "$@1",
@@ -671,14 +671,14 @@ static const yytype_int8 yydefact[] =
 {
        0,     0,     0,     0,     0,     3,     4,     6,     7,     5,
       25,     0,    21,     0,     0,     1,     2,    25,     0,     0,
-       0,     0,    27,     0,    20,     0,     0,     0,    10,    69,
+       0,     0,    27,     0,    20,     0,     0,     0,     9,    69,
       62,     0,     0,     0,     0,     0,    26,    29,    68,    70,
       78,    82,    60,     0,     0,     0,    38,    97,     0,     0,
        0,    22,     0,     0,     0,     0,     0,     0,     8,     0,
        0,    63,    64,    73,    74,     0,    30,    32,     0,    75,
        0,     0,     0,     0,     0,    40,     0,    34,     0,     0,
       23,     0,    28,    36,     0,     0,    11,    15,     0,     0,
-       0,     9,    71,    76,     0,     0,     0,    67,     0,    31,
+       0,    10,    71,    76,     0,     0,     0,    67,     0,    31,
       79,    80,    81,    83,    84,     0,     0,    51,    43,     0,
        0,     0,     0,     0,    47,    52,     0,    45,    48,     0,
       68,    39,    35,    24,    37,    16,    18,     0,    13,    12,
@@ -814,8 +814,8 @@ static const yytype_int8 yyr1[] =
   /* YYR2[YYN] -- Number of symbols on the right hand side of rule YYN.  */
 static const yytype_int8 yyr2[] =
 {
-       0,     2,     2,     1,     1,     1,     1,     1,     4,     3,
-       1,     3,     4,     3,     4,     1,     2,     3,     1,     3,
+       0,     2,     2,     1,     1,     1,     1,     1,     4,     1,
+       3,     3,     4,     3,     4,     1,     2,     3,     1,     3,
        3,     1,     3,     3,     4,     1,     3,     2,     4,     1,
        2,     3,     1,     3,     5,     6,     5,     6,     1,     3,
        2,     4,     5,     2,     3,     1,     2,     1,     1,     4,
@@ -1292,582 +1292,627 @@ yyreduce:
     {
   case 2: /* CompUnits: CompUnits CompUnit  */
 #line 39 "./src/parser.y"
-                              {}
-#line 1297 "parser.cpp"
+                   {
+    auto tmp = (CompUnit*) (yyvsp[-1].ast);
+    tmp->add_comp_unit((AST*) (yyvsp[0].ast));
+    (yyval.ast) = (void*)tmp;
+}
+#line 1301 "parser.cpp"
     break;
 
   case 3: /* CompUnits: CompUnit  */
-#line 40 "./src/parser.y"
-                    {}
-#line 1303 "parser.cpp"
+#line 44 "./src/parser.y"
+           {
+    auto tmp = new CompUnit();
+    tmp->add_comp_unit((AST*) (yyvsp[0].ast));
+    (yyval.ast) = (void*)tmp;
+}
+#line 1311 "parser.cpp"
     break;
 
   case 4: /* CompUnit: Decl  */
-#line 43 "./src/parser.y"
-               {}
-#line 1309 "parser.cpp"
-    break;
-
-  case 5: /* CompUnit: FuncDef  */
-#line 44 "./src/parser.y"
-                  {}
-#line 1315 "parser.cpp"
-    break;
-
-  case 6: /* Decl: ConstDecl  */
-#line 47 "./src/parser.y"
-                {}
+#line 52 "./src/parser.y"
+     {
+    auto tmp = new CompUnit();
+    tmp->add_comp_unit((AST*) (yyvsp[0].ast));
+    (yyval.ast) = (void*)tmp;
+}
 #line 1321 "parser.cpp"
     break;
 
-  case 7: /* Decl: VarDecl  */
-#line 48 "./src/parser.y"
-              {}
-#line 1327 "parser.cpp"
-    break;
-
-  case 8: /* ConstDecl: tok_const tok_int ConstDecls tok_semicolon  */
-#line 51 "./src/parser.y"
-                                                     {}
-#line 1333 "parser.cpp"
-    break;
-
-  case 9: /* ConstDecls: ConstDecls tok_comma ConstDef  */
-#line 53 "./src/parser.y"
-                                          {}
-#line 1339 "parser.cpp"
-    break;
-
-  case 10: /* ConstDecls: ConstDef  */
-#line 54 "./src/parser.y"
-                     {}
-#line 1345 "parser.cpp"
-    break;
-
-  case 11: /* ConstDef: tok_identifier tok_assign ConstInitVal  */
+  case 5: /* CompUnit: FuncDef  */
 #line 57 "./src/parser.y"
-                                                 {}
+          {
+    auto tmp = new CompUnit();
+    tmp->add_comp_unit((AST*) (yyvsp[0].ast));
+    (yyval.ast) = (void*)tmp;
+}
+#line 1331 "parser.cpp"
+    break;
+
+  case 6: /* Decl: ConstDecl  */
+#line 64 "./src/parser.y"
+                {
+    auto tmp = (ConstDecl*) (yyvsp[0].ast);
+    auto ret = new Decl(tmp);
+    (yyval.ast) = (void*)ret;
+}
+#line 1341 "parser.cpp"
+    break;
+
+  case 7: /* Decl: VarDecl  */
+#line 69 "./src/parser.y"
+          {
+    auto tmp = (VarDecl*) (yyvsp[0].ast);
+    auto ret = new Decl(tmp);
+    (yyval.ast) = (void*)ret;
+}
 #line 1351 "parser.cpp"
     break;
 
-  case 12: /* ConstDef: tok_identifier ConstSelector tok_assign ConstInitVal  */
-#line 58 "./src/parser.y"
-                                                               {}
-#line 1357 "parser.cpp"
+  case 8: /* ConstDecl: tok_const tok_int ConstDefs tok_semicolon  */
+#line 77 "./src/parser.y"
+                                          {
+    auto tmp = (ConstDefs*) (yyvsp[-1].ast);
+    auto ret = new ConstDecl(tmp);
+    (yyval.ast) = (void*) ret;
+}
+#line 1361 "parser.cpp"
     break;
 
-  case 13: /* ConstSelector: tok_lbracket ConstExp tok_rbracket  */
-#line 61 "./src/parser.y"
-                                                  {}
-#line 1363 "parser.cpp"
+  case 9: /* ConstDefs: ConstDef  */
+#line 84 "./src/parser.y"
+         {
+    auto tmp = new ConstDefs();
+    tmp->add_const((AST*) (yyvsp[0].ast));
+    (yyval.ast) = (void*)tmp;
+}
+#line 1371 "parser.cpp"
     break;
 
-  case 14: /* ConstSelector: ConstSelector tok_lbracket ConstExp tok_rbracket  */
-#line 62 "./src/parser.y"
-                                                                {}
-#line 1369 "parser.cpp"
-    break;
-
-  case 15: /* ConstInitVal: ConstExp  */
-#line 65 "./src/parser.y"
-                       {}
-#line 1375 "parser.cpp"
-    break;
-
-  case 16: /* ConstInitVal: tok_lbrace tok_rbrace  */
-#line 66 "./src/parser.y"
-                                    {}
+  case 10: /* ConstDefs: ConstDefs tok_comma ConstDef  */
+#line 89 "./src/parser.y"
+                               {
+    auto tmp = (ConstDefs*) (yyvsp[-2].ast);
+    tmp->add_const((AST*) (yyvsp[0].ast));
+    (yyval.ast) = (void*)tmp;
+}
 #line 1381 "parser.cpp"
     break;
 
-  case 17: /* ConstInitVal: tok_lbrace ConstInits tok_rbrace  */
-#line 67 "./src/parser.y"
-                                               {}
+  case 11: /* ConstDef: tok_identifier tok_assign ConstInitVal  */
+#line 97 "./src/parser.y"
+                                       {}
 #line 1387 "parser.cpp"
     break;
 
-  case 18: /* ConstInits: ConstInitVal  */
-#line 70 "./src/parser.y"
-                         {}
+  case 12: /* ConstDef: tok_identifier ConstSelector tok_assign ConstInitVal  */
+#line 98 "./src/parser.y"
+                                                       {}
 #line 1393 "parser.cpp"
     break;
 
+  case 13: /* ConstSelector: tok_lbracket ConstExp tok_rbracket  */
+#line 102 "./src/parser.y"
+                                   {
+    auto tmp = (AST*) (yyvsp[-1].ast);
+    auto ret = new ConstSelector();
+    ret->add_selector(tmp);
+    (yyval.ast) = (void*)ret;
+}
+#line 1404 "parser.cpp"
+    break;
+
+  case 14: /* ConstSelector: ConstSelector tok_lbracket ConstExp tok_rbracket  */
+#line 108 "./src/parser.y"
+                                                   {
+    auto tmp = (ConstSelector*) (yyvsp[-3].ast);
+    tmp->add_selector((AST*) (yyvsp[-1].ast));
+    (yyval.ast) = (void*)tmp;
+}
+#line 1414 "parser.cpp"
+    break;
+
+  case 15: /* ConstInitVal: ConstExp  */
+#line 115 "./src/parser.y"
+                       {}
+#line 1420 "parser.cpp"
+    break;
+
+  case 16: /* ConstInitVal: tok_lbrace tok_rbrace  */
+#line 116 "./src/parser.y"
+                                    {}
+#line 1426 "parser.cpp"
+    break;
+
+  case 17: /* ConstInitVal: tok_lbrace ConstInits tok_rbrace  */
+#line 117 "./src/parser.y"
+                                               {}
+#line 1432 "parser.cpp"
+    break;
+
+  case 18: /* ConstInits: ConstInitVal  */
+#line 120 "./src/parser.y"
+                         {}
+#line 1438 "parser.cpp"
+    break;
+
   case 19: /* ConstInits: ConstInits tok_comma ConstInitVal  */
-#line 71 "./src/parser.y"
+#line 121 "./src/parser.y"
                                               {}
-#line 1399 "parser.cpp"
+#line 1444 "parser.cpp"
     break;
 
   case 20: /* VarDecl: tok_int VarDecls tok_semicolon  */
-#line 74 "./src/parser.y"
+#line 124 "./src/parser.y"
                                        {}
-#line 1405 "parser.cpp"
+#line 1450 "parser.cpp"
     break;
 
   case 21: /* VarDecls: VarDef  */
-#line 76 "./src/parser.y"
+#line 126 "./src/parser.y"
                  {}
-#line 1411 "parser.cpp"
+#line 1456 "parser.cpp"
     break;
 
   case 22: /* VarDecls: VarDecls tok_comma VarDef  */
-#line 77 "./src/parser.y"
+#line 127 "./src/parser.y"
                                     {}
-#line 1417 "parser.cpp"
+#line 1462 "parser.cpp"
     break;
 
   case 23: /* VarDefs: tok_lbracket ConstExp tok_rbracket  */
-#line 80 "./src/parser.y"
+#line 130 "./src/parser.y"
                                             {}
-#line 1423 "parser.cpp"
+#line 1468 "parser.cpp"
     break;
 
   case 24: /* VarDefs: VarDecls tok_lbracket ConstExp tok_rbracket  */
-#line 81 "./src/parser.y"
+#line 131 "./src/parser.y"
                                                       {}
-#line 1429 "parser.cpp"
+#line 1474 "parser.cpp"
     break;
 
   case 25: /* VarDef: tok_identifier  */
-#line 84 "./src/parser.y"
+#line 134 "./src/parser.y"
                        {}
-#line 1435 "parser.cpp"
+#line 1480 "parser.cpp"
     break;
 
   case 26: /* VarDef: tok_identifier tok_assign InitVal  */
-#line 85 "./src/parser.y"
+#line 135 "./src/parser.y"
                                           {}
-#line 1441 "parser.cpp"
+#line 1486 "parser.cpp"
     break;
 
   case 27: /* VarDef: tok_identifier VarDefs  */
-#line 86 "./src/parser.y"
+#line 136 "./src/parser.y"
                                {}
-#line 1447 "parser.cpp"
+#line 1492 "parser.cpp"
     break;
 
   case 28: /* VarDef: tok_identifier VarDefs tok_assign InitVal  */
-#line 87 "./src/parser.y"
+#line 137 "./src/parser.y"
                                                   {}
-#line 1453 "parser.cpp"
+#line 1498 "parser.cpp"
     break;
 
   case 29: /* InitVal: Exp  */
-#line 90 "./src/parser.y"
+#line 140 "./src/parser.y"
              {}
-#line 1459 "parser.cpp"
+#line 1504 "parser.cpp"
     break;
 
   case 30: /* InitVal: tok_lbrace tok_rbrace  */
-#line 91 "./src/parser.y"
+#line 141 "./src/parser.y"
                                {}
-#line 1465 "parser.cpp"
+#line 1510 "parser.cpp"
     break;
 
   case 31: /* InitVal: tok_lbrace Inits tok_rbrace  */
-#line 92 "./src/parser.y"
+#line 142 "./src/parser.y"
                                      {}
-#line 1471 "parser.cpp"
+#line 1516 "parser.cpp"
     break;
 
   case 32: /* Inits: InitVal  */
-#line 95 "./src/parser.y"
+#line 145 "./src/parser.y"
                {}
-#line 1477 "parser.cpp"
+#line 1522 "parser.cpp"
     break;
 
   case 33: /* Inits: Inits tok_comma InitVal  */
-#line 96 "./src/parser.y"
+#line 146 "./src/parser.y"
                                {}
-#line 1483 "parser.cpp"
+#line 1528 "parser.cpp"
     break;
 
   case 34: /* FuncDef: tok_int tok_identifier tok_lparen tok_rparen Block  */
-#line 99 "./src/parser.y"
+#line 149 "./src/parser.y"
                                                             {}
-#line 1489 "parser.cpp"
+#line 1534 "parser.cpp"
     break;
 
   case 35: /* FuncDef: tok_int tok_identifier tok_lparen Params tok_rparen Block  */
-#line 100 "./src/parser.y"
+#line 150 "./src/parser.y"
                                                                    {}
-#line 1495 "parser.cpp"
+#line 1540 "parser.cpp"
     break;
 
   case 36: /* FuncDef: tok_void tok_identifier tok_lparen tok_rparen Block  */
-#line 101 "./src/parser.y"
+#line 151 "./src/parser.y"
                                                              {}
-#line 1501 "parser.cpp"
+#line 1546 "parser.cpp"
     break;
 
   case 37: /* FuncDef: tok_void tok_identifier tok_lparen Params tok_rparen Block  */
-#line 102 "./src/parser.y"
+#line 152 "./src/parser.y"
                                                                     {}
-#line 1507 "parser.cpp"
+#line 1552 "parser.cpp"
     break;
 
   case 38: /* Params: Param  */
-#line 105 "./src/parser.y"
+#line 155 "./src/parser.y"
               {}
-#line 1513 "parser.cpp"
+#line 1558 "parser.cpp"
     break;
 
   case 39: /* Params: Params tok_comma Param  */
-#line 106 "./src/parser.y"
+#line 156 "./src/parser.y"
                                {}
-#line 1519 "parser.cpp"
+#line 1564 "parser.cpp"
     break;
 
   case 40: /* Param: tok_int tok_identifier  */
-#line 109 "./src/parser.y"
+#line 159 "./src/parser.y"
                               {}
-#line 1525 "parser.cpp"
+#line 1570 "parser.cpp"
     break;
 
   case 41: /* Param: tok_int tok_identifier tok_lbracket tok_rbracket  */
-#line 110 "./src/parser.y"
+#line 160 "./src/parser.y"
                                                         {}
-#line 1531 "parser.cpp"
+#line 1576 "parser.cpp"
     break;
 
   case 42: /* Param: tok_int tok_identifier tok_lbracket tok_rbracket LVals  */
-#line 111 "./src/parser.y"
+#line 161 "./src/parser.y"
                                                               {}
-#line 1537 "parser.cpp"
+#line 1582 "parser.cpp"
     break;
 
   case 43: /* Block: tok_lbrace tok_rbrace  */
-#line 114 "./src/parser.y"
+#line 164 "./src/parser.y"
                              {}
-#line 1543 "parser.cpp"
+#line 1588 "parser.cpp"
     break;
 
   case 44: /* Block: tok_lbrace BlockItems tok_rbrace  */
-#line 115 "./src/parser.y"
+#line 165 "./src/parser.y"
                                         {}
-#line 1549 "parser.cpp"
+#line 1594 "parser.cpp"
     break;
 
   case 45: /* BlockItems: BlockItem  */
-#line 118 "./src/parser.y"
+#line 168 "./src/parser.y"
                       {}
-#line 1555 "parser.cpp"
+#line 1600 "parser.cpp"
     break;
 
   case 46: /* BlockItems: BlockItems BlockItem  */
-#line 119 "./src/parser.y"
+#line 169 "./src/parser.y"
                                  {}
-#line 1561 "parser.cpp"
+#line 1606 "parser.cpp"
     break;
 
   case 47: /* BlockItem: Decl  */
-#line 122 "./src/parser.y"
+#line 172 "./src/parser.y"
                 {}
-#line 1567 "parser.cpp"
+#line 1612 "parser.cpp"
     break;
 
   case 48: /* BlockItem: Stmt  */
-#line 123 "./src/parser.y"
+#line 173 "./src/parser.y"
                 {}
-#line 1573 "parser.cpp"
+#line 1618 "parser.cpp"
     break;
 
   case 49: /* Stmt: LVal tok_assign Exp tok_semicolon  */
-#line 126 "./src/parser.y"
+#line 176 "./src/parser.y"
                                         {}
-#line 1579 "parser.cpp"
+#line 1624 "parser.cpp"
     break;
 
   case 50: /* Stmt: Exp tok_semicolon  */
-#line 127 "./src/parser.y"
+#line 177 "./src/parser.y"
                         {}
-#line 1585 "parser.cpp"
+#line 1630 "parser.cpp"
     break;
 
   case 51: /* Stmt: tok_semicolon  */
-#line 128 "./src/parser.y"
+#line 178 "./src/parser.y"
                     {}
-#line 1591 "parser.cpp"
+#line 1636 "parser.cpp"
     break;
 
   case 52: /* Stmt: Block  */
-#line 129 "./src/parser.y"
+#line 179 "./src/parser.y"
             {}
-#line 1597 "parser.cpp"
+#line 1642 "parser.cpp"
     break;
 
   case 53: /* Stmt: tok_if tok_lparen Cond tok_rparen Stmt  */
-#line 130 "./src/parser.y"
+#line 180 "./src/parser.y"
                                              {}
-#line 1603 "parser.cpp"
+#line 1648 "parser.cpp"
     break;
 
   case 54: /* Stmt: tok_if tok_lparen Cond tok_rparen Stmt tok_else Stmt  */
-#line 131 "./src/parser.y"
+#line 181 "./src/parser.y"
                                                            {}
-#line 1609 "parser.cpp"
+#line 1654 "parser.cpp"
     break;
 
   case 55: /* Stmt: tok_while tok_lparen Cond tok_rparen Stmt  */
-#line 132 "./src/parser.y"
+#line 182 "./src/parser.y"
                                                 {}
-#line 1615 "parser.cpp"
+#line 1660 "parser.cpp"
     break;
 
   case 56: /* Stmt: tok_break tok_semicolon  */
-#line 133 "./src/parser.y"
+#line 183 "./src/parser.y"
                               {}
-#line 1621 "parser.cpp"
+#line 1666 "parser.cpp"
     break;
 
   case 57: /* Stmt: tok_continue tok_semicolon  */
-#line 134 "./src/parser.y"
+#line 184 "./src/parser.y"
                                  {}
-#line 1627 "parser.cpp"
+#line 1672 "parser.cpp"
     break;
 
   case 58: /* Stmt: tok_return Exp tok_semicolon  */
-#line 135 "./src/parser.y"
+#line 185 "./src/parser.y"
                                    {}
-#line 1633 "parser.cpp"
+#line 1678 "parser.cpp"
     break;
 
   case 59: /* Stmt: tok_return tok_semicolon  */
-#line 136 "./src/parser.y"
+#line 186 "./src/parser.y"
                                {}
-#line 1639 "parser.cpp"
+#line 1684 "parser.cpp"
     break;
 
   case 60: /* Exp: AddExp  */
-#line 139 "./src/parser.y"
+#line 189 "./src/parser.y"
             {}
-#line 1645 "parser.cpp"
+#line 1690 "parser.cpp"
     break;
 
   case 61: /* Cond: LOrExp  */
-#line 141 "./src/parser.y"
+#line 191 "./src/parser.y"
              {}
-#line 1651 "parser.cpp"
+#line 1696 "parser.cpp"
     break;
 
   case 62: /* $@1: %empty  */
-#line 143 "./src/parser.y"
+#line 193 "./src/parser.y"
                      {}
-#line 1657 "parser.cpp"
+#line 1702 "parser.cpp"
     break;
 
   case 63: /* LVal: tok_identifier $@1  */
-#line 143 "./src/parser.y"
+#line 193 "./src/parser.y"
                         {}
-#line 1663 "parser.cpp"
+#line 1708 "parser.cpp"
     break;
 
   case 64: /* LVal: tok_identifier LVals  */
-#line 144 "./src/parser.y"
+#line 194 "./src/parser.y"
                            {}
-#line 1669 "parser.cpp"
+#line 1714 "parser.cpp"
     break;
 
   case 65: /* LVals: tok_lbracket Exp tok_rbracket  */
-#line 146 "./src/parser.y"
+#line 196 "./src/parser.y"
                                      {}
-#line 1675 "parser.cpp"
+#line 1720 "parser.cpp"
     break;
 
   case 66: /* LVals: LVals tok_lbracket Exp tok_rbracket  */
-#line 147 "./src/parser.y"
+#line 197 "./src/parser.y"
                                            {}
-#line 1681 "parser.cpp"
+#line 1726 "parser.cpp"
     break;
 
   case 67: /* PrimaryExp: tok_lparen Exp tok_rparen  */
-#line 150 "./src/parser.y"
+#line 200 "./src/parser.y"
                                       {}
-#line 1687 "parser.cpp"
+#line 1732 "parser.cpp"
     break;
 
   case 68: /* PrimaryExp: LVal  */
-#line 151 "./src/parser.y"
+#line 201 "./src/parser.y"
                  {}
-#line 1693 "parser.cpp"
+#line 1738 "parser.cpp"
     break;
 
   case 69: /* PrimaryExp: tok_number  */
-#line 152 "./src/parser.y"
+#line 202 "./src/parser.y"
                        {}
-#line 1699 "parser.cpp"
+#line 1744 "parser.cpp"
     break;
 
   case 70: /* UnaryExp: PrimaryExp  */
-#line 154 "./src/parser.y"
+#line 204 "./src/parser.y"
                      {}
-#line 1705 "parser.cpp"
+#line 1750 "parser.cpp"
     break;
 
   case 71: /* UnaryExp: tok_identifier tok_lparen tok_rparen  */
-#line 155 "./src/parser.y"
+#line 205 "./src/parser.y"
                                                {}
-#line 1711 "parser.cpp"
+#line 1756 "parser.cpp"
     break;
 
   case 72: /* UnaryExp: tok_identifier tok_lparen Args tok_rparen  */
-#line 156 "./src/parser.y"
+#line 206 "./src/parser.y"
                                                     {}
-#line 1717 "parser.cpp"
+#line 1762 "parser.cpp"
     break;
 
   case 73: /* UnaryExp: tok_plus UnaryExp  */
-#line 157 "./src/parser.y"
+#line 207 "./src/parser.y"
                             {}
-#line 1723 "parser.cpp"
+#line 1768 "parser.cpp"
     break;
 
   case 74: /* UnaryExp: tok_minus UnaryExp  */
-#line 158 "./src/parser.y"
+#line 208 "./src/parser.y"
                              {}
-#line 1729 "parser.cpp"
+#line 1774 "parser.cpp"
     break;
 
   case 75: /* UnaryExp: tok_not UnaryExp  */
-#line 159 "./src/parser.y"
+#line 209 "./src/parser.y"
                            {}
-#line 1735 "parser.cpp"
+#line 1780 "parser.cpp"
     break;
 
   case 76: /* Args: Exp  */
-#line 162 "./src/parser.y"
+#line 212 "./src/parser.y"
           {}
-#line 1741 "parser.cpp"
+#line 1786 "parser.cpp"
     break;
 
   case 77: /* Args: Args tok_comma Exp  */
-#line 163 "./src/parser.y"
+#line 213 "./src/parser.y"
                          {}
-#line 1747 "parser.cpp"
+#line 1792 "parser.cpp"
     break;
 
   case 78: /* MulExp: UnaryExp  */
-#line 166 "./src/parser.y"
+#line 216 "./src/parser.y"
                  {}
-#line 1753 "parser.cpp"
+#line 1798 "parser.cpp"
     break;
 
   case 79: /* MulExp: MulExp tok_star UnaryExp  */
-#line 167 "./src/parser.y"
+#line 217 "./src/parser.y"
                                  {}
-#line 1759 "parser.cpp"
+#line 1804 "parser.cpp"
     break;
 
   case 80: /* MulExp: MulExp tok_slash UnaryExp  */
-#line 168 "./src/parser.y"
+#line 218 "./src/parser.y"
                                   {}
-#line 1765 "parser.cpp"
+#line 1810 "parser.cpp"
     break;
 
   case 81: /* MulExp: MulExp tok_mod UnaryExp  */
-#line 169 "./src/parser.y"
+#line 219 "./src/parser.y"
                                 {}
-#line 1771 "parser.cpp"
+#line 1816 "parser.cpp"
     break;
 
   case 82: /* AddExp: MulExp  */
-#line 172 "./src/parser.y"
+#line 222 "./src/parser.y"
                {}
-#line 1777 "parser.cpp"
+#line 1822 "parser.cpp"
     break;
 
   case 83: /* AddExp: AddExp tok_plus MulExp  */
-#line 173 "./src/parser.y"
+#line 223 "./src/parser.y"
                                {}
-#line 1783 "parser.cpp"
+#line 1828 "parser.cpp"
     break;
 
   case 84: /* AddExp: AddExp tok_minus MulExp  */
-#line 174 "./src/parser.y"
+#line 224 "./src/parser.y"
                                 {}
-#line 1789 "parser.cpp"
+#line 1834 "parser.cpp"
     break;
 
   case 85: /* RelExp: AddExp  */
-#line 177 "./src/parser.y"
+#line 227 "./src/parser.y"
                {}
-#line 1795 "parser.cpp"
+#line 1840 "parser.cpp"
     break;
 
   case 86: /* RelExp: RelExp tok_lt AddExp  */
-#line 178 "./src/parser.y"
+#line 228 "./src/parser.y"
                              {}
-#line 1801 "parser.cpp"
+#line 1846 "parser.cpp"
     break;
 
   case 87: /* RelExp: RelExp tok_gt AddExp  */
-#line 179 "./src/parser.y"
+#line 229 "./src/parser.y"
                              {}
-#line 1807 "parser.cpp"
+#line 1852 "parser.cpp"
     break;
 
   case 88: /* RelExp: RelExp tok_le AddExp  */
-#line 180 "./src/parser.y"
+#line 230 "./src/parser.y"
                              {}
-#line 1813 "parser.cpp"
+#line 1858 "parser.cpp"
     break;
 
   case 89: /* RelExp: RelExp tok_ge AddExp  */
-#line 181 "./src/parser.y"
+#line 231 "./src/parser.y"
                              {}
-#line 1819 "parser.cpp"
+#line 1864 "parser.cpp"
     break;
 
   case 90: /* EqExp: RelExp  */
-#line 184 "./src/parser.y"
+#line 234 "./src/parser.y"
               {}
-#line 1825 "parser.cpp"
+#line 1870 "parser.cpp"
     break;
 
   case 91: /* EqExp: EqExp tok_eq RelExp  */
-#line 185 "./src/parser.y"
+#line 235 "./src/parser.y"
                            {}
-#line 1831 "parser.cpp"
+#line 1876 "parser.cpp"
     break;
 
   case 92: /* EqExp: EqExp tok_ne RelExp  */
-#line 186 "./src/parser.y"
+#line 236 "./src/parser.y"
                            {}
-#line 1837 "parser.cpp"
+#line 1882 "parser.cpp"
     break;
 
   case 93: /* LAndExp: EqExp  */
-#line 189 "./src/parser.y"
+#line 239 "./src/parser.y"
                {}
-#line 1843 "parser.cpp"
+#line 1888 "parser.cpp"
     break;
 
   case 94: /* LAndExp: LAndExp tok_and EqExp  */
-#line 190 "./src/parser.y"
+#line 240 "./src/parser.y"
                                {}
-#line 1849 "parser.cpp"
+#line 1894 "parser.cpp"
     break;
 
   case 95: /* LOrExp: LAndExp  */
-#line 193 "./src/parser.y"
+#line 243 "./src/parser.y"
                 {}
-#line 1855 "parser.cpp"
+#line 1900 "parser.cpp"
     break;
 
   case 96: /* LOrExp: LOrExp tok_or LAndExp  */
-#line 194 "./src/parser.y"
+#line 244 "./src/parser.y"
                               {}
-#line 1861 "parser.cpp"
+#line 1906 "parser.cpp"
     break;
 
   case 97: /* ConstExp: AddExp  */
-#line 197 "./src/parser.y"
+#line 247 "./src/parser.y"
                  {}
-#line 1867 "parser.cpp"
+#line 1912 "parser.cpp"
     break;
 
 
-#line 1871 "parser.cpp"
+#line 1916 "parser.cpp"
 
       default: break;
     }
@@ -2061,4 +2106,4 @@ yyreturn:
   return yyresult;
 }
 
-#line 199 "./src/parser.y"
+#line 249 "./src/parser.y"
