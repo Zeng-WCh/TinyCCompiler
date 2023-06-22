@@ -1,5 +1,6 @@
 #include <cstdio>
 #include <string>
+#include <cassert>
 #include "token.h"
 #include "scanner.h"
 #include "ast.h"
@@ -115,16 +116,22 @@ int parser_mode(const char *filename) {
     }
     fprintf(stderr, "Parsing file %s\n", filename);
     
-    yyparse();
+    int yyresult = yyparse();
+    if (yyresult != 0)
+    {
+        fprintf(stderr, "Error: parsing failed\n");
+        return 1;
+    }
+
+    assert(result);
+    result->print(0);   
     
-    fprintf(stderr, "0x%lx\n", (long)result);
 
     return 0;
 }
 
 int main(int argc, const char **argv)
 {
-    yydebug = 1;
     if (argc < 2)
     {
         fprintf(stderr, "Usage: %s --[lexer|parser] <file>\n", argv[0]);

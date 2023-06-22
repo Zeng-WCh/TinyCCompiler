@@ -16,7 +16,7 @@ clean:
 
 all: build
 
-build: parser lex driver
+build: ast parser lex driver
 
 lex: ${SRCDIR}/${FLEXSRC}
 	@mkdir -p ./lib
@@ -33,7 +33,10 @@ parser:
 	${COMPILER} ${INCLUDES} -shared -fPIC -o ${LIBDIR}/libparser.so ${SRCDIR}/${BISONSRC:.y=.cpp}
 
 driver:
-	${COMPILER} ${INCLUDES} -o tcc ${SRCDIR}/driver.cpp -L${LIBDIR} -lscanner -lparser
+	${COMPILER} ${INCLUDES} -o tcc ${SRCDIR}/driver.cpp -L${LIBDIR} -lscanner -lparser -last
+
+ast:
+	${COMPILER} ${INCLUDES} -shared -fPIC -o ${LIBDIR}/libast.so ${SRCDIR}/ast.cpp
 
 run: 
 	LD_LIBRARY_PATH=${LIBDIR} ./tcc

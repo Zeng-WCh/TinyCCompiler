@@ -79,16 +79,16 @@ extern int yydebug;
     tok_ge = 280,                  /* tok_ge  */
     tok_eq = 281,                  /* tok_eq  */
     tok_ne = 282,                  /* tok_ne  */
-    tok_and = 283,                 /* tok_and  */
-    tok_or = 284,                  /* tok_or  */
-    tok_not = 285,                 /* tok_not  */
-    tok_else = 286,                /* tok_else  */
-    tok_while = 287,               /* tok_while  */
-    tok_break = 288,               /* tok_break  */
-    tok_continue = 289,            /* tok_continue  */
-    tok_return = 290,              /* tok_return  */
-    tok_unknown = 291,             /* tok_unknown  */
-    tok_if = 292,                  /* tok_if  */
+    tok_if = 283,                  /* tok_if  */
+    tok_and = 284,                 /* tok_and  */
+    tok_or = 285,                  /* tok_or  */
+    tok_not = 286,                 /* tok_not  */
+    tok_else = 287,                /* tok_else  */
+    tok_while = 288,               /* tok_while  */
+    tok_break = 289,               /* tok_break  */
+    tok_continue = 290,            /* tok_continue  */
+    tok_return = 291,              /* tok_return  */
+    tok_unknown = 292,             /* tok_unknown  */
     tok_identifier = 293,          /* tok_identifier  */
     tok_number = 294               /* tok_number  */
   };
@@ -124,16 +124,16 @@ extern int yydebug;
 #define tok_ge 280
 #define tok_eq 281
 #define tok_ne 282
-#define tok_and 283
-#define tok_or 284
-#define tok_not 285
-#define tok_else 286
-#define tok_while 287
-#define tok_break 288
-#define tok_continue 289
-#define tok_return 290
-#define tok_unknown 291
-#define tok_if 292
+#define tok_if 283
+#define tok_and 284
+#define tok_or 285
+#define tok_not 286
+#define tok_else 287
+#define tok_while 288
+#define tok_break 289
+#define tok_continue 290
+#define tok_return 291
+#define tok_unknown 292
 #define tok_identifier 293
 #define tok_number 294
 

@@ -28,12 +28,10 @@
 %token tok_plus tok_minus tok_star tok_slash tok_mod
 %token tok_lparen tok_rparen tok_lbrace tok_rbrace tok_lbracket tok_rbracket
 %token tok_lt tok_gt tok_le tok_ge tok_eq tok_ne
-%token tok_and tok_or tok_not tok_else
+%token tok_if tok_and tok_or tok_not tok_else
 %token tok_while tok_break tok_continue tok_return
 %token tok_unknown
-%right tok_if
-%right tok_else
-%right <strVal> tok_identifier
+%token <strVal> tok_identifier
 %token <intVal> tok_number
 
 %type <ast> CompUnits CompUnit Decl FuncDef ConstDecl ConstDecls VarDecl ConstDef ConstSelector ConstInitVal ConstInits VarDecls VarDef InitVal InitVals FuncFParams FuncFParam Block BlockItems BlockItem Stmt Exp Cond LVal PrimaryExp UnaryExp FuncRParams MulExp AddExp RelExp EqExp LAndExp LOrExp ConstExp
@@ -336,7 +334,7 @@ Stmt: LVal tok_assign Exp tok_semicolon {
     auto tmp = new IfStmt(cond, stmt1, stmt2);
     $$ = (void*) (new Stmt(tmp));
 }
-| tok_while tok_lparen Cond tok_rparen Stmt{
+| tok_while tok_lparen Cond tok_rparen Stmt {
     auto cond = (Cond*) $3;
     auto stmt = (Stmt*) $5;
     auto tmp = new WhileStmt(cond, stmt);

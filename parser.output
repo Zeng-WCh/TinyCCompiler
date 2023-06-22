@@ -1,0 +1,2145 @@
+Terminals unused in grammar
+
+    tok_char
+    tok_string_literal
+    tok_unknown
+
+
+State 153 conflicts: 1 shift/reduce
+
+
+Grammar
+
+    0 $accept: Program $end
+
+    1 Program: CompUnits
+
+    2 CompUnits: CompUnit
+    3          | CompUnits CompUnit
+
+    4 CompUnit: Decl
+    5         | FuncDef
+
+    6 Decl: ConstDecl
+    7     | VarDecl
+
+    8 ConstDecl: tok_const tok_int ConstDecls tok_semicolon
+
+    9 ConstDecls: ConstDef
+   10           | ConstDecls tok_comma ConstDef
+
+   11 ConstDef: tok_identifier ConstSelector tok_assign ConstInitVal
+
+   12 ConstSelector: ε
+   13              | ConstSelector tok_lbracket ConstExp tok_rbracket
+
+   14 ConstInitVal: ConstExp
+   15             | tok_lbrace tok_rbrace
+   16             | tok_lbrace ConstInits tok_rbrace
+
+   17 ConstInits: ConstInitVal
+   18           | ConstInits tok_comma ConstInitVal
+
+   19 VarDecl: tok_int VarDecls tok_semicolon
+
+   20 VarDecls: VarDef
+   21         | VarDecls tok_comma VarDef
+
+   22 VarDef: tok_identifier ConstSelector
+   23       | tok_identifier ConstSelector tok_assign InitVal
+
+   24 InitVal: Exp
+   25        | tok_lbrace tok_rbrace
+   26        | tok_lbrace InitVals tok_rbrace
+
+   27 InitVals: InitVal
+   28         | InitVals tok_comma InitVal
+
+   29 FuncDef: tok_int tok_identifier tok_lparen FuncFParams tok_rparen Block
+   30        | tok_void tok_identifier tok_lparen FuncFParams tok_rparen Block
+
+   31 FuncFParams: ε
+   32            | FuncFParamList
+
+   33 FuncFParamList: FuncFParam
+   34               | FuncFParamList tok_comma FuncFParam
+
+   35 FuncFParam: tok_int tok_identifier
+   36           | tok_int tok_identifier tok_lbracket tok_rbracket FuncFParamDim
+
+   37 FuncFParamDim: ε
+   38              | FuncFParamDim tok_lbracket Exp tok_rbracket
+
+   39 Block: tok_lbrace BlockItems tok_rbrace
+
+   40 BlockItems: ε
+   41           | BlockItems BlockItem
+
+   42 BlockItem: Stmt
+   43          | Decl
+
+   44 Stmt: LVal tok_assign Exp tok_semicolon
+   45     | tok_semicolon
+   46     | Exp tok_semicolon
+   47     | Block
+   48     | tok_if tok_lparen Cond tok_rparen Stmt
+   49     | tok_if tok_lparen Cond tok_rparen Stmt tok_else Stmt
+   50     | tok_while tok_lparen Cond tok_rparen Stmt
+   51     | tok_break tok_semicolon
+   52     | tok_continue tok_semicolon
+   53     | tok_return Exp tok_semicolon
+   54     | tok_return tok_semicolon
+
+   55 Exp: AddExp
+
+   56 Cond: LOrExp
+
+   57 LVal: tok_identifier LValSelector
+
+   58 LValSelector: ε
+   59             | LValSelector tok_lbracket Exp tok_rbracket
+
+   60 PrimaryExp: tok_lparen Exp tok_rparen
+   61           | LVal
+   62           | tok_number
+
+   63 UnaryExp: PrimaryExp
+   64         | tok_identifier tok_lparen FuncRParams tok_rparen
+   65         | tok_plus UnaryExp
+   66         | tok_minus UnaryExp
+   67         | tok_not UnaryExp
+
+   68 FuncRParams: ε
+   69            | FuncRParams tok_comma Exp
+
+   70 MulExp: UnaryExp
+   71       | MulExp tok_star UnaryExp
+   72       | MulExp tok_slash UnaryExp
+   73       | MulExp tok_mod UnaryExp
+
+   74 AddExp: MulExp
+   75       | AddExp tok_plus MulExp
+   76       | AddExp tok_minus MulExp
+
+   77 RelExp: AddExp
+   78       | RelExp tok_gt AddExp
+   79       | RelExp tok_lt AddExp
+   80       | RelExp tok_ge AddExp
+   81       | RelExp tok_le AddExp
+
+   82 EqExp: RelExp
+   83      | EqExp tok_eq RelExp
+   84      | EqExp tok_ne RelExp
+
+   85 LAndExp: EqExp
+   86        | LAndExp tok_and EqExp
+
+   87 LOrExp: LAndExp
+   88       | LOrExp tok_or LAndExp
+
+   89 ConstExp: AddExp
+
+
+Terminals, with rules where they appear
+
+    $end (0) 0
+    error (256)
+    tok_int (258) 8 19 29 35 36
+    tok_void (259) 30
+    tok_char (260)
+    tok_string_literal (261)
+    tok_const (262) 8
+    tok_comma (263) 10 18 21 28 34 69
+    tok_semicolon (264) 8 19 44 45 46 51 52 53 54
+    tok_assign (265) 11 23 44
+    tok_plus (266) 65 75
+    tok_minus (267) 66 76
+    tok_star (268) 71
+    tok_slash (269) 72
+    tok_mod (270) 73
+    tok_lparen (271) 29 30 48 49 50 60 64
+    tok_rparen (272) 29 30 48 49 50 60 64
+    tok_lbrace (273) 15 16 25 26 39
+    tok_rbrace (274) 15 16 25 26 39
+    tok_lbracket (275) 13 36 38 59
+    tok_rbracket (276) 13 36 38 59
+    tok_lt (277) 79
+    tok_gt (278) 78
+    tok_le (279) 81
+    tok_ge (280) 80
+    tok_eq (281) 83
+    tok_ne (282) 84
+    tok_if (283) 48 49
+    tok_and (284) 86
+    tok_or (285) 88
+    tok_not (286) 67
+    tok_else (287) 49
+    tok_while (288) 50
+    tok_break (289) 51
+    tok_continue (290) 52
+    tok_return (291) 53 54
+    tok_unknown (292)
+    tok_identifier <strVal> (293) 11 22 23 29 30 35 36 57 64
+    tok_number <intVal> (294) 62
+
+
+Nonterminals, with rules where they appear
+
+    $accept (40)
+        on left: 0
+    Program (41)
+        on left: 1
+        on right: 0
+    CompUnits <ast> (42)
+        on left: 2 3
+        on right: 1 3
+    CompUnit <ast> (43)
+        on left: 4 5
+        on right: 2 3
+    Decl <ast> (44)
+        on left: 6 7
+        on right: 4 43
+    ConstDecl <ast> (45)
+        on left: 8
+        on right: 6
+    ConstDecls <ast> (46)
+        on left: 9 10
+        on right: 8 10
+    ConstDef <ast> (47)
+        on left: 11
+        on right: 9 10
+    ConstSelector <ast> (48)
+        on left: 12 13
+        on right: 11 13 22 23
+    ConstInitVal <ast> (49)
+        on left: 14 15 16
+        on right: 11 17 18
+    ConstInits <ast> (50)
+        on left: 17 18
+        on right: 16 18
+    VarDecl <ast> (51)
+        on left: 19
+        on right: 7
+    VarDecls <ast> (52)
+        on left: 20 21
+        on right: 19 21
+    VarDef <ast> (53)
+        on left: 22 23
+        on right: 20 21
+    InitVal <ast> (54)
+        on left: 24 25 26
+        on right: 23 27 28
+    InitVals <ast> (55)
+        on left: 27 28
+        on right: 26 28
+    FuncDef <ast> (56)
+        on left: 29 30
+        on right: 5
+    FuncFParams <ast> (57)
+        on left: 31 32
+        on right: 29 30
+    FuncFParamList <ast> (58)
+        on left: 33 34
+        on right: 32 34
+    FuncFParam <ast> (59)
+        on left: 35 36
+        on right: 33 34
+    FuncFParamDim <ast> (60)
+        on left: 37 38
+        on right: 36 38
+    Block <ast> (61)
+        on left: 39
+        on right: 29 30 47
+    BlockItems <ast> (62)
+        on left: 40 41
+        on right: 39 41
+    BlockItem <ast> (63)
+        on left: 42 43
+        on right: 41
+    Stmt <ast> (64)
+        on left: 44 45 46 47 48 49 50 51 52 53 54
+        on right: 42 48 49 50
+    Exp <ast> (65)
+        on left: 55
+        on right: 24 38 44 46 53 59 60 69
+    Cond <ast> (66)
+        on left: 56
+        on right: 48 49 50
+    LVal <ast> (67)
+        on left: 57
+        on right: 44 61
+    LValSelector <ast> (68)
+        on left: 58 59
+        on right: 57 59
+    PrimaryExp <ast> (69)
+        on left: 60 61 62
+        on right: 63
+    UnaryExp <ast> (70)
+        on left: 63 64 65 66 67
+        on right: 65 66 67 70 71 72 73
+    FuncRParams <ast> (71)
+        on left: 68 69
+        on right: 64 69
+    MulExp <ast> (72)
+        on left: 70 71 72 73
+        on right: 71 72 73 74 75 76
+    AddExp <ast> (73)
+        on left: 74 75 76
+        on right: 55 75 76 77 78 79 80 81 89
+    RelExp <ast> (74)
+        on left: 77 78 79 80 81
+        on right: 78 79 80 81 82 83 84
+    EqExp <ast> (75)
+        on left: 82 83 84
+        on right: 83 84 85 86
+    LAndExp <ast> (76)
+        on left: 85 86
+        on right: 86 87 88
+    LOrExp <ast> (77)
+        on left: 87 88
+        on right: 56 88
+    ConstExp <ast> (78)
+        on left: 89
+        on right: 13 14
+
+
+State 0
+
+    0 $accept: • Program $end
+
+    tok_int    shift, and go to state 1
+    tok_void   shift, and go to state 2
+    tok_const  shift, and go to state 3
+
+    Program    go to state 4
+    CompUnits  go to state 5
+    CompUnit   go to state 6
+    Decl       go to state 7
+    ConstDecl  go to state 8
+    VarDecl    go to state 9
+    FuncDef    go to state 10
+
+
+State 1
+
+   19 VarDecl: tok_int • VarDecls tok_semicolon
+   29 FuncDef: tok_int • tok_identifier tok_lparen FuncFParams tok_rparen Block
+
+    tok_identifier  shift, and go to state 11
+
+    VarDecls  go to state 12
+    VarDef    go to state 13
+
+
+State 2
+
+   30 FuncDef: tok_void • tok_identifier tok_lparen FuncFParams tok_rparen Block
+
+    tok_identifier  shift, and go to state 14
+
+
+State 3
+
+    8 ConstDecl: tok_const • tok_int ConstDecls tok_semicolon
+
+    tok_int  shift, and go to state 15
+
+
+State 4
+
+    0 $accept: Program • $end
+
+    $end  shift, and go to state 16
+
+
+State 5
+
+    1 Program: CompUnits •
+    3 CompUnits: CompUnits • CompUnit
+
+    tok_int    shift, and go to state 1
+    tok_void   shift, and go to state 2
+    tok_const  shift, and go to state 3
+
+    $default  reduce using rule 1 (Program)
+
+    CompUnit   go to state 17
+    Decl       go to state 7
+    ConstDecl  go to state 8
+    VarDecl    go to state 9
+    FuncDef    go to state 10
+
+
+State 6
+
+    2 CompUnits: CompUnit •
+
+    $default  reduce using rule 2 (CompUnits)
+
+
+State 7
+
+    4 CompUnit: Decl •
+
+    $default  reduce using rule 4 (CompUnit)
+
+
+State 8
+
+    6 Decl: ConstDecl •
+
+    $default  reduce using rule 6 (Decl)
+
+
+State 9
+
+    7 Decl: VarDecl •
+
+    $default  reduce using rule 7 (Decl)
+
+
+State 10
+
+    5 CompUnit: FuncDef •
+
+    $default  reduce using rule 5 (CompUnit)
+
+
+State 11
+
+   22 VarDef: tok_identifier • ConstSelector
+   23       | tok_identifier • ConstSelector tok_assign InitVal
+   29 FuncDef: tok_int tok_identifier • tok_lparen FuncFParams tok_rparen Block
+
+    tok_lparen  shift, and go to state 18
+
+    $default  reduce using rule 12 (ConstSelector)
+
+    ConstSelector  go to state 19
+
+
+State 12
+
+   19 VarDecl: tok_int VarDecls • tok_semicolon
+   21 VarDecls: VarDecls • tok_comma VarDef
+
+    tok_comma      shift, and go to state 20
+    tok_semicolon  shift, and go to state 21
+
+
+State 13
+
+   20 VarDecls: VarDef •
+
+    $default  reduce using rule 20 (VarDecls)
+
+
+State 14
+
+   30 FuncDef: tok_void tok_identifier • tok_lparen FuncFParams tok_rparen Block
+
+    tok_lparen  shift, and go to state 22
+
+
+State 15
+
+    8 ConstDecl: tok_const tok_int • ConstDecls tok_semicolon
+
+    tok_identifier  shift, and go to state 23
+
+    ConstDecls  go to state 24
+    ConstDef    go to state 25
+
+
+State 16
+
+    0 $accept: Program $end •
+
+    $default  accept
+
+
+State 17
+
+    3 CompUnits: CompUnits CompUnit •
+
+    $default  reduce using rule 3 (CompUnits)
+
+
+State 18
+
+   29 FuncDef: tok_int tok_identifier tok_lparen • FuncFParams tok_rparen Block
+
+    tok_int  shift, and go to state 26
+
+    $default  reduce using rule 31 (FuncFParams)
+
+    FuncFParams     go to state 27
+    FuncFParamList  go to state 28
+    FuncFParam      go to state 29
+
+
+State 19
+
+   13 ConstSelector: ConstSelector • tok_lbracket ConstExp tok_rbracket
+   22 VarDef: tok_identifier ConstSelector •
+   23       | tok_identifier ConstSelector • tok_assign InitVal
+
+    tok_assign    shift, and go to state 30
+    tok_lbracket  shift, and go to state 31
+
+    $default  reduce using rule 22 (VarDef)
+
+
+State 20
+
+   21 VarDecls: VarDecls tok_comma • VarDef
+
+    tok_identifier  shift, and go to state 32
+
+    VarDef  go to state 33
+
+
+State 21
+
+   19 VarDecl: tok_int VarDecls tok_semicolon •
+
+    $default  reduce using rule 19 (VarDecl)
+
+
+State 22
+
+   30 FuncDef: tok_void tok_identifier tok_lparen • FuncFParams tok_rparen Block
+
+    tok_int  shift, and go to state 26
+
+    $default  reduce using rule 31 (FuncFParams)
+
+    FuncFParams     go to state 34
+    FuncFParamList  go to state 28
+    FuncFParam      go to state 29
+
+
+State 23
+
+   11 ConstDef: tok_identifier • ConstSelector tok_assign ConstInitVal
+
+    $default  reduce using rule 12 (ConstSelector)
+
+    ConstSelector  go to state 35
+
+
+State 24
+
+    8 ConstDecl: tok_const tok_int ConstDecls • tok_semicolon
+   10 ConstDecls: ConstDecls • tok_comma ConstDef
+
+    tok_comma      shift, and go to state 36
+    tok_semicolon  shift, and go to state 37
+
+
+State 25
+
+    9 ConstDecls: ConstDef •
+
+    $default  reduce using rule 9 (ConstDecls)
+
+
+State 26
+
+   35 FuncFParam: tok_int • tok_identifier
+   36           | tok_int • tok_identifier tok_lbracket tok_rbracket FuncFParamDim
+
+    tok_identifier  shift, and go to state 38
+
+
+State 27
+
+   29 FuncDef: tok_int tok_identifier tok_lparen FuncFParams • tok_rparen Block
+
+    tok_rparen  shift, and go to state 39
+
+
+State 28
+
+   32 FuncFParams: FuncFParamList •
+   34 FuncFParamList: FuncFParamList • tok_comma FuncFParam
+
+    tok_comma  shift, and go to state 40
+
+    $default  reduce using rule 32 (FuncFParams)
+
+
+State 29
+
+   33 FuncFParamList: FuncFParam •
+
+    $default  reduce using rule 33 (FuncFParamList)
+
+
+State 30
+
+   23 VarDef: tok_identifier ConstSelector tok_assign • InitVal
+
+    tok_plus        shift, and go to state 41
+    tok_minus       shift, and go to state 42
+    tok_lparen      shift, and go to state 43
+    tok_lbrace      shift, and go to state 44
+    tok_not         shift, and go to state 45
+    tok_identifier  shift, and go to state 46
+    tok_number      shift, and go to state 47
+
+    InitVal     go to state 48
+    Exp         go to state 49
+    LVal        go to state 50
+    PrimaryExp  go to state 51
+    UnaryExp    go to state 52
+    MulExp      go to state 53
+    AddExp      go to state 54
+
+
+State 31
+
+   13 ConstSelector: ConstSelector tok_lbracket • ConstExp tok_rbracket
+
+    tok_plus        shift, and go to state 41
+    tok_minus       shift, and go to state 42
+    tok_lparen      shift, and go to state 43
+    tok_not         shift, and go to state 45
+    tok_identifier  shift, and go to state 46
+    tok_number      shift, and go to state 47
+
+    LVal        go to state 50
+    PrimaryExp  go to state 51
+    UnaryExp    go to state 52
+    MulExp      go to state 53
+    AddExp      go to state 55
+    ConstExp    go to state 56
+
+
+State 32
+
+   22 VarDef: tok_identifier • ConstSelector
+   23       | tok_identifier • ConstSelector tok_assign InitVal
+
+    $default  reduce using rule 12 (ConstSelector)
+
+    ConstSelector  go to state 19
+
+
+State 33
+
+   21 VarDecls: VarDecls tok_comma VarDef •
+
+    $default  reduce using rule 21 (VarDecls)
+
+
+State 34
+
+   30 FuncDef: tok_void tok_identifier tok_lparen FuncFParams • tok_rparen Block
+
+    tok_rparen  shift, and go to state 57
+
+
+State 35
+
+   11 ConstDef: tok_identifier ConstSelector • tok_assign ConstInitVal
+   13 ConstSelector: ConstSelector • tok_lbracket ConstExp tok_rbracket
+
+    tok_assign    shift, and go to state 58
+    tok_lbracket  shift, and go to state 31
+
+
+State 36
+
+   10 ConstDecls: ConstDecls tok_comma • ConstDef
+
+    tok_identifier  shift, and go to state 23
+
+    ConstDef  go to state 59
+
+
+State 37
+
+    8 ConstDecl: tok_const tok_int ConstDecls tok_semicolon •
+
+    $default  reduce using rule 8 (ConstDecl)
+
+
+State 38
+
+   35 FuncFParam: tok_int tok_identifier •
+   36           | tok_int tok_identifier • tok_lbracket tok_rbracket FuncFParamDim
+
+    tok_lbracket  shift, and go to state 60
+
+    $default  reduce using rule 35 (FuncFParam)
+
+
+State 39
+
+   29 FuncDef: tok_int tok_identifier tok_lparen FuncFParams tok_rparen • Block
+
+    tok_lbrace  shift, and go to state 61
+
+    Block  go to state 62
+
+
+State 40
+
+   34 FuncFParamList: FuncFParamList tok_comma • FuncFParam
+
+    tok_int  shift, and go to state 26
+
+    FuncFParam  go to state 63
+
+
+State 41
+
+   65 UnaryExp: tok_plus • UnaryExp
+
+    tok_plus        shift, and go to state 41
+    tok_minus       shift, and go to state 42
+    tok_lparen      shift, and go to state 43
+    tok_not         shift, and go to state 45
+    tok_identifier  shift, and go to state 46
+    tok_number      shift, and go to state 47
+
+    LVal        go to state 50
+    PrimaryExp  go to state 51
+    UnaryExp    go to state 64
+
+
+State 42
+
+   66 UnaryExp: tok_minus • UnaryExp
+
+    tok_plus        shift, and go to state 41
+    tok_minus       shift, and go to state 42
+    tok_lparen      shift, and go to state 43
+    tok_not         shift, and go to state 45
+    tok_identifier  shift, and go to state 46
+    tok_number      shift, and go to state 47
+
+    LVal        go to state 50
+    PrimaryExp  go to state 51
+    UnaryExp    go to state 65
+
+
+State 43
+
+   60 PrimaryExp: tok_lparen • Exp tok_rparen
+
+    tok_plus        shift, and go to state 41
+    tok_minus       shift, and go to state 42
+    tok_lparen      shift, and go to state 43
+    tok_not         shift, and go to state 45
+    tok_identifier  shift, and go to state 46
+    tok_number      shift, and go to state 47
+
+    Exp         go to state 66
+    LVal        go to state 50
+    PrimaryExp  go to state 51
+    UnaryExp    go to state 52
+    MulExp      go to state 53
+    AddExp      go to state 54
+
+
+State 44
+
+   25 InitVal: tok_lbrace • tok_rbrace
+   26        | tok_lbrace • InitVals tok_rbrace
+
+    tok_plus        shift, and go to state 41
+    tok_minus       shift, and go to state 42
+    tok_lparen      shift, and go to state 43
+    tok_lbrace      shift, and go to state 44
+    tok_rbrace      shift, and go to state 67
+    tok_not         shift, and go to state 45
+    tok_identifier  shift, and go to state 46
+    tok_number      shift, and go to state 47
+
+    InitVal     go to state 68
+    InitVals    go to state 69
+    Exp         go to state 49
+    LVal        go to state 50
+    PrimaryExp  go to state 51
+    UnaryExp    go to state 52
+    MulExp      go to state 53
+    AddExp      go to state 54
+
+
+State 45
+
+   67 UnaryExp: tok_not • UnaryExp
+
+    tok_plus        shift, and go to state 41
+    tok_minus       shift, and go to state 42
+    tok_lparen      shift, and go to state 43
+    tok_not         shift, and go to state 45
+    tok_identifier  shift, and go to state 46
+    tok_number      shift, and go to state 47
+
+    LVal        go to state 50
+    PrimaryExp  go to state 51
+    UnaryExp    go to state 70
+
+
+State 46
+
+   57 LVal: tok_identifier • LValSelector
+   64 UnaryExp: tok_identifier • tok_lparen FuncRParams tok_rparen
+
+    tok_lparen  shift, and go to state 71
+
+    $default  reduce using rule 58 (LValSelector)
+
+    LValSelector  go to state 72
+
+
+State 47
+
+   62 PrimaryExp: tok_number •
+
+    $default  reduce using rule 62 (PrimaryExp)
+
+
+State 48
+
+   23 VarDef: tok_identifier ConstSelector tok_assign InitVal •
+
+    $default  reduce using rule 23 (VarDef)
+
+
+State 49
+
+   24 InitVal: Exp •
+
+    $default  reduce using rule 24 (InitVal)
+
+
+State 50
+
+   61 PrimaryExp: LVal •
+
+    $default  reduce using rule 61 (PrimaryExp)
+
+
+State 51
+
+   63 UnaryExp: PrimaryExp •
+
+    $default  reduce using rule 63 (UnaryExp)
+
+
+State 52
+
+   70 MulExp: UnaryExp •
+
+    $default  reduce using rule 70 (MulExp)
+
+
+State 53
+
+   71 MulExp: MulExp • tok_star UnaryExp
+   72       | MulExp • tok_slash UnaryExp
+   73       | MulExp • tok_mod UnaryExp
+   74 AddExp: MulExp •
+
+    tok_star   shift, and go to state 73
+    tok_slash  shift, and go to state 74
+    tok_mod    shift, and go to state 75
+
+    $default  reduce using rule 74 (AddExp)
+
+
+State 54
+
+   55 Exp: AddExp •
+   75 AddExp: AddExp • tok_plus MulExp
+   76       | AddExp • tok_minus MulExp
+
+    tok_plus   shift, and go to state 76
+    tok_minus  shift, and go to state 77
+
+    $default  reduce using rule 55 (Exp)
+
+
+State 55
+
+   75 AddExp: AddExp • tok_plus MulExp
+   76       | AddExp • tok_minus MulExp
+   89 ConstExp: AddExp •
+
+    tok_plus   shift, and go to state 76
+    tok_minus  shift, and go to state 77
+
+    $default  reduce using rule 89 (ConstExp)
+
+
+State 56
+
+   13 ConstSelector: ConstSelector tok_lbracket ConstExp • tok_rbracket
+
+    tok_rbracket  shift, and go to state 78
+
+
+State 57
+
+   30 FuncDef: tok_void tok_identifier tok_lparen FuncFParams tok_rparen • Block
+
+    tok_lbrace  shift, and go to state 61
+
+    Block  go to state 79
+
+
+State 58
+
+   11 ConstDef: tok_identifier ConstSelector tok_assign • ConstInitVal
+
+    tok_plus        shift, and go to state 41
+    tok_minus       shift, and go to state 42
+    tok_lparen      shift, and go to state 43
+    tok_lbrace      shift, and go to state 80
+    tok_not         shift, and go to state 45
+    tok_identifier  shift, and go to state 46
+    tok_number      shift, and go to state 47
+
+    ConstInitVal  go to state 81
+    LVal          go to state 50
+    PrimaryExp    go to state 51
+    UnaryExp      go to state 52
+    MulExp        go to state 53
+    AddExp        go to state 55
+    ConstExp      go to state 82
+
+
+State 59
+
+   10 ConstDecls: ConstDecls tok_comma ConstDef •
+
+    $default  reduce using rule 10 (ConstDecls)
+
+
+State 60
+
+   36 FuncFParam: tok_int tok_identifier tok_lbracket • tok_rbracket FuncFParamDim
+
+    tok_rbracket  shift, and go to state 83
+
+
+State 61
+
+   39 Block: tok_lbrace • BlockItems tok_rbrace
+
+    $default  reduce using rule 40 (BlockItems)
+
+    BlockItems  go to state 84
+
+
+State 62
+
+   29 FuncDef: tok_int tok_identifier tok_lparen FuncFParams tok_rparen Block •
+
+    $default  reduce using rule 29 (FuncDef)
+
+
+State 63
+
+   34 FuncFParamList: FuncFParamList tok_comma FuncFParam •
+
+    $default  reduce using rule 34 (FuncFParamList)
+
+
+State 64
+
+   65 UnaryExp: tok_plus UnaryExp •
+
+    $default  reduce using rule 65 (UnaryExp)
+
+
+State 65
+
+   66 UnaryExp: tok_minus UnaryExp •
+
+    $default  reduce using rule 66 (UnaryExp)
+
+
+State 66
+
+   60 PrimaryExp: tok_lparen Exp • tok_rparen
+
+    tok_rparen  shift, and go to state 85
+
+
+State 67
+
+   25 InitVal: tok_lbrace tok_rbrace •
+
+    $default  reduce using rule 25 (InitVal)
+
+
+State 68
+
+   27 InitVals: InitVal •
+
+    $default  reduce using rule 27 (InitVals)
+
+
+State 69
+
+   26 InitVal: tok_lbrace InitVals • tok_rbrace
+   28 InitVals: InitVals • tok_comma InitVal
+
+    tok_comma   shift, and go to state 86
+    tok_rbrace  shift, and go to state 87
+
+
+State 70
+
+   67 UnaryExp: tok_not UnaryExp •
+
+    $default  reduce using rule 67 (UnaryExp)
+
+
+State 71
+
+   64 UnaryExp: tok_identifier tok_lparen • FuncRParams tok_rparen
+
+    $default  reduce using rule 68 (FuncRParams)
+
+    FuncRParams  go to state 88
+
+
+State 72
+
+   57 LVal: tok_identifier LValSelector •
+   59 LValSelector: LValSelector • tok_lbracket Exp tok_rbracket
+
+    tok_lbracket  shift, and go to state 89
+
+    $default  reduce using rule 57 (LVal)
+
+
+State 73
+
+   71 MulExp: MulExp tok_star • UnaryExp
+
+    tok_plus        shift, and go to state 41
+    tok_minus       shift, and go to state 42
+    tok_lparen      shift, and go to state 43
+    tok_not         shift, and go to state 45
+    tok_identifier  shift, and go to state 46
+    tok_number      shift, and go to state 47
+
+    LVal        go to state 50
+    PrimaryExp  go to state 51
+    UnaryExp    go to state 90
+
+
+State 74
+
+   72 MulExp: MulExp tok_slash • UnaryExp
+
+    tok_plus        shift, and go to state 41
+    tok_minus       shift, and go to state 42
+    tok_lparen      shift, and go to state 43
+    tok_not         shift, and go to state 45
+    tok_identifier  shift, and go to state 46
+    tok_number      shift, and go to state 47
+
+    LVal        go to state 50
+    PrimaryExp  go to state 51
+    UnaryExp    go to state 91
+
+
+State 75
+
+   73 MulExp: MulExp tok_mod • UnaryExp
+
+    tok_plus        shift, and go to state 41
+    tok_minus       shift, and go to state 42
+    tok_lparen      shift, and go to state 43
+    tok_not         shift, and go to state 45
+    tok_identifier  shift, and go to state 46
+    tok_number      shift, and go to state 47
+
+    LVal        go to state 50
+    PrimaryExp  go to state 51
+    UnaryExp    go to state 92
+
+
+State 76
+
+   75 AddExp: AddExp tok_plus • MulExp
+
+    tok_plus        shift, and go to state 41
+    tok_minus       shift, and go to state 42
+    tok_lparen      shift, and go to state 43
+    tok_not         shift, and go to state 45
+    tok_identifier  shift, and go to state 46
+    tok_number      shift, and go to state 47
+
+    LVal        go to state 50
+    PrimaryExp  go to state 51
+    UnaryExp    go to state 52
+    MulExp      go to state 93
+
+
+State 77
+
+   76 AddExp: AddExp tok_minus • MulExp
+
+    tok_plus        shift, and go to state 41
+    tok_minus       shift, and go to state 42
+    tok_lparen      shift, and go to state 43
+    tok_not         shift, and go to state 45
+    tok_identifier  shift, and go to state 46
+    tok_number      shift, and go to state 47
+
+    LVal        go to state 50
+    PrimaryExp  go to state 51
+    UnaryExp    go to state 52
+    MulExp      go to state 94
+
+
+State 78
+
+   13 ConstSelector: ConstSelector tok_lbracket ConstExp tok_rbracket •
+
+    $default  reduce using rule 13 (ConstSelector)
+
+
+State 79
+
+   30 FuncDef: tok_void tok_identifier tok_lparen FuncFParams tok_rparen Block •
+
+    $default  reduce using rule 30 (FuncDef)
+
+
+State 80
+
+   15 ConstInitVal: tok_lbrace • tok_rbrace
+   16             | tok_lbrace • ConstInits tok_rbrace
+
+    tok_plus        shift, and go to state 41
+    tok_minus       shift, and go to state 42
+    tok_lparen      shift, and go to state 43
+    tok_lbrace      shift, and go to state 80
+    tok_rbrace      shift, and go to state 95
+    tok_not         shift, and go to state 45
+    tok_identifier  shift, and go to state 46
+    tok_number      shift, and go to state 47
+
+    ConstInitVal  go to state 96
+    ConstInits    go to state 97
+    LVal          go to state 50
+    PrimaryExp    go to state 51
+    UnaryExp      go to state 52
+    MulExp        go to state 53
+    AddExp        go to state 55
+    ConstExp      go to state 82
+
+
+State 81
+
+   11 ConstDef: tok_identifier ConstSelector tok_assign ConstInitVal •
+
+    $default  reduce using rule 11 (ConstDef)
+
+
+State 82
+
+   14 ConstInitVal: ConstExp •
+
+    $default  reduce using rule 14 (ConstInitVal)
+
+
+State 83
+
+   36 FuncFParam: tok_int tok_identifier tok_lbracket tok_rbracket • FuncFParamDim
+
+    $default  reduce using rule 37 (FuncFParamDim)
+
+    FuncFParamDim  go to state 98
+
+
+State 84
+
+   39 Block: tok_lbrace BlockItems • tok_rbrace
+   41 BlockItems: BlockItems • BlockItem
+
+    tok_int         shift, and go to state 99
+    tok_const       shift, and go to state 3
+    tok_semicolon   shift, and go to state 100
+    tok_plus        shift, and go to state 41
+    tok_minus       shift, and go to state 42
+    tok_lparen      shift, and go to state 43
+    tok_lbrace      shift, and go to state 61
+    tok_rbrace      shift, and go to state 101
+    tok_if          shift, and go to state 102
+    tok_not         shift, and go to state 45
+    tok_while       shift, and go to state 103
+    tok_break       shift, and go to state 104
+    tok_continue    shift, and go to state 105
+    tok_return      shift, and go to state 106
+    tok_identifier  shift, and go to state 46
+    tok_number      shift, and go to state 47
+
+    Decl        go to state 107
+    ConstDecl   go to state 8
+    VarDecl     go to state 9
+    Block       go to state 108
+    BlockItem   go to state 109
+    Stmt        go to state 110
+    Exp         go to state 111
+    LVal        go to state 112
+    PrimaryExp  go to state 51
+    UnaryExp    go to state 52
+    MulExp      go to state 53
+    AddExp      go to state 54
+
+
+State 85
+
+   60 PrimaryExp: tok_lparen Exp tok_rparen •
+
+    $default  reduce using rule 60 (PrimaryExp)
+
+
+State 86
+
+   28 InitVals: InitVals tok_comma • InitVal
+
+    tok_plus        shift, and go to state 41
+    tok_minus       shift, and go to state 42
+    tok_lparen      shift, and go to state 43
+    tok_lbrace      shift, and go to state 44
+    tok_not         shift, and go to state 45
+    tok_identifier  shift, and go to state 46
+    tok_number      shift, and go to state 47
+
+    InitVal     go to state 113
+    Exp         go to state 49
+    LVal        go to state 50
+    PrimaryExp  go to state 51
+    UnaryExp    go to state 52
+    MulExp      go to state 53
+    AddExp      go to state 54
+
+
+State 87
+
+   26 InitVal: tok_lbrace InitVals tok_rbrace •
+
+    $default  reduce using rule 26 (InitVal)
+
+
+State 88
+
+   64 UnaryExp: tok_identifier tok_lparen FuncRParams • tok_rparen
+   69 FuncRParams: FuncRParams • tok_comma Exp
+
+    tok_comma   shift, and go to state 114
+    tok_rparen  shift, and go to state 115
+
+
+State 89
+
+   59 LValSelector: LValSelector tok_lbracket • Exp tok_rbracket
+
+    tok_plus        shift, and go to state 41
+    tok_minus       shift, and go to state 42
+    tok_lparen      shift, and go to state 43
+    tok_not         shift, and go to state 45
+    tok_identifier  shift, and go to state 46
+    tok_number      shift, and go to state 47
+
+    Exp         go to state 116
+    LVal        go to state 50
+    PrimaryExp  go to state 51
+    UnaryExp    go to state 52
+    MulExp      go to state 53
+    AddExp      go to state 54
+
+
+State 90
+
+   71 MulExp: MulExp tok_star UnaryExp •
+
+    $default  reduce using rule 71 (MulExp)
+
+
+State 91
+
+   72 MulExp: MulExp tok_slash UnaryExp •
+
+    $default  reduce using rule 72 (MulExp)
+
+
+State 92
+
+   73 MulExp: MulExp tok_mod UnaryExp •
+
+    $default  reduce using rule 73 (MulExp)
+
+
+State 93
+
+   71 MulExp: MulExp • tok_star UnaryExp
+   72       | MulExp • tok_slash UnaryExp
+   73       | MulExp • tok_mod UnaryExp
+   75 AddExp: AddExp tok_plus MulExp •
+
+    tok_star   shift, and go to state 73
+    tok_slash  shift, and go to state 74
+    tok_mod    shift, and go to state 75
+
+    $default  reduce using rule 75 (AddExp)
+
+
+State 94
+
+   71 MulExp: MulExp • tok_star UnaryExp
+   72       | MulExp • tok_slash UnaryExp
+   73       | MulExp • tok_mod UnaryExp
+   76 AddExp: AddExp tok_minus MulExp •
+
+    tok_star   shift, and go to state 73
+    tok_slash  shift, and go to state 74
+    tok_mod    shift, and go to state 75
+
+    $default  reduce using rule 76 (AddExp)
+
+
+State 95
+
+   15 ConstInitVal: tok_lbrace tok_rbrace •
+
+    $default  reduce using rule 15 (ConstInitVal)
+
+
+State 96
+
+   17 ConstInits: ConstInitVal •
+
+    $default  reduce using rule 17 (ConstInits)
+
+
+State 97
+
+   16 ConstInitVal: tok_lbrace ConstInits • tok_rbrace
+   18 ConstInits: ConstInits • tok_comma ConstInitVal
+
+    tok_comma   shift, and go to state 117
+    tok_rbrace  shift, and go to state 118
+
+
+State 98
+
+   36 FuncFParam: tok_int tok_identifier tok_lbracket tok_rbracket FuncFParamDim •
+   38 FuncFParamDim: FuncFParamDim • tok_lbracket Exp tok_rbracket
+
+    tok_lbracket  shift, and go to state 119
+
+    $default  reduce using rule 36 (FuncFParam)
+
+
+State 99
+
+   19 VarDecl: tok_int • VarDecls tok_semicolon
+
+    tok_identifier  shift, and go to state 32
+
+    VarDecls  go to state 12
+    VarDef    go to state 13
+
+
+State 100
+
+   45 Stmt: tok_semicolon •
+
+    $default  reduce using rule 45 (Stmt)
+
+
+State 101
+
+   39 Block: tok_lbrace BlockItems tok_rbrace •
+
+    $default  reduce using rule 39 (Block)
+
+
+State 102
+
+   48 Stmt: tok_if • tok_lparen Cond tok_rparen Stmt
+   49     | tok_if • tok_lparen Cond tok_rparen Stmt tok_else Stmt
+
+    tok_lparen  shift, and go to state 120
+
+
+State 103
+
+   50 Stmt: tok_while • tok_lparen Cond tok_rparen Stmt
+
+    tok_lparen  shift, and go to state 121
+
+
+State 104
+
+   51 Stmt: tok_break • tok_semicolon
+
+    tok_semicolon  shift, and go to state 122
+
+
+State 105
+
+   52 Stmt: tok_continue • tok_semicolon
+
+    tok_semicolon  shift, and go to state 123
+
+
+State 106
+
+   53 Stmt: tok_return • Exp tok_semicolon
+   54     | tok_return • tok_semicolon
+
+    tok_semicolon   shift, and go to state 124
+    tok_plus        shift, and go to state 41
+    tok_minus       shift, and go to state 42
+    tok_lparen      shift, and go to state 43
+    tok_not         shift, and go to state 45
+    tok_identifier  shift, and go to state 46
+    tok_number      shift, and go to state 47
+
+    Exp         go to state 125
+    LVal        go to state 50
+    PrimaryExp  go to state 51
+    UnaryExp    go to state 52
+    MulExp      go to state 53
+    AddExp      go to state 54
+
+
+State 107
+
+   43 BlockItem: Decl •
+
+    $default  reduce using rule 43 (BlockItem)
+
+
+State 108
+
+   47 Stmt: Block •
+
+    $default  reduce using rule 47 (Stmt)
+
+
+State 109
+
+   41 BlockItems: BlockItems BlockItem •
+
+    $default  reduce using rule 41 (BlockItems)
+
+
+State 110
+
+   42 BlockItem: Stmt •
+
+    $default  reduce using rule 42 (BlockItem)
+
+
+State 111
+
+   46 Stmt: Exp • tok_semicolon
+
+    tok_semicolon  shift, and go to state 126
+
+
+State 112
+
+   44 Stmt: LVal • tok_assign Exp tok_semicolon
+   61 PrimaryExp: LVal •
+
+    tok_assign  shift, and go to state 127
+
+    $default  reduce using rule 61 (PrimaryExp)
+
+
+State 113
+
+   28 InitVals: InitVals tok_comma InitVal •
+
+    $default  reduce using rule 28 (InitVals)
+
+
+State 114
+
+   69 FuncRParams: FuncRParams tok_comma • Exp
+
+    tok_plus        shift, and go to state 41
+    tok_minus       shift, and go to state 42
+    tok_lparen      shift, and go to state 43
+    tok_not         shift, and go to state 45
+    tok_identifier  shift, and go to state 46
+    tok_number      shift, and go to state 47
+
+    Exp         go to state 128
+    LVal        go to state 50
+    PrimaryExp  go to state 51
+    UnaryExp    go to state 52
+    MulExp      go to state 53
+    AddExp      go to state 54
+
+
+State 115
+
+   64 UnaryExp: tok_identifier tok_lparen FuncRParams tok_rparen •
+
+    $default  reduce using rule 64 (UnaryExp)
+
+
+State 116
+
+   59 LValSelector: LValSelector tok_lbracket Exp • tok_rbracket
+
+    tok_rbracket  shift, and go to state 129
+
+
+State 117
+
+   18 ConstInits: ConstInits tok_comma • ConstInitVal
+
+    tok_plus        shift, and go to state 41
+    tok_minus       shift, and go to state 42
+    tok_lparen      shift, and go to state 43
+    tok_lbrace      shift, and go to state 80
+    tok_not         shift, and go to state 45
+    tok_identifier  shift, and go to state 46
+    tok_number      shift, and go to state 47
+
+    ConstInitVal  go to state 130
+    LVal          go to state 50
+    PrimaryExp    go to state 51
+    UnaryExp      go to state 52
+    MulExp        go to state 53
+    AddExp        go to state 55
+    ConstExp      go to state 82
+
+
+State 118
+
+   16 ConstInitVal: tok_lbrace ConstInits tok_rbrace •
+
+    $default  reduce using rule 16 (ConstInitVal)
+
+
+State 119
+
+   38 FuncFParamDim: FuncFParamDim tok_lbracket • Exp tok_rbracket
+
+    tok_plus        shift, and go to state 41
+    tok_minus       shift, and go to state 42
+    tok_lparen      shift, and go to state 43
+    tok_not         shift, and go to state 45
+    tok_identifier  shift, and go to state 46
+    tok_number      shift, and go to state 47
+
+    Exp         go to state 131
+    LVal        go to state 50
+    PrimaryExp  go to state 51
+    UnaryExp    go to state 52
+    MulExp      go to state 53
+    AddExp      go to state 54
+
+
+State 120
+
+   48 Stmt: tok_if tok_lparen • Cond tok_rparen Stmt
+   49     | tok_if tok_lparen • Cond tok_rparen Stmt tok_else Stmt
+
+    tok_plus        shift, and go to state 41
+    tok_minus       shift, and go to state 42
+    tok_lparen      shift, and go to state 43
+    tok_not         shift, and go to state 45
+    tok_identifier  shift, and go to state 46
+    tok_number      shift, and go to state 47
+
+    Cond        go to state 132
+    LVal        go to state 50
+    PrimaryExp  go to state 51
+    UnaryExp    go to state 52
+    MulExp      go to state 53
+    AddExp      go to state 133
+    RelExp      go to state 134
+    EqExp       go to state 135
+    LAndExp     go to state 136
+    LOrExp      go to state 137
+
+
+State 121
+
+   50 Stmt: tok_while tok_lparen • Cond tok_rparen Stmt
+
+    tok_plus        shift, and go to state 41
+    tok_minus       shift, and go to state 42
+    tok_lparen      shift, and go to state 43
+    tok_not         shift, and go to state 45
+    tok_identifier  shift, and go to state 46
+    tok_number      shift, and go to state 47
+
+    Cond        go to state 138
+    LVal        go to state 50
+    PrimaryExp  go to state 51
+    UnaryExp    go to state 52
+    MulExp      go to state 53
+    AddExp      go to state 133
+    RelExp      go to state 134
+    EqExp       go to state 135
+    LAndExp     go to state 136
+    LOrExp      go to state 137
+
+
+State 122
+
+   51 Stmt: tok_break tok_semicolon •
+
+    $default  reduce using rule 51 (Stmt)
+
+
+State 123
+
+   52 Stmt: tok_continue tok_semicolon •
+
+    $default  reduce using rule 52 (Stmt)
+
+
+State 124
+
+   54 Stmt: tok_return tok_semicolon •
+
+    $default  reduce using rule 54 (Stmt)
+
+
+State 125
+
+   53 Stmt: tok_return Exp • tok_semicolon
+
+    tok_semicolon  shift, and go to state 139
+
+
+State 126
+
+   46 Stmt: Exp tok_semicolon •
+
+    $default  reduce using rule 46 (Stmt)
+
+
+State 127
+
+   44 Stmt: LVal tok_assign • Exp tok_semicolon
+
+    tok_plus        shift, and go to state 41
+    tok_minus       shift, and go to state 42
+    tok_lparen      shift, and go to state 43
+    tok_not         shift, and go to state 45
+    tok_identifier  shift, and go to state 46
+    tok_number      shift, and go to state 47
+
+    Exp         go to state 140
+    LVal        go to state 50
+    PrimaryExp  go to state 51
+    UnaryExp    go to state 52
+    MulExp      go to state 53
+    AddExp      go to state 54
+
+
+State 128
+
+   69 FuncRParams: FuncRParams tok_comma Exp •
+
+    $default  reduce using rule 69 (FuncRParams)
+
+
+State 129
+
+   59 LValSelector: LValSelector tok_lbracket Exp tok_rbracket •
+
+    $default  reduce using rule 59 (LValSelector)
+
+
+State 130
+
+   18 ConstInits: ConstInits tok_comma ConstInitVal •
+
+    $default  reduce using rule 18 (ConstInits)
+
+
+State 131
+
+   38 FuncFParamDim: FuncFParamDim tok_lbracket Exp • tok_rbracket
+
+    tok_rbracket  shift, and go to state 141
+
+
+State 132
+
+   48 Stmt: tok_if tok_lparen Cond • tok_rparen Stmt
+   49     | tok_if tok_lparen Cond • tok_rparen Stmt tok_else Stmt
+
+    tok_rparen  shift, and go to state 142
+
+
+State 133
+
+   75 AddExp: AddExp • tok_plus MulExp
+   76       | AddExp • tok_minus MulExp
+   77 RelExp: AddExp •
+
+    tok_plus   shift, and go to state 76
+    tok_minus  shift, and go to state 77
+
+    $default  reduce using rule 77 (RelExp)
+
+
+State 134
+
+   78 RelExp: RelExp • tok_gt AddExp
+   79       | RelExp • tok_lt AddExp
+   80       | RelExp • tok_ge AddExp
+   81       | RelExp • tok_le AddExp
+   82 EqExp: RelExp •
+
+    tok_lt  shift, and go to state 143
+    tok_gt  shift, and go to state 144
+    tok_le  shift, and go to state 145
+    tok_ge  shift, and go to state 146
+
+    $default  reduce using rule 82 (EqExp)
+
+
+State 135
+
+   83 EqExp: EqExp • tok_eq RelExp
+   84      | EqExp • tok_ne RelExp
+   85 LAndExp: EqExp •
+
+    tok_eq  shift, and go to state 147
+    tok_ne  shift, and go to state 148
+
+    $default  reduce using rule 85 (LAndExp)
+
+
+State 136
+
+   86 LAndExp: LAndExp • tok_and EqExp
+   87 LOrExp: LAndExp •
+
+    tok_and  shift, and go to state 149
+
+    $default  reduce using rule 87 (LOrExp)
+
+
+State 137
+
+   56 Cond: LOrExp •
+   88 LOrExp: LOrExp • tok_or LAndExp
+
+    tok_or  shift, and go to state 150
+
+    $default  reduce using rule 56 (Cond)
+
+
+State 138
+
+   50 Stmt: tok_while tok_lparen Cond • tok_rparen Stmt
+
+    tok_rparen  shift, and go to state 151
+
+
+State 139
+
+   53 Stmt: tok_return Exp tok_semicolon •
+
+    $default  reduce using rule 53 (Stmt)
+
+
+State 140
+
+   44 Stmt: LVal tok_assign Exp • tok_semicolon
+
+    tok_semicolon  shift, and go to state 152
+
+
+State 141
+
+   38 FuncFParamDim: FuncFParamDim tok_lbracket Exp tok_rbracket •
+
+    $default  reduce using rule 38 (FuncFParamDim)
+
+
+State 142
+
+   48 Stmt: tok_if tok_lparen Cond tok_rparen • Stmt
+   49     | tok_if tok_lparen Cond tok_rparen • Stmt tok_else Stmt
+
+    tok_semicolon   shift, and go to state 100
+    tok_plus        shift, and go to state 41
+    tok_minus       shift, and go to state 42
+    tok_lparen      shift, and go to state 43
+    tok_lbrace      shift, and go to state 61
+    tok_if          shift, and go to state 102
+    tok_not         shift, and go to state 45
+    tok_while       shift, and go to state 103
+    tok_break       shift, and go to state 104
+    tok_continue    shift, and go to state 105
+    tok_return      shift, and go to state 106
+    tok_identifier  shift, and go to state 46
+    tok_number      shift, and go to state 47
+
+    Block       go to state 108
+    Stmt        go to state 153
+    Exp         go to state 111
+    LVal        go to state 112
+    PrimaryExp  go to state 51
+    UnaryExp    go to state 52
+    MulExp      go to state 53
+    AddExp      go to state 54
+
+
+State 143
+
+   79 RelExp: RelExp tok_lt • AddExp
+
+    tok_plus        shift, and go to state 41
+    tok_minus       shift, and go to state 42
+    tok_lparen      shift, and go to state 43
+    tok_not         shift, and go to state 45
+    tok_identifier  shift, and go to state 46
+    tok_number      shift, and go to state 47
+
+    LVal        go to state 50
+    PrimaryExp  go to state 51
+    UnaryExp    go to state 52
+    MulExp      go to state 53
+    AddExp      go to state 154
+
+
+State 144
+
+   78 RelExp: RelExp tok_gt • AddExp
+
+    tok_plus        shift, and go to state 41
+    tok_minus       shift, and go to state 42
+    tok_lparen      shift, and go to state 43
+    tok_not         shift, and go to state 45
+    tok_identifier  shift, and go to state 46
+    tok_number      shift, and go to state 47
+
+    LVal        go to state 50
+    PrimaryExp  go to state 51
+    UnaryExp    go to state 52
+    MulExp      go to state 53
+    AddExp      go to state 155
+
+
+State 145
+
+   81 RelExp: RelExp tok_le • AddExp
+
+    tok_plus        shift, and go to state 41
+    tok_minus       shift, and go to state 42
+    tok_lparen      shift, and go to state 43
+    tok_not         shift, and go to state 45
+    tok_identifier  shift, and go to state 46
+    tok_number      shift, and go to state 47
+
+    LVal        go to state 50
+    PrimaryExp  go to state 51
+    UnaryExp    go to state 52
+    MulExp      go to state 53
+    AddExp      go to state 156
+
+
+State 146
+
+   80 RelExp: RelExp tok_ge • AddExp
+
+    tok_plus        shift, and go to state 41
+    tok_minus       shift, and go to state 42
+    tok_lparen      shift, and go to state 43
+    tok_not         shift, and go to state 45
+    tok_identifier  shift, and go to state 46
+    tok_number      shift, and go to state 47
+
+    LVal        go to state 50
+    PrimaryExp  go to state 51
+    UnaryExp    go to state 52
+    MulExp      go to state 53
+    AddExp      go to state 157
+
+
+State 147
+
+   83 EqExp: EqExp tok_eq • RelExp
+
+    tok_plus        shift, and go to state 41
+    tok_minus       shift, and go to state 42
+    tok_lparen      shift, and go to state 43
+    tok_not         shift, and go to state 45
+    tok_identifier  shift, and go to state 46
+    tok_number      shift, and go to state 47
+
+    LVal        go to state 50
+    PrimaryExp  go to state 51
+    UnaryExp    go to state 52
+    MulExp      go to state 53
+    AddExp      go to state 133
+    RelExp      go to state 158
+
+
+State 148
+
+   84 EqExp: EqExp tok_ne • RelExp
+
+    tok_plus        shift, and go to state 41
+    tok_minus       shift, and go to state 42
+    tok_lparen      shift, and go to state 43
+    tok_not         shift, and go to state 45
+    tok_identifier  shift, and go to state 46
+    tok_number      shift, and go to state 47
+
+    LVal        go to state 50
+    PrimaryExp  go to state 51
+    UnaryExp    go to state 52
+    MulExp      go to state 53
+    AddExp      go to state 133
+    RelExp      go to state 159
+
+
+State 149
+
+   86 LAndExp: LAndExp tok_and • EqExp
+
+    tok_plus        shift, and go to state 41
+    tok_minus       shift, and go to state 42
+    tok_lparen      shift, and go to state 43
+    tok_not         shift, and go to state 45
+    tok_identifier  shift, and go to state 46
+    tok_number      shift, and go to state 47
+
+    LVal        go to state 50
+    PrimaryExp  go to state 51
+    UnaryExp    go to state 52
+    MulExp      go to state 53
+    AddExp      go to state 133
+    RelExp      go to state 134
+    EqExp       go to state 160
+
+
+State 150
+
+   88 LOrExp: LOrExp tok_or • LAndExp
+
+    tok_plus        shift, and go to state 41
+    tok_minus       shift, and go to state 42
+    tok_lparen      shift, and go to state 43
+    tok_not         shift, and go to state 45
+    tok_identifier  shift, and go to state 46
+    tok_number      shift, and go to state 47
+
+    LVal        go to state 50
+    PrimaryExp  go to state 51
+    UnaryExp    go to state 52
+    MulExp      go to state 53
+    AddExp      go to state 133
+    RelExp      go to state 134
+    EqExp       go to state 135
+    LAndExp     go to state 161
+
+
+State 151
+
+   50 Stmt: tok_while tok_lparen Cond tok_rparen • Stmt
+
+    tok_semicolon   shift, and go to state 100
+    tok_plus        shift, and go to state 41
+    tok_minus       shift, and go to state 42
+    tok_lparen      shift, and go to state 43
+    tok_lbrace      shift, and go to state 61
+    tok_if          shift, and go to state 102
+    tok_not         shift, and go to state 45
+    tok_while       shift, and go to state 103
+    tok_break       shift, and go to state 104
+    tok_continue    shift, and go to state 105
+    tok_return      shift, and go to state 106
+    tok_identifier  shift, and go to state 46
+    tok_number      shift, and go to state 47
+
+    Block       go to state 108
+    Stmt        go to state 162
+    Exp         go to state 111
+    LVal        go to state 112
+    PrimaryExp  go to state 51
+    UnaryExp    go to state 52
+    MulExp      go to state 53
+    AddExp      go to state 54
+
+
+State 152
+
+   44 Stmt: LVal tok_assign Exp tok_semicolon •
+
+    $default  reduce using rule 44 (Stmt)
+
+
+State 153
+
+   48 Stmt: tok_if tok_lparen Cond tok_rparen Stmt •
+   49     | tok_if tok_lparen Cond tok_rparen Stmt • tok_else Stmt
+
+    tok_else  shift, and go to state 163
+
+    tok_else  [reduce using rule 48 (Stmt)]
+    $default  reduce using rule 48 (Stmt)
+
+
+State 154
+
+   75 AddExp: AddExp • tok_plus MulExp
+   76       | AddExp • tok_minus MulExp
+   79 RelExp: RelExp tok_lt AddExp •
+
+    tok_plus   shift, and go to state 76
+    tok_minus  shift, and go to state 77
+
+    $default  reduce using rule 79 (RelExp)
+
+
+State 155
+
+   75 AddExp: AddExp • tok_plus MulExp
+   76       | AddExp • tok_minus MulExp
+   78 RelExp: RelExp tok_gt AddExp •
+
+    tok_plus   shift, and go to state 76
+    tok_minus  shift, and go to state 77
+
+    $default  reduce using rule 78 (RelExp)
+
+
+State 156
+
+   75 AddExp: AddExp • tok_plus MulExp
+   76       | AddExp • tok_minus MulExp
+   81 RelExp: RelExp tok_le AddExp •
+
+    tok_plus   shift, and go to state 76
+    tok_minus  shift, and go to state 77
+
+    $default  reduce using rule 81 (RelExp)
+
+
+State 157
+
+   75 AddExp: AddExp • tok_plus MulExp
+   76       | AddExp • tok_minus MulExp
+   80 RelExp: RelExp tok_ge AddExp •
+
+    tok_plus   shift, and go to state 76
+    tok_minus  shift, and go to state 77
+
+    $default  reduce using rule 80 (RelExp)
+
+
+State 158
+
+   78 RelExp: RelExp • tok_gt AddExp
+   79       | RelExp • tok_lt AddExp
+   80       | RelExp • tok_ge AddExp
+   81       | RelExp • tok_le AddExp
+   83 EqExp: EqExp tok_eq RelExp •
+
+    tok_lt  shift, and go to state 143
+    tok_gt  shift, and go to state 144
+    tok_le  shift, and go to state 145
+    tok_ge  shift, and go to state 146
+
+    $default  reduce using rule 83 (EqExp)
+
+
+State 159
+
+   78 RelExp: RelExp • tok_gt AddExp
+   79       | RelExp • tok_lt AddExp
+   80       | RelExp • tok_ge AddExp
+   81       | RelExp • tok_le AddExp
+   84 EqExp: EqExp tok_ne RelExp •
+
+    tok_lt  shift, and go to state 143
+    tok_gt  shift, and go to state 144
+    tok_le  shift, and go to state 145
+    tok_ge  shift, and go to state 146
+
+    $default  reduce using rule 84 (EqExp)
+
+
+State 160
+
+   83 EqExp: EqExp • tok_eq RelExp
+   84      | EqExp • tok_ne RelExp
+   86 LAndExp: LAndExp tok_and EqExp •
+
+    tok_eq  shift, and go to state 147
+    tok_ne  shift, and go to state 148
+
+    $default  reduce using rule 86 (LAndExp)
+
+
+State 161
+
+   86 LAndExp: LAndExp • tok_and EqExp
+   88 LOrExp: LOrExp tok_or LAndExp •
+
+    tok_and  shift, and go to state 149
+
+    $default  reduce using rule 88 (LOrExp)
+
+
+State 162
+
+   50 Stmt: tok_while tok_lparen Cond tok_rparen Stmt •
+
+    $default  reduce using rule 50 (Stmt)
+
+
+State 163
+
+   49 Stmt: tok_if tok_lparen Cond tok_rparen Stmt tok_else • Stmt
+
+    tok_semicolon   shift, and go to state 100
+    tok_plus        shift, and go to state 41
+    tok_minus       shift, and go to state 42
+    tok_lparen      shift, and go to state 43
+    tok_lbrace      shift, and go to state 61
+    tok_if          shift, and go to state 102
+    tok_not         shift, and go to state 45
+    tok_while       shift, and go to state 103
+    tok_break       shift, and go to state 104
+    tok_continue    shift, and go to state 105
+    tok_return      shift, and go to state 106
+    tok_identifier  shift, and go to state 46
+    tok_number      shift, and go to state 47
+
+    Block       go to state 108
+    Stmt        go to state 164
+    Exp         go to state 111
+    LVal        go to state 112
+    PrimaryExp  go to state 51
+    UnaryExp    go to state 52
+    MulExp      go to state 53
+    AddExp      go to state 54
+
+
+State 164
+
+   49 Stmt: tok_if tok_lparen Cond tok_rparen Stmt tok_else Stmt •
+
+    $default  reduce using rule 49 (Stmt)
