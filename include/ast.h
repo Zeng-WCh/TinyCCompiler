@@ -641,6 +641,8 @@ private:
     WhileStmt *whiles = nullptr;
     // 0 for return, 1 for break, 2 for continue
     int type = -1;
+    bool filled = false;
+    Stmt* next = nullptr;
 
 public:
     Stmt() = default;
@@ -649,10 +651,19 @@ public:
     Stmt(Block *block) : block(block) {}
     Stmt(IfStmt *ifs) : ifs(ifs) {}
     Stmt(WhileStmt *whiles) : whiles(whiles) {}
-    Stmt(int type, Exp *exp = nullptr) : type(type), exp(exp) {}
+    Stmt(int type, Exp *exp = nullptr) : type(type), exp(exp) {
+        if (type == 1 || type == 2) {
+            filled = true;
+        }
+    }
 
     void print(int dep) override;
     llvm::Value* eval() override;
+
+    bool isFilled()
+    {
+        return filled;
+    }
 };
 
 class AddExp : public AST

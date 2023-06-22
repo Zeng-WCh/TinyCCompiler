@@ -1,10 +1,21 @@
 #include "ast.h"
+#include "SymbolTable.h"
+#include <map>
+#include <stack>
 #include <cstdio>
 #include <cassert>
 #include <llvm/IR/Value.h>
 #include <llvm/IR/IRBuilder.h>
 
 using namespace llvm;
+
+extern LLVMContext* TheContext;
+extern IRBuilder<>* Builder;
+extern Module* TheModule;
+
+namespace {
+    SymbolTable sym_table;
+}
 
 void AST::print_space(int n)
 {
@@ -127,6 +138,10 @@ void ConstExp::print(int dep)
     print_space(dep);
     printf("`-ConstExp\n");
     add->print(dep + 2);
+}
+
+Value* ConstExp::eval() {
+    return this->add->eval();
 }
 
 void ConstInits::print(int)
@@ -265,6 +280,14 @@ void WhileStmt::print(int dep)
     body->print(dep + 2);
 }
 
+Value* WhileStmt::eval() {
+    Value *cond = this->condition->eval();
+    Function *TheFunction = Builder->GetInsertBlock()->getParent();
+    // true part
+    BasicBlock *trueBB = BasicBlock::Create(*TheContext, "trueBB", TheFunction);
+    BasicBlock *falseBB = BasicBlock::Create(*TheContext, "falseBB", TheFunction);
+}
+
 void Stmt::print(int dep)
 {
     print_space(dep);
@@ -313,6 +336,56 @@ void Stmt::print(int dep)
     }
 }
 
+Value* Stmt::eval() {
+    if (asg) {
+        return asg->eval();
+    }
+    else if (exp) {
+        if (type == 0) {
+            // return stmt
+            return Builder->CreateRet(exp->eval());
+        }
+        else {
+            return exp->eval();
+        }
+    }
+    else if (block) {
+        return block->eval();
+    }
+    else if (ifs) {
+        return ifs->eval();
+    }
+    else if (whiles) {
+        return whiles->eval();
+    }
+    else {
+        if (type == 0) {
+            // return stmt
+            return Builder->CreateRetVoid();
+        }
+        else if (type == 1) {
+            // break stmt
+            // so we need to find the loop block
+            BasicBlock *curBlock = Builder->GetInsertBlock();
+            // create a new block
+            BasicBlock *newBlock = BasicBlock::Create(*TheContext, "breakBlock", curBlock->getParent());
+            // jump to the new block
+            return Builder->CreateBr(newBlock);
+        }
+        else if (type == 2) {
+            // continue stmt
+            // so we need to find the loop block
+            BasicBlock *curBlock = Builder->GetInsertBlock();
+            // jump to the loop block
+            return Builder->CreateBr(curBlock);
+        }
+        else {
+            // empty stmt
+            return nullptr;
+        }
+    }
+}
+
 void AddExp::print(int dep)
 {
     print_space(dep);
@@ -330,6 +403,24 @@ void AddExp::print(int dep)
     }
 }
 
+Value* AddExp::eval() {
+    if (add_exp && mul_exp) {
+        Value *left = add_exp->eval();
+        Value *right = mul_exp->eval();
+        switch (op) {
+            case '+':
+                return Builder->CreateAdd(left, right);
+            case '-':
+                return Builder->CreateSub(left, right);
+            default:
+                return nullptr;
+        }
+    }
+    else {
+        return mul_exp->eval();
+    }
+}
+
 void Exp::print(int dep)
 {
     print_space(dep);
@@ -337,11 +428,19 @@ void Exp::print(int dep)
     add_exp->print(dep + 2);
 }
 
+Value* Exp::eval() {
+    return add_exp->eval();
+}
+
 void Cond::print(int dep)
 {
     print_space(dep);
     printf("`-Cond\n");
     lor_exp->print(dep + 2);
+}
+
+Value* Cond::eval() {
+    return lor_exp->eval();
 }
 
 void LVal::print(int dep)
@@ -354,6 +453,59 @@ void LVal::print(int dep)
     {
         selector->print(dep + 2);
     }
+}
+
+Value* LVal::eval() {
+    Value *val = TheModule->getNamedGlobal(ident);
+    if (val == nullptr) {
+        // try local
+        val = sym_table.lookup(ident);
+        if (val == nullptr) {
+            // not found
+            fprintf(stderr, "Error: variable %s not found\n", ident.c_str());
+            return nullptr;
+        }
+    }
+    else {
+        // TODO TYPE CHECK
+        if (this->selectors.empty()) {
+            // just a variable
+            return val;
+        }
+        else {
+            // array
+            Type* t = val->getType();
+            // Type Check
+            if (t->isArrayTy()) {
+                // ok
+            }
+            else {
+                fprintf(stderr, "Error: %s is not an array\n", ident.c_str());
+                return nullptr;
+            }
+            for (auto selector : selectors) {
+                if (t->isArrayTy()) {
+                // ok
+                }
+                else {
+                    fprintf(stderr, "Error: %s is not an array\n", ident.c_str());
+                    return nullptr;
+                }
+                Value *idx = selector->eval();
+                if (idx == nullptr) {
+                    return nullptr;
+                }
+                if (idx->getType() != Type::getInt32Ty(*TheContext)) {
+                    fprintf(stderr, "Error: array index must be int\n");
+                    return nullptr;
+                }
+                val = Builder->CreateGEP(t, val, idx);
+                t = t->getArrayElementType();
+            }
+            return val;
+        }
+    }
+    return val;
 }
 
 void PrimaryExp::print(int dep)
@@ -372,6 +524,18 @@ void PrimaryExp::print(int dep)
     {
         print_space(dep + 2);
         printf("`-%d\n", num);
+    }
+}
+
+Value* PrimaryExp::eval() {
+    if (exp) {
+        return exp->eval();
+    }
+    else if (lval) {
+        return lval->eval();
+    }
+    else {
+        return ConstantInt::get(Type::getInt32Ty(*TheContext), num);
     }
 }
 
@@ -400,6 +564,39 @@ void UnaryExp::print(int dep)
     }
 }
 
+Value* UnaryExp::eval() {
+    if (primary_exp) {
+        return primary_exp->eval();    
+    }
+    else if (unary_exp) {
+        auto val = unary_exp->eval();
+        if (op == '+') {
+            return val;
+        }
+        else if (op == '-') {
+            return Builder->CreateNeg(val);
+        }
+        else if (op == '!') {
+            // TODO : check
+            return Builder->CreateNot(val);
+        }
+        return val;
+    }
+    else {
+        // Func Call
+        auto func = TheModule->getFunction(callee);
+        if (func == nullptr) {
+            fprintf(stderr, "Function %s not found\n", callee.c_str());
+            return nullptr;
+        } 
+        std::vector<Value*> args;
+        for (int i = 0; i < this->rparams.size(); i++) {
+            args.push_back(rparams[i]->eval());
+        }
+        return Builder->CreateCall(func, args);
+    }
+}
+
 void MulExp::print(int dep)
 {
     print_space(dep);
@@ -414,6 +611,25 @@ void MulExp::print(int dep)
     else
     {
         unary_exp->print(dep + 2);
+    }
+}
+
+Value* MulExp::eval() {
+    if (mul_exp) {
+        auto left = mul_exp->eval();
+        auto right = unary_exp->eval();
+        if (op == '*') {
+            return Builder->CreateMul(left, right);
+        }
+        else if (op == '/') {
+            return Builder->CreateSDiv(left, right);
+        }
+        else if (op == '%') {
+            return Builder->CreateSRem(left, right);
+        }
+    }
+    else {
+        return unary_exp->eval();
     }
 }
 
@@ -434,6 +650,28 @@ void RelExp::print(int dep)
     }
 }
 
+Value* RelExp::eval() {
+    if (rel) {
+        auto left = rel->eval();
+        auto right = add->eval();
+        if (op == "<") {
+            return Builder->CreateICmpSLT(left, right);
+        }
+        else if (op == ">") {
+            return Builder->CreateICmpSGT(left, right);
+        }
+        else if (op == "<=") {
+            return Builder->CreateICmpSLE(left, right);
+        }
+        else {
+            return Builder->CreateICmpSGE(left, right);
+        }
+    }
+    else {
+        return add->eval();
+    }
+}
+
 void EqExp::print(int dep)
 {
     print_space(dep);
@@ -448,6 +686,22 @@ void EqExp::print(int dep)
     else
     {
         rel->print(dep + 2);
+    }
+}
+
+Value* EqExp::eval() {
+    if (eq) {
+        auto left = eq->eval();
+        auto right = rel->eval();
+        if (op == "==") {
+            return Builder->CreateICmpEQ(left, right);
+        }
+        else {
+            return Builder->CreateICmpNE(left, right);
+        }
+    }
+    else {
+        return rel->eval();
     }
 }
 
@@ -466,6 +720,17 @@ void LAndExp::print(int dep)
     }
 }
 
+Value* LAndExp::eval() {
+    if (land) {
+        auto left = eq->eval();
+        auto right = land->eval();
+        return Builder->CreateAnd(left, right);
+    }
+    else {
+        return this->eq->eval();
+    }
+}
+
 void LOrExp::print(int dep)
 {
     print_space(dep);
@@ -481,12 +746,33 @@ void LOrExp::print(int dep)
     }
 }
 
+Value* LOrExp::eval() {
+    if (lor) {
+        auto left = lor->eval();
+        auto right = land->eval();
+        return Builder->CreateOr(left, right);
+    }
+    else {
+        return this->land->eval();
+    }
+}
+
 void LValSelector::print(int)
 {
     fprintf(stderr, "Called from LValSelector, This should not be called\n");
 }
 
+Value* LValSelector::eval() {
+    fprintf(stderr, "Called from LValSelector, This should not be called\n");
+    return nullptr;
+}
+
 void FuncRParams::print(int)
 {
     fprintf(stderr, "Called from FuncRParams, This should not be called\n");
+}
+
+Value* FuncRParams::eval() {
+    fprintf(stderr, "Called from FuncRParams, This should not be called\n");
+    return nullptr;
 }

@@ -5,7 +5,13 @@
 #include "scanner.h"
 #include "ast.h"
 
-extern AST* result;
+#include <llvm/IR/IRBuilder.h>
+
+extern AST *result;
+
+llvm::LLVMContext *TheContext;
+llvm::IRBuilder<> *Builder;
+llvm::Module *TheModule;
 
 const char *token_to_string(int tok)
 {
@@ -107,7 +113,8 @@ int lexer_mode(const char *filename)
     return 0;
 }
 
-int parser_mode(const char *filename) {
+int parser_mode(const char *filename)
+{
     yyin = fopen(filename, "r");
     if (yyin == nullptr)
     {
@@ -115,7 +122,7 @@ int parser_mode(const char *filename) {
         return 1;
     }
     fprintf(stderr, "Parsing file %s\n", filename);
-    
+
     int yyresult = yyparse();
     if (yyresult != 0)
     {
@@ -124,8 +131,37 @@ int parser_mode(const char *filename) {
     }
 
     assert(result);
-    result->print(0);   
-    
+    result->print(0);
+
+    return 0;
+}
+
+int ir_mode(const char* filename) {
+    yyin = fopen(filename, "r");
+    if (yyin == nullptr) {
+        fprintf(stderr, "Error: cannot open file %s\n", filename);
+        return 1;
+    }
+    fprintf(stderr, "Parsing file %s\n", filename);
+
+    int yyresult = yyparse();
+    if (yyresult != 0) {
+        fprintf(stderr, "Error: parsing failed\n");
+        return 1;
+    }
+
+    assert(result);
+
+    llvm::LLVMContext context;
+    llvm::Module module(filename, context);
+    llvm::IRBuilder<> builder(context);
+    TheContext = &context;
+    Builder = &builder;
+    TheModule = &module;
+
+    result->eval();
+
+    module.dump();
     return 0;
 }
 
@@ -134,7 +170,7 @@ int main(int argc, const char **argv)
     yydebug = 0;
     if (argc < 2)
     {
-        fprintf(stderr, "Usage: %s --[lexer|parser] <file>\n", argv[0]);
+        fprintf(stderr, "Usage: %s --[lexer|parser|IR] <file>\n", argv[0]);
         return 1;
     }
 
@@ -143,19 +179,35 @@ int main(int argc, const char **argv)
         // lexer mode
         if (argc < 3)
         {
-            fprintf(stderr, "Usage: %s --[lexer|parser] <file>\n", argv[0]);
+            fprintf(stderr, "Usage: %s --[lexer|parser|IR] <file>\n", argv[0]);
             return 1;
         }
         return lexer_mode(argv[2]);
     }
-    else if (argv[1] == std::string("--parser")) {
+    else if (argv[1] == std::string("--parser"))
+    {
         // parser mode
         if (argc < 3)
         {
-            fprintf(stderr, "Usage: %s --[lexer|parser] <file>\n", argv[0]);
+            fprintf(stderr, "Usage: %s --[lexer|parser|IR] <file>\n", argv[0]);
             return 1;
         }
         return parser_mode(argv[2]);
+    }
+    else if (argv[1] == std::string("--IR"))
+    {
+        // IR-GEN 
+        if (argc < 3)
+        {
+            fprintf(stderr, "Usage: %s --[lexer|parser|IR] <file>\n", argv[0]);
+            return 1;
+        }
+        return ir_mode(argv[2]);
+    }
+    else
+    {
+        fprintf(stderr, "Usage: %s --[lexer|parser|IR] <file>\n", argv[0]);
+        return 1;
     }
 
     return 0;
