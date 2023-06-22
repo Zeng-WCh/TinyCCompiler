@@ -138,6 +138,7 @@ public:
     }
 
     void print(int dep) override;
+    llvm::Value* eval() override;
 };
 
 class VarDecl : public AST
@@ -163,6 +164,7 @@ public:
     }
 
     void print(int dep) override;
+    llvm::Value* eval() override;
 };
 
 class VarDecls : public AST
@@ -182,6 +184,7 @@ public:
     }
 
     void print(int dep) override;
+    llvm::Value* eval() override;
 };
 
 class ConstDecls : public AST
@@ -198,6 +201,7 @@ public:
     }
 
     void print(int dep) override;
+    llvm::Value* eval() override;
 };
 
 class ConstDef : public AST
@@ -222,6 +226,7 @@ public:
     }
 
     void print(int dep) override;
+    llvm::Value* eval() override;
 };
 
 class ConstSelector : public AST
@@ -243,6 +248,7 @@ public:
     }
 
     void print(int dep) override;
+    llvm::Value* eval() override;
 };
 
 class ConstInitVal : public AST
@@ -268,6 +274,7 @@ public:
     }
 
     void print(int dep) override;
+    llvm::Value* eval() override;
 };
 
 class ConstExp : public AST
@@ -286,6 +293,7 @@ public:
     }
 
     void print(int dep) override;
+    llvm::Value* eval() override;
 };
 
 class ConstInits : public AST
@@ -302,6 +310,7 @@ public:
     }
 
     void print(int dep) override;
+    llvm::Value* eval() override;
 };
 
 class VarDef : public AST
@@ -326,6 +335,7 @@ public:
     }
 
     void print(int dep) override;
+    llvm::Value* eval() override;
 };
 
 class InitVal : public AST
@@ -350,6 +360,7 @@ public:
     }
 
     void print(int dep) override;
+    llvm::Value* eval() override;
 };
 
 class InitVals : public AST
@@ -366,6 +377,7 @@ public:
     }
 
     void print(int dep) override;
+    llvm::Value* eval() override;
 };
 
 class FuncType : public AST
@@ -379,6 +391,7 @@ public:
     ~FuncType() = default;
 
     void print(int dep) override;
+    llvm::Value* eval() override;
 };
 
 class FuncFParam : public AST
@@ -408,6 +421,7 @@ public:
     }
 
     void print(int dep) override;
+    llvm::Value* eval() override;
 };
 
 class Dim : public AST
@@ -424,6 +438,7 @@ public:
     }
 
     void print(int dep) override;
+    llvm::Value* eval() override;
 };
 
 class FuncFParamList : public AST
@@ -441,6 +456,7 @@ public:
     }
 
     void print(int dep) override;
+    llvm::Value* eval() override;
 };
 
 class FuncFParams : public AST
@@ -465,6 +481,7 @@ public:
     }
 
     void print(int dep) override;
+    llvm::Value* eval() override;
 };
 
 class BlockItem : public AST
@@ -489,6 +506,7 @@ public:
     }
 
     void print(int dep) override;
+    llvm::Value* eval() override;
 };
 
 class BlockItems : public AST
@@ -508,6 +526,7 @@ public:
     {
         fprintf(stderr, "This should not be called\n");
     }
+    llvm::Value* eval() override;
 };
 
 class Block : public AST
@@ -531,6 +550,7 @@ public:
     }
 
     void print(int dep) override;
+    llvm::Value* eval() override;
 };
 
 class Assignment : public AST
@@ -554,6 +574,7 @@ public:
     }
 
     void print(int dep) override;
+    llvm::Value* eval() override;
 };
 
 class IfStmt : public AST
@@ -583,6 +604,7 @@ public:
     }
 
     void print(int dep) override;
+    llvm::Value* eval() override;
 };
 
 class WhileStmt : public AST
@@ -606,6 +628,7 @@ public:
     }
 
     void print(int dep) override;
+    llvm::Value* eval() override;
 };
 
 class Stmt : public AST
@@ -629,6 +652,7 @@ public:
     Stmt(int type, Exp *exp = nullptr) : type(type), exp(exp) {}
 
     void print(int dep) override;
+    llvm::Value* eval() override;
 };
 
 class AddExp : public AST
@@ -654,6 +678,7 @@ public:
     }
 
     void print(int dep) override;
+    llvm::Value* eval() override;
 };
 
 class Exp : public AST
@@ -672,6 +697,7 @@ public:
     }
 
     void print(int dep) override;
+    llvm::Value* eval() override;
 };
 
 class Cond : public AST
@@ -690,6 +716,7 @@ public:
     }
 
     void print(int dep) override;
+    llvm::Value* eval() override;
 };
 
 class LVal : public AST
@@ -709,6 +736,7 @@ public:
     }
 
     void print(int dep) override;
+    llvm::Value* eval() override;
 };
 
 class PrimaryExp : public AST
@@ -735,6 +763,7 @@ public:
     }
 
     void print(int dep) override;
+    llvm::Value* eval() override;
 };
 
 class UnaryExp : public AST
@@ -767,6 +796,7 @@ public:
     }
 
     void print(int dep) override;
+    llvm::Value* eval() override;
 };
 
 class MulExp : public AST
@@ -792,6 +822,7 @@ public:
     }
 
     void print(int dep) override;
+    llvm::Value* eval() override;
 };
 
 class RelExp : public AST
@@ -817,6 +848,7 @@ public:
     }
 
     void print(int dep) override;
+    llvm::Value* eval() override;
 };
 
 class EqExp : public AST
@@ -842,6 +874,7 @@ public:
     }
 
     void print(int dep) override;
+    llvm::Value* eval() override;
 };
 
 class LAndExp : public AST
@@ -866,6 +899,7 @@ public:
     }
 
     void print(int dep) override;
+    llvm::Value* eval() override;
 };
 
 class LOrExp : public AST
@@ -890,6 +924,7 @@ public:
     }
 
     void print(int dep) override;
+    llvm::Value* eval() override;
 };
 
 class LValSelector : public AST
@@ -906,6 +941,7 @@ public:
     }
 
     void print(int dep) override;
+    llvm::Value* eval() override;
 };
 
 class FuncRParams : public AST
@@ -923,6 +959,7 @@ public:
     }
 
     void print(int dep) override;
+    llvm::Value* eval() override;
 };
 
 #endif

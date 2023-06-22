@@ -2,6 +2,7 @@
 #include <cstdio>
 #include <cassert>
 #include <llvm/IR/Value.h>
+#include <llvm/IR/IRBuilder.h>
 
 using namespace llvm;
 
@@ -23,10 +24,6 @@ void CompUnit::print(int dep)
     }
 }
 
-Value* CompUnit::eval() {
-    return nullptr;
-}
-
 void Decl::print(int dep)
 {
     print_space(dep);
@@ -39,6 +36,11 @@ void Decl::print(int dep)
     {
         _var->print(dep + 2);
     }
+}
+
+Value* CompUnit::eval() {
+    IRBuilder<> builder();
+    
 }
 
 void FuncDef::print(int dep)
