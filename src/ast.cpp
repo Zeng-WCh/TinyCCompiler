@@ -1,6 +1,9 @@
 #include "ast.h"
 #include <cstdio>
 #include <cassert>
+#include <llvm/IR/Value.h>
+
+using namespace llvm;
 
 void AST::print_space(int n)
 {
@@ -18,6 +21,10 @@ void CompUnit::print(int dep)
     {
         comp_unit->print(dep + 2);
     }
+}
+
+Value* CompUnit::eval() {
+    return nullptr;
 }
 
 void Decl::print(int dep)

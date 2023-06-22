@@ -3,6 +3,7 @@
 
 #include <vector>
 #include <string>
+#include <llvm/IR/Value.h>
 
 class ConstDecl;
 class VarDecl;
@@ -26,6 +27,7 @@ class AST
 public:
     virtual ~AST() = 0;
     virtual void print(int dep) = 0;
+    virtual llvm::Value* eval() = 0;
     void print_space(int n);
 };
 
@@ -56,6 +58,7 @@ public:
     }
 
     void print(int dep) override;
+    llvm::Value* eval() override;
 };
 
 class Decl : public AST
@@ -80,6 +83,7 @@ public:
     }
 
     void print(int) override;
+    llvm::Value* eval() override;
 };
 
 class FuncDef : public AST
@@ -109,6 +113,7 @@ public:
     }
 
     void print(int) override;
+    llvm::Value* eval() override;
 };
 
 class ConstDecl : public AST

@@ -3,7 +3,7 @@ INCLUDES=-I./include -g
 SRCDIR=./src
 LIBDIR=./lib
 FLEXSRC=scanner.l
-COMPILER=g++
+COMPILER=clang++
 BISON_COMPILER=bison
 BISONSRC=parser.y
 
