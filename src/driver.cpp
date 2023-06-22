@@ -126,12 +126,12 @@ int parser_mode(const char *filename) {
     assert(result);
     result->print(0);   
     
-
     return 0;
 }
 
 int main(int argc, const char **argv)
 {
+    yydebug = 0;
     if (argc < 2)
     {
         fprintf(stderr, "Usage: %s --[lexer|parser] <file>\n", argv[0]);

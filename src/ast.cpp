@@ -64,9 +64,8 @@ void VarDecl::print(int dep)
 {
     print_space(dep);
     printf("`-VarDecl\n");
-    for (auto var_def : _var_defs)
+    for (AST *var_def : _var_defs)
     {
-        assert(var_def);
         var_def->print(dep + 2);
     }
 }
@@ -94,9 +93,14 @@ void ConstDef::print(int dep)
     iv->print(dep + 2);
 }
 
-void ConstSelector::print(int)
-{
-    fprintf(stderr, "Called from ConstSelector, This should not be called\n");
+void ConstSelector::print(int dep)
+{    
+    print_space(dep);
+    printf("`-ConstInitVal\n");
+    for (auto init_val : selects)
+    {
+        init_val->print(dep + 2);
+    }
 }
 
 void ConstInitVal::print(int dep)
@@ -131,7 +135,10 @@ void VarDef::print(int dep)
     {
         s->print(dep + 2);
     }
-    iv->print(dep + 2);
+    if (iv != nullptr)
+    {
+        iv->print(dep + 2);
+    }
 }
 
 void InitVal::print(int dep)
@@ -257,21 +264,43 @@ void Stmt::print(int dep)
     {
         asg->print(dep + 2);
     }
-    if (exp)
+    else if (exp)
     {
+        if (type == 0) {
+            print_space(dep + 2);
+            printf("`-ReturnStmt\n");
+            dep += 2;
+        }
         exp->print(dep + 2);
     }
-    if (block)
+    else if (block)
     {
         block->print(dep + 2);
     }
-    if (ifs)
+    else if (ifs)
     {
         ifs->print(dep + 2);
     }
-    if (whiles)
+    else if (whiles)
     {
         whiles->print(dep + 2);
+    }
+    else {
+        if (type == 0) {
+            print_space(dep + 2);
+            printf("`-ReturnStmt\n");
+        }
+        else if (type == 1) {
+            print_space(dep + 2);
+            printf("`-BreakStmt\n");
+        }
+        else if (type == 2) {
+            print_space(dep + 2);
+            printf("`-ContinueStmt\n");
+        }
+        else {
+            printf("`-EmptyStmt\n");
+        }
     }
 }
 

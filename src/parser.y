@@ -161,7 +161,7 @@ VarDecls: VarDef {
 }
 | VarDecls tok_comma VarDef {
     auto tmp = (VarDecls*) $1;
-    tmp->add_var_decl((VarDef*) $3);
+    tmp->add_var_decl((AST*) $3);
     $$ = (void*) tmp;
 };
 
@@ -170,6 +170,7 @@ VarDef: tok_identifier ConstSelector {
     delete $1;
     auto selector = (ConstSelector*) $2;
     auto tmp = new VarDef(ident, selector, nullptr);
+    $$ = (void*) tmp;
 }
 | tok_identifier ConstSelector tok_assign InitVal {
     std::string ident($1);
@@ -315,7 +316,7 @@ Stmt: LVal tok_assign Exp tok_semicolon {
 }
 | Exp tok_semicolon {
     auto exp = (Exp*) $1;
-    $$ = (void*) (exp);
+    $$ = (void*) (new Stmt(exp));
 }
 | Block {
     auto block = (Block*) $1;
@@ -417,6 +418,11 @@ UnaryExp: PrimaryExp {
 
 FuncRParams: {
     $$ = (void*) (new FuncRParams());
+}
+| Exp {
+    auto tmp = new FuncRParams();
+    tmp->add_param((AST*) $1);
+    $$ = (void*) tmp;
 }
 | FuncRParams tok_comma Exp {
     auto tmp = (FuncRParams*) $1;

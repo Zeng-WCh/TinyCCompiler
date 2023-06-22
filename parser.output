@@ -5,7 +5,7 @@ Terminals unused in grammar
     tok_unknown
 
 
-State 153 conflicts: 1 shift/reduce
+State 154 conflicts: 1 shift/reduce
 
 
 Grammar
@@ -110,34 +110,35 @@ Grammar
    67         | tok_not UnaryExp
 
    68 FuncRParams: ε
-   69            | FuncRParams tok_comma Exp
+   69            | Exp
+   70            | FuncRParams tok_comma Exp
 
-   70 MulExp: UnaryExp
-   71       | MulExp tok_star UnaryExp
-   72       | MulExp tok_slash UnaryExp
-   73       | MulExp tok_mod UnaryExp
+   71 MulExp: UnaryExp
+   72       | MulExp tok_star UnaryExp
+   73       | MulExp tok_slash UnaryExp
+   74       | MulExp tok_mod UnaryExp
 
-   74 AddExp: MulExp
-   75       | AddExp tok_plus MulExp
-   76       | AddExp tok_minus MulExp
+   75 AddExp: MulExp
+   76       | AddExp tok_plus MulExp
+   77       | AddExp tok_minus MulExp
 
-   77 RelExp: AddExp
-   78       | RelExp tok_gt AddExp
-   79       | RelExp tok_lt AddExp
-   80       | RelExp tok_ge AddExp
-   81       | RelExp tok_le AddExp
+   78 RelExp: AddExp
+   79       | RelExp tok_gt AddExp
+   80       | RelExp tok_lt AddExp
+   81       | RelExp tok_ge AddExp
+   82       | RelExp tok_le AddExp
 
-   82 EqExp: RelExp
-   83      | EqExp tok_eq RelExp
-   84      | EqExp tok_ne RelExp
+   83 EqExp: RelExp
+   84      | EqExp tok_eq RelExp
+   85      | EqExp tok_ne RelExp
 
-   85 LAndExp: EqExp
-   86        | LAndExp tok_and EqExp
+   86 LAndExp: EqExp
+   87        | LAndExp tok_and EqExp
 
-   87 LOrExp: LAndExp
-   88       | LOrExp tok_or LAndExp
+   88 LOrExp: LAndExp
+   89       | LOrExp tok_or LAndExp
 
-   89 ConstExp: AddExp
+   90 ConstExp: AddExp
 
 
 Terminals, with rules where they appear
@@ -149,29 +150,29 @@ Terminals, with rules where they appear
     tok_char (260)
     tok_string_literal (261)
     tok_const (262) 8
-    tok_comma (263) 10 18 21 28 34 69
+    tok_comma (263) 10 18 21 28 34 70
     tok_semicolon (264) 8 19 44 45 46 51 52 53 54
     tok_assign (265) 11 23 44
-    tok_plus (266) 65 75
-    tok_minus (267) 66 76
-    tok_star (268) 71
-    tok_slash (269) 72
-    tok_mod (270) 73
+    tok_plus (266) 65 76
+    tok_minus (267) 66 77
+    tok_star (268) 72
+    tok_slash (269) 73
+    tok_mod (270) 74
     tok_lparen (271) 29 30 48 49 50 60 64
     tok_rparen (272) 29 30 48 49 50 60 64
     tok_lbrace (273) 15 16 25 26 39
     tok_rbrace (274) 15 16 25 26 39
     tok_lbracket (275) 13 36 38 59
     tok_rbracket (276) 13 36 38 59
-    tok_lt (277) 79
-    tok_gt (278) 78
-    tok_le (279) 81
-    tok_ge (280) 80
-    tok_eq (281) 83
-    tok_ne (282) 84
+    tok_lt (277) 80
+    tok_gt (278) 79
+    tok_le (279) 82
+    tok_ge (280) 81
+    tok_eq (281) 84
+    tok_ne (282) 85
     tok_if (283) 48 49
-    tok_and (284) 86
-    tok_or (285) 88
+    tok_and (284) 87
+    tok_or (285) 89
     tok_not (286) 67
     tok_else (287) 49
     tok_while (288) 50
@@ -261,7 +262,7 @@ Nonterminals, with rules where they appear
         on right: 42 48 49 50
     Exp <ast> (65)
         on left: 55
-        on right: 24 38 44 46 53 59 60 69
+        on right: 24 38 44 46 53 59 60 69 70
     Cond <ast> (66)
         on left: 56
         on right: 48 49 50
@@ -276,30 +277,30 @@ Nonterminals, with rules where they appear
         on right: 63
     UnaryExp <ast> (70)
         on left: 63 64 65 66 67
-        on right: 65 66 67 70 71 72 73
+        on right: 65 66 67 71 72 73 74
     FuncRParams <ast> (71)
-        on left: 68 69
-        on right: 64 69
+        on left: 68 69 70
+        on right: 64 70
     MulExp <ast> (72)
-        on left: 70 71 72 73
-        on right: 71 72 73 74 75 76
+        on left: 71 72 73 74
+        on right: 72 73 74 75 76 77
     AddExp <ast> (73)
-        on left: 74 75 76
-        on right: 55 75 76 77 78 79 80 81 89
+        on left: 75 76 77
+        on right: 55 76 77 78 79 80 81 82 90
     RelExp <ast> (74)
-        on left: 77 78 79 80 81
-        on right: 78 79 80 81 82 83 84
+        on left: 78 79 80 81 82
+        on right: 79 80 81 82 83 84 85
     EqExp <ast> (75)
-        on left: 82 83 84
-        on right: 83 84 85 86
+        on left: 83 84 85
+        on right: 84 85 86 87
     LAndExp <ast> (76)
-        on left: 85 86
-        on right: 86 87 88
+        on left: 86 87
+        on right: 87 88 89
     LOrExp <ast> (77)
-        on left: 87 88
-        on right: 56 88
+        on left: 88 89
+        on right: 56 89
     ConstExp <ast> (78)
-        on left: 89
+        on left: 90
         on right: 13 14
 
 
@@ -833,30 +834,30 @@ State 51
 
 State 52
 
-   70 MulExp: UnaryExp •
+   71 MulExp: UnaryExp •
 
-    $default  reduce using rule 70 (MulExp)
+    $default  reduce using rule 71 (MulExp)
 
 
 State 53
 
-   71 MulExp: MulExp • tok_star UnaryExp
-   72       | MulExp • tok_slash UnaryExp
-   73       | MulExp • tok_mod UnaryExp
-   74 AddExp: MulExp •
+   72 MulExp: MulExp • tok_star UnaryExp
+   73       | MulExp • tok_slash UnaryExp
+   74       | MulExp • tok_mod UnaryExp
+   75 AddExp: MulExp •
 
     tok_star   shift, and go to state 73
     tok_slash  shift, and go to state 74
     tok_mod    shift, and go to state 75
 
-    $default  reduce using rule 74 (AddExp)
+    $default  reduce using rule 75 (AddExp)
 
 
 State 54
 
    55 Exp: AddExp •
-   75 AddExp: AddExp • tok_plus MulExp
-   76       | AddExp • tok_minus MulExp
+   76 AddExp: AddExp • tok_plus MulExp
+   77       | AddExp • tok_minus MulExp
 
     tok_plus   shift, and go to state 76
     tok_minus  shift, and go to state 77
@@ -866,14 +867,14 @@ State 54
 
 State 55
 
-   75 AddExp: AddExp • tok_plus MulExp
-   76       | AddExp • tok_minus MulExp
-   89 ConstExp: AddExp •
+   76 AddExp: AddExp • tok_plus MulExp
+   77       | AddExp • tok_minus MulExp
+   90 ConstExp: AddExp •
 
     tok_plus   shift, and go to state 76
     tok_minus  shift, and go to state 77
 
-    $default  reduce using rule 89 (ConstExp)
+    $default  reduce using rule 90 (ConstExp)
 
 
 State 56
@@ -1005,25 +1006,6 @@ State 71
 
    64 UnaryExp: tok_identifier tok_lparen • FuncRParams tok_rparen
 
-    $default  reduce using rule 68 (FuncRParams)
-
-    FuncRParams  go to state 88
-
-
-State 72
-
-   57 LVal: tok_identifier LValSelector •
-   59 LValSelector: LValSelector • tok_lbracket Exp tok_rbracket
-
-    tok_lbracket  shift, and go to state 89
-
-    $default  reduce using rule 57 (LVal)
-
-
-State 73
-
-   71 MulExp: MulExp tok_star • UnaryExp
-
     tok_plus        shift, and go to state 41
     tok_minus       shift, and go to state 42
     tok_lparen      shift, and go to state 43
@@ -1031,14 +1013,30 @@ State 73
     tok_identifier  shift, and go to state 46
     tok_number      shift, and go to state 47
 
-    LVal        go to state 50
-    PrimaryExp  go to state 51
-    UnaryExp    go to state 90
+    $default  reduce using rule 68 (FuncRParams)
+
+    Exp          go to state 88
+    LVal         go to state 50
+    PrimaryExp   go to state 51
+    UnaryExp     go to state 52
+    FuncRParams  go to state 89
+    MulExp       go to state 53
+    AddExp       go to state 54
 
 
-State 74
+State 72
 
-   72 MulExp: MulExp tok_slash • UnaryExp
+   57 LVal: tok_identifier LValSelector •
+   59 LValSelector: LValSelector • tok_lbracket Exp tok_rbracket
+
+    tok_lbracket  shift, and go to state 90
+
+    $default  reduce using rule 57 (LVal)
+
+
+State 73
+
+   72 MulExp: MulExp tok_star • UnaryExp
 
     tok_plus        shift, and go to state 41
     tok_minus       shift, and go to state 42
@@ -1052,9 +1050,9 @@ State 74
     UnaryExp    go to state 91
 
 
-State 75
+State 74
 
-   73 MulExp: MulExp tok_mod • UnaryExp
+   73 MulExp: MulExp tok_slash • UnaryExp
 
     tok_plus        shift, and go to state 41
     tok_minus       shift, and go to state 42
@@ -1068,9 +1066,9 @@ State 75
     UnaryExp    go to state 92
 
 
-State 76
+State 75
 
-   75 AddExp: AddExp tok_plus • MulExp
+   74 MulExp: MulExp tok_mod • UnaryExp
 
     tok_plus        shift, and go to state 41
     tok_minus       shift, and go to state 42
@@ -1081,13 +1079,12 @@ State 76
 
     LVal        go to state 50
     PrimaryExp  go to state 51
-    UnaryExp    go to state 52
-    MulExp      go to state 93
+    UnaryExp    go to state 93
 
 
-State 77
+State 76
 
-   76 AddExp: AddExp tok_minus • MulExp
+   76 AddExp: AddExp tok_plus • MulExp
 
     tok_plus        shift, and go to state 41
     tok_minus       shift, and go to state 42
@@ -1100,6 +1097,23 @@ State 77
     PrimaryExp  go to state 51
     UnaryExp    go to state 52
     MulExp      go to state 94
+
+
+State 77
+
+   77 AddExp: AddExp tok_minus • MulExp
+
+    tok_plus        shift, and go to state 41
+    tok_minus       shift, and go to state 42
+    tok_lparen      shift, and go to state 43
+    tok_not         shift, and go to state 45
+    tok_identifier  shift, and go to state 46
+    tok_number      shift, and go to state 47
+
+    LVal        go to state 50
+    PrimaryExp  go to state 51
+    UnaryExp    go to state 52
+    MulExp      go to state 95
 
 
 State 78
@@ -1125,13 +1139,13 @@ State 80
     tok_minus       shift, and go to state 42
     tok_lparen      shift, and go to state 43
     tok_lbrace      shift, and go to state 80
-    tok_rbrace      shift, and go to state 95
+    tok_rbrace      shift, and go to state 96
     tok_not         shift, and go to state 45
     tok_identifier  shift, and go to state 46
     tok_number      shift, and go to state 47
 
-    ConstInitVal  go to state 96
-    ConstInits    go to state 97
+    ConstInitVal  go to state 97
+    ConstInits    go to state 98
     LVal          go to state 50
     PrimaryExp    go to state 51
     UnaryExp      go to state 52
@@ -1160,7 +1174,7 @@ State 83
 
     $default  reduce using rule 37 (FuncFParamDim)
 
-    FuncFParamDim  go to state 98
+    FuncFParamDim  go to state 99
 
 
 State 84
@@ -1168,31 +1182,31 @@ State 84
    39 Block: tok_lbrace BlockItems • tok_rbrace
    41 BlockItems: BlockItems • BlockItem
 
-    tok_int         shift, and go to state 99
+    tok_int         shift, and go to state 100
     tok_const       shift, and go to state 3
-    tok_semicolon   shift, and go to state 100
+    tok_semicolon   shift, and go to state 101
     tok_plus        shift, and go to state 41
     tok_minus       shift, and go to state 42
     tok_lparen      shift, and go to state 43
     tok_lbrace      shift, and go to state 61
-    tok_rbrace      shift, and go to state 101
-    tok_if          shift, and go to state 102
+    tok_rbrace      shift, and go to state 102
+    tok_if          shift, and go to state 103
     tok_not         shift, and go to state 45
-    tok_while       shift, and go to state 103
-    tok_break       shift, and go to state 104
-    tok_continue    shift, and go to state 105
-    tok_return      shift, and go to state 106
+    tok_while       shift, and go to state 104
+    tok_break       shift, and go to state 105
+    tok_continue    shift, and go to state 106
+    tok_return      shift, and go to state 107
     tok_identifier  shift, and go to state 46
     tok_number      shift, and go to state 47
 
-    Decl        go to state 107
+    Decl        go to state 108
     ConstDecl   go to state 8
     VarDecl     go to state 9
-    Block       go to state 108
-    BlockItem   go to state 109
-    Stmt        go to state 110
-    Exp         go to state 111
-    LVal        go to state 112
+    Block       go to state 109
+    BlockItem   go to state 110
+    Stmt        go to state 111
+    Exp         go to state 112
+    LVal        go to state 113
     PrimaryExp  go to state 51
     UnaryExp    go to state 52
     MulExp      go to state 53
@@ -1218,7 +1232,7 @@ State 86
     tok_identifier  shift, and go to state 46
     tok_number      shift, and go to state 47
 
-    InitVal     go to state 113
+    InitVal     go to state 114
     Exp         go to state 49
     LVal        go to state 50
     PrimaryExp  go to state 51
@@ -1236,14 +1250,21 @@ State 87
 
 State 88
 
-   64 UnaryExp: tok_identifier tok_lparen FuncRParams • tok_rparen
-   69 FuncRParams: FuncRParams • tok_comma Exp
+   69 FuncRParams: Exp •
 
-    tok_comma   shift, and go to state 114
-    tok_rparen  shift, and go to state 115
+    $default  reduce using rule 69 (FuncRParams)
 
 
 State 89
+
+   64 UnaryExp: tok_identifier tok_lparen FuncRParams • tok_rparen
+   70 FuncRParams: FuncRParams • tok_comma Exp
+
+    tok_comma   shift, and go to state 115
+    tok_rparen  shift, and go to state 116
+
+
+State 90
 
    59 LValSelector: LValSelector tok_lbracket • Exp tok_rbracket
 
@@ -1254,7 +1275,7 @@ State 89
     tok_identifier  shift, and go to state 46
     tok_number      shift, and go to state 47
 
-    Exp         go to state 116
+    Exp         go to state 117
     LVal        go to state 50
     PrimaryExp  go to state 51
     UnaryExp    go to state 52
@@ -1262,47 +1283,33 @@ State 89
     AddExp      go to state 54
 
 
-State 90
-
-   71 MulExp: MulExp tok_star UnaryExp •
-
-    $default  reduce using rule 71 (MulExp)
-
-
 State 91
 
-   72 MulExp: MulExp tok_slash UnaryExp •
+   72 MulExp: MulExp tok_star UnaryExp •
 
     $default  reduce using rule 72 (MulExp)
 
 
 State 92
 
-   73 MulExp: MulExp tok_mod UnaryExp •
+   73 MulExp: MulExp tok_slash UnaryExp •
 
     $default  reduce using rule 73 (MulExp)
 
 
 State 93
 
-   71 MulExp: MulExp • tok_star UnaryExp
-   72       | MulExp • tok_slash UnaryExp
-   73       | MulExp • tok_mod UnaryExp
-   75 AddExp: AddExp tok_plus MulExp •
+   74 MulExp: MulExp tok_mod UnaryExp •
 
-    tok_star   shift, and go to state 73
-    tok_slash  shift, and go to state 74
-    tok_mod    shift, and go to state 75
-
-    $default  reduce using rule 75 (AddExp)
+    $default  reduce using rule 74 (MulExp)
 
 
 State 94
 
-   71 MulExp: MulExp • tok_star UnaryExp
-   72       | MulExp • tok_slash UnaryExp
-   73       | MulExp • tok_mod UnaryExp
-   76 AddExp: AddExp tok_minus MulExp •
+   72 MulExp: MulExp • tok_star UnaryExp
+   73       | MulExp • tok_slash UnaryExp
+   74       | MulExp • tok_mod UnaryExp
+   76 AddExp: AddExp tok_plus MulExp •
 
     tok_star   shift, and go to state 73
     tok_slash  shift, and go to state 74
@@ -1313,38 +1320,52 @@ State 94
 
 State 95
 
+   72 MulExp: MulExp • tok_star UnaryExp
+   73       | MulExp • tok_slash UnaryExp
+   74       | MulExp • tok_mod UnaryExp
+   77 AddExp: AddExp tok_minus MulExp •
+
+    tok_star   shift, and go to state 73
+    tok_slash  shift, and go to state 74
+    tok_mod    shift, and go to state 75
+
+    $default  reduce using rule 77 (AddExp)
+
+
+State 96
+
    15 ConstInitVal: tok_lbrace tok_rbrace •
 
     $default  reduce using rule 15 (ConstInitVal)
 
 
-State 96
+State 97
 
    17 ConstInits: ConstInitVal •
 
     $default  reduce using rule 17 (ConstInits)
 
 
-State 97
+State 98
 
    16 ConstInitVal: tok_lbrace ConstInits • tok_rbrace
    18 ConstInits: ConstInits • tok_comma ConstInitVal
 
-    tok_comma   shift, and go to state 117
-    tok_rbrace  shift, and go to state 118
+    tok_comma   shift, and go to state 118
+    tok_rbrace  shift, and go to state 119
 
 
-State 98
+State 99
 
    36 FuncFParam: tok_int tok_identifier tok_lbracket tok_rbracket FuncFParamDim •
    38 FuncFParamDim: FuncFParamDim • tok_lbracket Exp tok_rbracket
 
-    tok_lbracket  shift, and go to state 119
+    tok_lbracket  shift, and go to state 120
 
     $default  reduce using rule 36 (FuncFParam)
 
 
-State 99
+State 100
 
    19 VarDecl: tok_int • VarDecls tok_semicolon
 
@@ -1354,55 +1375,55 @@ State 99
     VarDef    go to state 13
 
 
-State 100
+State 101
 
    45 Stmt: tok_semicolon •
 
     $default  reduce using rule 45 (Stmt)
 
 
-State 101
+State 102
 
    39 Block: tok_lbrace BlockItems tok_rbrace •
 
     $default  reduce using rule 39 (Block)
 
 
-State 102
+State 103
 
    48 Stmt: tok_if • tok_lparen Cond tok_rparen Stmt
    49     | tok_if • tok_lparen Cond tok_rparen Stmt tok_else Stmt
-
-    tok_lparen  shift, and go to state 120
-
-
-State 103
-
-   50 Stmt: tok_while • tok_lparen Cond tok_rparen Stmt
 
     tok_lparen  shift, and go to state 121
 
 
 State 104
 
-   51 Stmt: tok_break • tok_semicolon
+   50 Stmt: tok_while • tok_lparen Cond tok_rparen Stmt
 
-    tok_semicolon  shift, and go to state 122
+    tok_lparen  shift, and go to state 122
 
 
 State 105
 
-   52 Stmt: tok_continue • tok_semicolon
+   51 Stmt: tok_break • tok_semicolon
 
     tok_semicolon  shift, and go to state 123
 
 
 State 106
 
+   52 Stmt: tok_continue • tok_semicolon
+
+    tok_semicolon  shift, and go to state 124
+
+
+State 107
+
    53 Stmt: tok_return • Exp tok_semicolon
    54     | tok_return • tok_semicolon
 
-    tok_semicolon   shift, and go to state 124
+    tok_semicolon   shift, and go to state 125
     tok_plus        shift, and go to state 41
     tok_minus       shift, and go to state 42
     tok_lparen      shift, and go to state 43
@@ -1410,7 +1431,7 @@ State 106
     tok_identifier  shift, and go to state 46
     tok_number      shift, and go to state 47
 
-    Exp         go to state 125
+    Exp         go to state 126
     LVal        go to state 50
     PrimaryExp  go to state 51
     UnaryExp    go to state 52
@@ -1418,61 +1439,61 @@ State 106
     AddExp      go to state 54
 
 
-State 107
+State 108
 
    43 BlockItem: Decl •
 
     $default  reduce using rule 43 (BlockItem)
 
 
-State 108
+State 109
 
    47 Stmt: Block •
 
     $default  reduce using rule 47 (Stmt)
 
 
-State 109
+State 110
 
    41 BlockItems: BlockItems BlockItem •
 
     $default  reduce using rule 41 (BlockItems)
 
 
-State 110
+State 111
 
    42 BlockItem: Stmt •
 
     $default  reduce using rule 42 (BlockItem)
 
 
-State 111
+State 112
 
    46 Stmt: Exp • tok_semicolon
 
-    tok_semicolon  shift, and go to state 126
+    tok_semicolon  shift, and go to state 127
 
 
-State 112
+State 113
 
    44 Stmt: LVal • tok_assign Exp tok_semicolon
    61 PrimaryExp: LVal •
 
-    tok_assign  shift, and go to state 127
+    tok_assign  shift, and go to state 128
 
     $default  reduce using rule 61 (PrimaryExp)
 
 
-State 113
+State 114
 
    28 InitVals: InitVals tok_comma InitVal •
 
     $default  reduce using rule 28 (InitVals)
 
 
-State 114
+State 115
 
-   69 FuncRParams: FuncRParams tok_comma • Exp
+   70 FuncRParams: FuncRParams tok_comma • Exp
 
     tok_plus        shift, and go to state 41
     tok_minus       shift, and go to state 42
@@ -1481,7 +1502,7 @@ State 114
     tok_identifier  shift, and go to state 46
     tok_number      shift, and go to state 47
 
-    Exp         go to state 128
+    Exp         go to state 129
     LVal        go to state 50
     PrimaryExp  go to state 51
     UnaryExp    go to state 52
@@ -1489,21 +1510,21 @@ State 114
     AddExp      go to state 54
 
 
-State 115
+State 116
 
    64 UnaryExp: tok_identifier tok_lparen FuncRParams tok_rparen •
 
     $default  reduce using rule 64 (UnaryExp)
 
 
-State 116
+State 117
 
    59 LValSelector: LValSelector tok_lbracket Exp • tok_rbracket
 
-    tok_rbracket  shift, and go to state 129
+    tok_rbracket  shift, and go to state 130
 
 
-State 117
+State 118
 
    18 ConstInits: ConstInits tok_comma • ConstInitVal
 
@@ -1515,7 +1536,7 @@ State 117
     tok_identifier  shift, and go to state 46
     tok_number      shift, and go to state 47
 
-    ConstInitVal  go to state 130
+    ConstInitVal  go to state 131
     LVal          go to state 50
     PrimaryExp    go to state 51
     UnaryExp      go to state 52
@@ -1524,14 +1545,14 @@ State 117
     ConstExp      go to state 82
 
 
-State 118
+State 119
 
    16 ConstInitVal: tok_lbrace ConstInits tok_rbrace •
 
     $default  reduce using rule 16 (ConstInitVal)
 
 
-State 119
+State 120
 
    38 FuncFParamDim: FuncFParamDim tok_lbracket • Exp tok_rbracket
 
@@ -1542,7 +1563,7 @@ State 119
     tok_identifier  shift, and go to state 46
     tok_number      shift, and go to state 47
 
-    Exp         go to state 131
+    Exp         go to state 132
     LVal        go to state 50
     PrimaryExp  go to state 51
     UnaryExp    go to state 52
@@ -1550,7 +1571,7 @@ State 119
     AddExp      go to state 54
 
 
-State 120
+State 121
 
    48 Stmt: tok_if tok_lparen • Cond tok_rparen Stmt
    49     | tok_if tok_lparen • Cond tok_rparen Stmt tok_else Stmt
@@ -1562,19 +1583,19 @@ State 120
     tok_identifier  shift, and go to state 46
     tok_number      shift, and go to state 47
 
-    Cond        go to state 132
+    Cond        go to state 133
     LVal        go to state 50
     PrimaryExp  go to state 51
     UnaryExp    go to state 52
     MulExp      go to state 53
-    AddExp      go to state 133
-    RelExp      go to state 134
-    EqExp       go to state 135
-    LAndExp     go to state 136
-    LOrExp      go to state 137
+    AddExp      go to state 134
+    RelExp      go to state 135
+    EqExp       go to state 136
+    LAndExp     go to state 137
+    LOrExp      go to state 138
 
 
-State 121
+State 122
 
    50 Stmt: tok_while tok_lparen • Cond tok_rparen Stmt
 
@@ -1585,54 +1606,54 @@ State 121
     tok_identifier  shift, and go to state 46
     tok_number      shift, and go to state 47
 
-    Cond        go to state 138
+    Cond        go to state 139
     LVal        go to state 50
     PrimaryExp  go to state 51
     UnaryExp    go to state 52
     MulExp      go to state 53
-    AddExp      go to state 133
-    RelExp      go to state 134
-    EqExp       go to state 135
-    LAndExp     go to state 136
-    LOrExp      go to state 137
+    AddExp      go to state 134
+    RelExp      go to state 135
+    EqExp       go to state 136
+    LAndExp     go to state 137
+    LOrExp      go to state 138
 
 
-State 122
+State 123
 
    51 Stmt: tok_break tok_semicolon •
 
     $default  reduce using rule 51 (Stmt)
 
 
-State 123
+State 124
 
    52 Stmt: tok_continue tok_semicolon •
 
     $default  reduce using rule 52 (Stmt)
 
 
-State 124
+State 125
 
    54 Stmt: tok_return tok_semicolon •
 
     $default  reduce using rule 54 (Stmt)
 
 
-State 125
+State 126
 
    53 Stmt: tok_return Exp • tok_semicolon
 
-    tok_semicolon  shift, and go to state 139
+    tok_semicolon  shift, and go to state 140
 
 
-State 126
+State 127
 
    46 Stmt: Exp tok_semicolon •
 
     $default  reduce using rule 46 (Stmt)
 
 
-State 127
+State 128
 
    44 Stmt: LVal tok_assign • Exp tok_semicolon
 
@@ -1643,7 +1664,7 @@ State 127
     tok_identifier  shift, and go to state 46
     tok_number      shift, and go to state 47
 
-    Exp         go to state 140
+    Exp         go to state 141
     LVal        go to state 50
     PrimaryExp  go to state 51
     UnaryExp    go to state 52
@@ -1651,180 +1672,162 @@ State 127
     AddExp      go to state 54
 
 
-State 128
-
-   69 FuncRParams: FuncRParams tok_comma Exp •
-
-    $default  reduce using rule 69 (FuncRParams)
-
-
 State 129
+
+   70 FuncRParams: FuncRParams tok_comma Exp •
+
+    $default  reduce using rule 70 (FuncRParams)
+
+
+State 130
 
    59 LValSelector: LValSelector tok_lbracket Exp tok_rbracket •
 
     $default  reduce using rule 59 (LValSelector)
 
 
-State 130
+State 131
 
    18 ConstInits: ConstInits tok_comma ConstInitVal •
 
     $default  reduce using rule 18 (ConstInits)
 
 
-State 131
+State 132
 
    38 FuncFParamDim: FuncFParamDim tok_lbracket Exp • tok_rbracket
 
-    tok_rbracket  shift, and go to state 141
-
-
-State 132
-
-   48 Stmt: tok_if tok_lparen Cond • tok_rparen Stmt
-   49     | tok_if tok_lparen Cond • tok_rparen Stmt tok_else Stmt
-
-    tok_rparen  shift, and go to state 142
+    tok_rbracket  shift, and go to state 142
 
 
 State 133
 
-   75 AddExp: AddExp • tok_plus MulExp
-   76       | AddExp • tok_minus MulExp
-   77 RelExp: AddExp •
+   48 Stmt: tok_if tok_lparen Cond • tok_rparen Stmt
+   49     | tok_if tok_lparen Cond • tok_rparen Stmt tok_else Stmt
 
-    tok_plus   shift, and go to state 76
-    tok_minus  shift, and go to state 77
-
-    $default  reduce using rule 77 (RelExp)
+    tok_rparen  shift, and go to state 143
 
 
 State 134
 
-   78 RelExp: RelExp • tok_gt AddExp
-   79       | RelExp • tok_lt AddExp
-   80       | RelExp • tok_ge AddExp
-   81       | RelExp • tok_le AddExp
-   82 EqExp: RelExp •
+   76 AddExp: AddExp • tok_plus MulExp
+   77       | AddExp • tok_minus MulExp
+   78 RelExp: AddExp •
 
-    tok_lt  shift, and go to state 143
-    tok_gt  shift, and go to state 144
-    tok_le  shift, and go to state 145
-    tok_ge  shift, and go to state 146
+    tok_plus   shift, and go to state 76
+    tok_minus  shift, and go to state 77
 
-    $default  reduce using rule 82 (EqExp)
+    $default  reduce using rule 78 (RelExp)
 
 
 State 135
 
-   83 EqExp: EqExp • tok_eq RelExp
-   84      | EqExp • tok_ne RelExp
-   85 LAndExp: EqExp •
+   79 RelExp: RelExp • tok_gt AddExp
+   80       | RelExp • tok_lt AddExp
+   81       | RelExp • tok_ge AddExp
+   82       | RelExp • tok_le AddExp
+   83 EqExp: RelExp •
 
-    tok_eq  shift, and go to state 147
-    tok_ne  shift, and go to state 148
+    tok_lt  shift, and go to state 144
+    tok_gt  shift, and go to state 145
+    tok_le  shift, and go to state 146
+    tok_ge  shift, and go to state 147
 
-    $default  reduce using rule 85 (LAndExp)
+    $default  reduce using rule 83 (EqExp)
 
 
 State 136
 
-   86 LAndExp: LAndExp • tok_and EqExp
-   87 LOrExp: LAndExp •
+   84 EqExp: EqExp • tok_eq RelExp
+   85      | EqExp • tok_ne RelExp
+   86 LAndExp: EqExp •
 
-    tok_and  shift, and go to state 149
+    tok_eq  shift, and go to state 148
+    tok_ne  shift, and go to state 149
 
-    $default  reduce using rule 87 (LOrExp)
+    $default  reduce using rule 86 (LAndExp)
 
 
 State 137
 
-   56 Cond: LOrExp •
-   88 LOrExp: LOrExp • tok_or LAndExp
+   87 LAndExp: LAndExp • tok_and EqExp
+   88 LOrExp: LAndExp •
 
-    tok_or  shift, and go to state 150
+    tok_and  shift, and go to state 150
 
-    $default  reduce using rule 56 (Cond)
+    $default  reduce using rule 88 (LOrExp)
 
 
 State 138
 
-   50 Stmt: tok_while tok_lparen Cond • tok_rparen Stmt
+   56 Cond: LOrExp •
+   89 LOrExp: LOrExp • tok_or LAndExp
 
-    tok_rparen  shift, and go to state 151
+    tok_or  shift, and go to state 151
+
+    $default  reduce using rule 56 (Cond)
 
 
 State 139
+
+   50 Stmt: tok_while tok_lparen Cond • tok_rparen Stmt
+
+    tok_rparen  shift, and go to state 152
+
+
+State 140
 
    53 Stmt: tok_return Exp tok_semicolon •
 
     $default  reduce using rule 53 (Stmt)
 
 
-State 140
+State 141
 
    44 Stmt: LVal tok_assign Exp • tok_semicolon
 
-    tok_semicolon  shift, and go to state 152
+    tok_semicolon  shift, and go to state 153
 
 
-State 141
+State 142
 
    38 FuncFParamDim: FuncFParamDim tok_lbracket Exp tok_rbracket •
 
     $default  reduce using rule 38 (FuncFParamDim)
 
 
-State 142
+State 143
 
    48 Stmt: tok_if tok_lparen Cond tok_rparen • Stmt
    49     | tok_if tok_lparen Cond tok_rparen • Stmt tok_else Stmt
 
-    tok_semicolon   shift, and go to state 100
+    tok_semicolon   shift, and go to state 101
     tok_plus        shift, and go to state 41
     tok_minus       shift, and go to state 42
     tok_lparen      shift, and go to state 43
     tok_lbrace      shift, and go to state 61
-    tok_if          shift, and go to state 102
+    tok_if          shift, and go to state 103
     tok_not         shift, and go to state 45
-    tok_while       shift, and go to state 103
-    tok_break       shift, and go to state 104
-    tok_continue    shift, and go to state 105
-    tok_return      shift, and go to state 106
+    tok_while       shift, and go to state 104
+    tok_break       shift, and go to state 105
+    tok_continue    shift, and go to state 106
+    tok_return      shift, and go to state 107
     tok_identifier  shift, and go to state 46
     tok_number      shift, and go to state 47
 
-    Block       go to state 108
-    Stmt        go to state 153
-    Exp         go to state 111
-    LVal        go to state 112
+    Block       go to state 109
+    Stmt        go to state 154
+    Exp         go to state 112
+    LVal        go to state 113
     PrimaryExp  go to state 51
     UnaryExp    go to state 52
     MulExp      go to state 53
     AddExp      go to state 54
 
 
-State 143
-
-   79 RelExp: RelExp tok_lt • AddExp
-
-    tok_plus        shift, and go to state 41
-    tok_minus       shift, and go to state 42
-    tok_lparen      shift, and go to state 43
-    tok_not         shift, and go to state 45
-    tok_identifier  shift, and go to state 46
-    tok_number      shift, and go to state 47
-
-    LVal        go to state 50
-    PrimaryExp  go to state 51
-    UnaryExp    go to state 52
-    MulExp      go to state 53
-    AddExp      go to state 154
-
-
 State 144
 
-   78 RelExp: RelExp tok_gt • AddExp
+   80 RelExp: RelExp tok_lt • AddExp
 
     tok_plus        shift, and go to state 41
     tok_minus       shift, and go to state 42
@@ -1842,7 +1845,7 @@ State 144
 
 State 145
 
-   81 RelExp: RelExp tok_le • AddExp
+   79 RelExp: RelExp tok_gt • AddExp
 
     tok_plus        shift, and go to state 41
     tok_minus       shift, and go to state 42
@@ -1860,7 +1863,7 @@ State 145
 
 State 146
 
-   80 RelExp: RelExp tok_ge • AddExp
+   82 RelExp: RelExp tok_le • AddExp
 
     tok_plus        shift, and go to state 41
     tok_minus       shift, and go to state 42
@@ -1878,7 +1881,7 @@ State 146
 
 State 147
 
-   83 EqExp: EqExp tok_eq • RelExp
+   81 RelExp: RelExp tok_ge • AddExp
 
     tok_plus        shift, and go to state 41
     tok_minus       shift, and go to state 42
@@ -1891,13 +1894,12 @@ State 147
     PrimaryExp  go to state 51
     UnaryExp    go to state 52
     MulExp      go to state 53
-    AddExp      go to state 133
-    RelExp      go to state 158
+    AddExp      go to state 158
 
 
 State 148
 
-   84 EqExp: EqExp tok_ne • RelExp
+   84 EqExp: EqExp tok_eq • RelExp
 
     tok_plus        shift, and go to state 41
     tok_minus       shift, and go to state 42
@@ -1910,13 +1912,13 @@ State 148
     PrimaryExp  go to state 51
     UnaryExp    go to state 52
     MulExp      go to state 53
-    AddExp      go to state 133
+    AddExp      go to state 134
     RelExp      go to state 159
 
 
 State 149
 
-   86 LAndExp: LAndExp tok_and • EqExp
+   85 EqExp: EqExp tok_ne • RelExp
 
     tok_plus        shift, and go to state 41
     tok_minus       shift, and go to state 42
@@ -1929,14 +1931,13 @@ State 149
     PrimaryExp  go to state 51
     UnaryExp    go to state 52
     MulExp      go to state 53
-    AddExp      go to state 133
-    RelExp      go to state 134
-    EqExp       go to state 160
+    AddExp      go to state 134
+    RelExp      go to state 160
 
 
 State 150
 
-   88 LOrExp: LOrExp tok_or • LAndExp
+   87 LAndExp: LAndExp tok_and • EqExp
 
     tok_plus        shift, and go to state 41
     tok_minus       shift, and go to state 42
@@ -1949,99 +1950,83 @@ State 150
     PrimaryExp  go to state 51
     UnaryExp    go to state 52
     MulExp      go to state 53
-    AddExp      go to state 133
-    RelExp      go to state 134
-    EqExp       go to state 135
-    LAndExp     go to state 161
+    AddExp      go to state 134
+    RelExp      go to state 135
+    EqExp       go to state 161
 
 
 State 151
 
+   89 LOrExp: LOrExp tok_or • LAndExp
+
+    tok_plus        shift, and go to state 41
+    tok_minus       shift, and go to state 42
+    tok_lparen      shift, and go to state 43
+    tok_not         shift, and go to state 45
+    tok_identifier  shift, and go to state 46
+    tok_number      shift, and go to state 47
+
+    LVal        go to state 50
+    PrimaryExp  go to state 51
+    UnaryExp    go to state 52
+    MulExp      go to state 53
+    AddExp      go to state 134
+    RelExp      go to state 135
+    EqExp       go to state 136
+    LAndExp     go to state 162
+
+
+State 152
+
    50 Stmt: tok_while tok_lparen Cond tok_rparen • Stmt
 
-    tok_semicolon   shift, and go to state 100
+    tok_semicolon   shift, and go to state 101
     tok_plus        shift, and go to state 41
     tok_minus       shift, and go to state 42
     tok_lparen      shift, and go to state 43
     tok_lbrace      shift, and go to state 61
-    tok_if          shift, and go to state 102
+    tok_if          shift, and go to state 103
     tok_not         shift, and go to state 45
-    tok_while       shift, and go to state 103
-    tok_break       shift, and go to state 104
-    tok_continue    shift, and go to state 105
-    tok_return      shift, and go to state 106
+    tok_while       shift, and go to state 104
+    tok_break       shift, and go to state 105
+    tok_continue    shift, and go to state 106
+    tok_return      shift, and go to state 107
     tok_identifier  shift, and go to state 46
     tok_number      shift, and go to state 47
 
-    Block       go to state 108
-    Stmt        go to state 162
-    Exp         go to state 111
-    LVal        go to state 112
+    Block       go to state 109
+    Stmt        go to state 163
+    Exp         go to state 112
+    LVal        go to state 113
     PrimaryExp  go to state 51
     UnaryExp    go to state 52
     MulExp      go to state 53
     AddExp      go to state 54
 
 
-State 152
+State 153
 
    44 Stmt: LVal tok_assign Exp tok_semicolon •
 
     $default  reduce using rule 44 (Stmt)
 
 
-State 153
+State 154
 
    48 Stmt: tok_if tok_lparen Cond tok_rparen Stmt •
    49     | tok_if tok_lparen Cond tok_rparen Stmt • tok_else Stmt
 
-    tok_else  shift, and go to state 163
+    tok_else  shift, and go to state 164
 
     tok_else  [reduce using rule 48 (Stmt)]
     $default  reduce using rule 48 (Stmt)
 
 
-State 154
-
-   75 AddExp: AddExp • tok_plus MulExp
-   76       | AddExp • tok_minus MulExp
-   79 RelExp: RelExp tok_lt AddExp •
-
-    tok_plus   shift, and go to state 76
-    tok_minus  shift, and go to state 77
-
-    $default  reduce using rule 79 (RelExp)
-
-
 State 155
 
-   75 AddExp: AddExp • tok_plus MulExp
-   76       | AddExp • tok_minus MulExp
-   78 RelExp: RelExp tok_gt AddExp •
-
-    tok_plus   shift, and go to state 76
-    tok_minus  shift, and go to state 77
-
-    $default  reduce using rule 78 (RelExp)
-
-
-State 156
-
-   75 AddExp: AddExp • tok_plus MulExp
-   76       | AddExp • tok_minus MulExp
-   81 RelExp: RelExp tok_le AddExp •
-
-    tok_plus   shift, and go to state 76
-    tok_minus  shift, and go to state 77
-
-    $default  reduce using rule 81 (RelExp)
-
-
-State 157
-
-   75 AddExp: AddExp • tok_plus MulExp
-   76       | AddExp • tok_minus MulExp
-   80 RelExp: RelExp tok_ge AddExp •
+   76 AddExp: AddExp • tok_plus MulExp
+   77       | AddExp • tok_minus MulExp
+   80 RelExp: RelExp tok_lt AddExp •
 
     tok_plus   shift, and go to state 76
     tok_minus  shift, and go to state 77
@@ -2049,96 +2034,132 @@ State 157
     $default  reduce using rule 80 (RelExp)
 
 
+State 156
+
+   76 AddExp: AddExp • tok_plus MulExp
+   77       | AddExp • tok_minus MulExp
+   79 RelExp: RelExp tok_gt AddExp •
+
+    tok_plus   shift, and go to state 76
+    tok_minus  shift, and go to state 77
+
+    $default  reduce using rule 79 (RelExp)
+
+
+State 157
+
+   76 AddExp: AddExp • tok_plus MulExp
+   77       | AddExp • tok_minus MulExp
+   82 RelExp: RelExp tok_le AddExp •
+
+    tok_plus   shift, and go to state 76
+    tok_minus  shift, and go to state 77
+
+    $default  reduce using rule 82 (RelExp)
+
+
 State 158
 
-   78 RelExp: RelExp • tok_gt AddExp
-   79       | RelExp • tok_lt AddExp
-   80       | RelExp • tok_ge AddExp
-   81       | RelExp • tok_le AddExp
-   83 EqExp: EqExp tok_eq RelExp •
+   76 AddExp: AddExp • tok_plus MulExp
+   77       | AddExp • tok_minus MulExp
+   81 RelExp: RelExp tok_ge AddExp •
 
-    tok_lt  shift, and go to state 143
-    tok_gt  shift, and go to state 144
-    tok_le  shift, and go to state 145
-    tok_ge  shift, and go to state 146
+    tok_plus   shift, and go to state 76
+    tok_minus  shift, and go to state 77
 
-    $default  reduce using rule 83 (EqExp)
+    $default  reduce using rule 81 (RelExp)
 
 
 State 159
 
-   78 RelExp: RelExp • tok_gt AddExp
-   79       | RelExp • tok_lt AddExp
-   80       | RelExp • tok_ge AddExp
-   81       | RelExp • tok_le AddExp
-   84 EqExp: EqExp tok_ne RelExp •
+   79 RelExp: RelExp • tok_gt AddExp
+   80       | RelExp • tok_lt AddExp
+   81       | RelExp • tok_ge AddExp
+   82       | RelExp • tok_le AddExp
+   84 EqExp: EqExp tok_eq RelExp •
 
-    tok_lt  shift, and go to state 143
-    tok_gt  shift, and go to state 144
-    tok_le  shift, and go to state 145
-    tok_ge  shift, and go to state 146
+    tok_lt  shift, and go to state 144
+    tok_gt  shift, and go to state 145
+    tok_le  shift, and go to state 146
+    tok_ge  shift, and go to state 147
 
     $default  reduce using rule 84 (EqExp)
 
 
 State 160
 
-   83 EqExp: EqExp • tok_eq RelExp
-   84      | EqExp • tok_ne RelExp
-   86 LAndExp: LAndExp tok_and EqExp •
+   79 RelExp: RelExp • tok_gt AddExp
+   80       | RelExp • tok_lt AddExp
+   81       | RelExp • tok_ge AddExp
+   82       | RelExp • tok_le AddExp
+   85 EqExp: EqExp tok_ne RelExp •
 
-    tok_eq  shift, and go to state 147
-    tok_ne  shift, and go to state 148
+    tok_lt  shift, and go to state 144
+    tok_gt  shift, and go to state 145
+    tok_le  shift, and go to state 146
+    tok_ge  shift, and go to state 147
 
-    $default  reduce using rule 86 (LAndExp)
+    $default  reduce using rule 85 (EqExp)
 
 
 State 161
 
-   86 LAndExp: LAndExp • tok_and EqExp
-   88 LOrExp: LOrExp tok_or LAndExp •
+   84 EqExp: EqExp • tok_eq RelExp
+   85      | EqExp • tok_ne RelExp
+   87 LAndExp: LAndExp tok_and EqExp •
 
-    tok_and  shift, and go to state 149
+    tok_eq  shift, and go to state 148
+    tok_ne  shift, and go to state 149
 
-    $default  reduce using rule 88 (LOrExp)
+    $default  reduce using rule 87 (LAndExp)
 
 
 State 162
+
+   87 LAndExp: LAndExp • tok_and EqExp
+   89 LOrExp: LOrExp tok_or LAndExp •
+
+    tok_and  shift, and go to state 150
+
+    $default  reduce using rule 89 (LOrExp)
+
+
+State 163
 
    50 Stmt: tok_while tok_lparen Cond tok_rparen Stmt •
 
     $default  reduce using rule 50 (Stmt)
 
 
-State 163
+State 164
 
    49 Stmt: tok_if tok_lparen Cond tok_rparen Stmt tok_else • Stmt
 
-    tok_semicolon   shift, and go to state 100
+    tok_semicolon   shift, and go to state 101
     tok_plus        shift, and go to state 41
     tok_minus       shift, and go to state 42
     tok_lparen      shift, and go to state 43
     tok_lbrace      shift, and go to state 61
-    tok_if          shift, and go to state 102
+    tok_if          shift, and go to state 103
     tok_not         shift, and go to state 45
-    tok_while       shift, and go to state 103
-    tok_break       shift, and go to state 104
-    tok_continue    shift, and go to state 105
-    tok_return      shift, and go to state 106
+    tok_while       shift, and go to state 104
+    tok_break       shift, and go to state 105
+    tok_continue    shift, and go to state 106
+    tok_return      shift, and go to state 107
     tok_identifier  shift, and go to state 46
     tok_number      shift, and go to state 47
 
-    Block       go to state 108
-    Stmt        go to state 164
-    Exp         go to state 111
-    LVal        go to state 112
+    Block       go to state 109
+    Stmt        go to state 165
+    Exp         go to state 112
+    LVal        go to state 113
     PrimaryExp  go to state 51
     UnaryExp    go to state 52
     MulExp      go to state 53
     AddExp      go to state 54
 
 
-State 164
+State 165
 
    49 Stmt: tok_if tok_lparen Cond tok_rparen Stmt tok_else Stmt •
 

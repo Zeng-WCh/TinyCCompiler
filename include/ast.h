@@ -26,7 +26,6 @@ class AST
 public:
     virtual ~AST() = 0;
     virtual void print(int dep) = 0;
-
     void print_space(int n);
 };
 
@@ -143,7 +142,13 @@ private:
 
 public:
     VarDecl() = default;
-    VarDecl(const std::vector<AST *> &var_defs) : _var_defs(var_defs) {}
+    VarDecl(const std::vector<AST *> &var_defs)
+    {
+        for (auto var_def : var_defs)
+        {
+            _var_defs.push_back(var_def);
+        }
+    }
     ~VarDecl()
     {
         for (auto var_def : _var_defs)
@@ -160,7 +165,9 @@ class VarDecls : public AST
 public:
     // AST should be var_def
     std::vector<AST *> _var_decls;
-    VarDecls() = default;
+    VarDecls()
+    {
+    }
     ~VarDecls()
     {
     }
