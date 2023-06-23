@@ -145,7 +145,7 @@ int ir_mode(const char* filename) {
         fprintf(stderr, "Error: cannot open file %s\n", filename);
         return 1;
     }
-    fprintf(stderr, "Parsing file %s\n", filename);
+    // fprintf(stderr, "Parsing file %s\n", filename);
 
     int yyresult = yyparse();
     if (yyresult != 0) {

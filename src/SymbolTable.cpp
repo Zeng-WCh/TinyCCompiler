@@ -98,5 +98,12 @@ bool SymbolTable::isConst(const std::string& ident) {
 }
 
 bool SymbolTable::isempty() const {
-    return table->empty();
+    return stack.empty();
+}
+
+void SymbolTable::setValue(const std::string& ident, llvm::Value* v) {
+    auto it = table->find(ident);
+    if (it != table->end()) {
+        it->second = v;
+    }
 }

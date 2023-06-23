@@ -16,12 +16,14 @@ extern Module *TheModule;
 namespace
 {
     SymbolTable sym_table;
-    std::stack<std::pair<BasicBlock*, BasicBlock*>> holeStack;
-    std::map<std::string, int> globalConstantMap;
+    std::stack<std::pair<BasicBlock *, BasicBlock *>> holeStack;
+    std::map<std::string, Type *> globalMap;
     int constEval = -1;
     bool iv_const = false;
-    Value* local_var;
-    Type* local_type;
+    Value *local_var;
+    Type *local_type;
+
+    bool isAssign = false;
 }
 
 bool AST::isConst()
@@ -37,7 +39,8 @@ void AST::print_space(int n)
     }
 }
 
-int AST::getConstValue() {
+int AST::getConstValue()
+{
     return -114514;
 }
 
@@ -74,11 +77,14 @@ void Decl::print(int dep)
     }
 }
 
-Value* Decl::eval() {
-    if (_const != nullptr) {
+Value *Decl::eval()
+{
+    if (_const != nullptr)
+    {
         return _const->eval();
     }
-    if (_var != nullptr) {
+    if (_var != nullptr)
+    {
         return _var->eval();
     }
     return nullptr;
@@ -110,7 +116,8 @@ void ConstDecl::print(int dep)
     }
 }
 
-Value* ConstDecl::eval() {
+Value *ConstDecl::eval()
+{
     for (auto const_def : _const_defs)
     {
         const_def->eval();
@@ -128,8 +135,10 @@ void VarDecl::print(int dep)
     }
 }
 
-Value* VarDecl::eval() {
-    for (auto var_def : _var_defs) {
+Value *VarDecl::eval()
+{
+    for (auto var_def : _var_defs)
+    {
         var_def->eval();
     }
     return nullptr;
@@ -158,44 +167,55 @@ void ConstDef::print(int dep)
     iv->print(dep + 2);
 }
 
-Value* ConstDef::eval() {
+Value *ConstDef::eval()
+{
     bool isGlobal = (sym_table.isempty());
-    
-    Value *val = nullptr;
-    Type* t = nullptr;
 
-    if (s == nullptr) {
+    Value *val = nullptr;
+    Type *t = nullptr;
+
+    if (s == nullptr)
+    {
         t = llvm::Type::getInt32Ty(*TheContext);
     }
-    else {
-        t = (Type*) s->eval();
+    else
+    {
+        t = (Type *)s->eval();
     }
 
-    if (iv != nullptr) {
+    if (iv != nullptr)
+    {
         val = iv->eval();
     }
-    else {
-        if (t->isArrayTy()) {
+    else
+    {
+        if (t->isArrayTy())
+        {
             val = ConstantAggregateZero::get(t);
         }
-        else {
+        else
+        {
             val = ConstantInt::get(t, 0);
         }
     }
 
-    if (isGlobal) {
+    if (isGlobal)
+    {
         TheModule->getOrInsertGlobal(ident, t);
         GlobalVariable *gVar = TheModule->getNamedGlobal(ident);
-        gVar->setLinkage(GlobalValue::CommonLinkage);
-        gVar->setInitializer((Constant*) val);
+        gVar->setLinkage(GlobalValue::ExternalLinkage);
+        gVar->setInitializer((Constant *)val);
+        globalMap[ident] = t;
     }
-    else {
+    else
+    {
         auto it = sym_table.lookup(ident);
-        if (it != nullptr) {
+        if (it != nullptr)
+        {
             fprintf(stderr, "Error: %s has been defined\n", ident.c_str());
             return nullptr;
         }
-        Value* v = Builder->CreateAlloca(t, nullptr, ident);
+        Value *v = Builder->CreateAlloca(t, nullptr, ident);
         Builder->CreateStore(val, v);
         sym_table.insert(ident, v, t, true);
     }
@@ -223,17 +243,21 @@ void ConstInitVal::print(int dep)
     }
 }
 
-Value* ConstInitVal::eval() {
-    if (_init_vals.size() > 1) {
+Value *ConstInitVal::eval()
+{
+    if (_init_vals.size() > 1)
+    {
         // array
         int size = _init_vals.size();
-        std::vector<Constant*> vals;
-        for (auto init_val : _init_vals) {
-            vals.push_back((Constant*) init_val->eval());
+        std::vector<Constant *> vals;
+        for (auto init_val : _init_vals)
+        {
+            vals.push_back((Constant *)init_val->eval());
         }
-        Constant* retVal = ConstantArray::get(ArrayType::get(Type::getInt32Ty(*TheContext), size), vals);
+        Constant *retVal = ConstantArray::get(ArrayType::get(Type::getInt32Ty(*TheContext), size), vals);
     }
-    else {
+    else
+    {
         // single
         return _init_vals[0]->eval();
     }
@@ -248,7 +272,8 @@ void ConstExp::print(int dep)
 
 Value *ConstExp::eval()
 {
-    if (!this->add->isConst()) {
+    if (!this->add->isConst())
+    {
         fprintf(stderr, "Error: ConstExp is not const\n");
         return nullptr;
     }
@@ -277,56 +302,71 @@ void VarDef::print(int dep)
     }
 }
 
-Value* VarDef::eval() {
-    if (sym_table.isempty()) {
+Value *VarDef::eval()
+{
+    if (sym_table.isempty())
+    {
         // global
         auto it = TheModule->getNamedGlobal(ident);
-        if (it != nullptr) {
+        if (it != nullptr)
+        {
             fprintf(stderr, "Error: %s has been defined\n", ident.c_str());
             return nullptr;
         }
-        Type* t = nullptr;
-        if (s == nullptr) {
+        Type *t = nullptr;
+        if (s == nullptr)
+        {
             t = Type::getInt32Ty(*TheContext);
         }
-        else {
-            t = (Type*) s->eval();
+        else
+        {
+            t = (Type *)s->eval();
         }
-        if (iv == nullptr) {
+        if (iv == nullptr)
+        {
             TheModule->getOrInsertGlobal(ident, t);
             GlobalVariable *gVar = TheModule->getNamedGlobal(ident);
-            gVar->setLinkage(GlobalValue::CommonLinkage);
+            gVar->setLinkage(GlobalValue::ExternalLinkage);
             gVar->setInitializer(ConstantInt::get(t, 0));
         }
-        else {
+        else
+        {
             iv_const = true;
             TheModule->getOrInsertGlobal(ident, t);
             GlobalVariable *gVar = TheModule->getNamedGlobal(ident);
-            gVar->setLinkage(GlobalValue::CommonLinkage);
+            gVar->setLinkage(GlobalValue::ExternalLinkage);
             auto val = iv->eval();
-            gVar->setInitializer((Constant*) val);
+            gVar->setInitializer((Constant *)val);
             iv_const = false;
         }
+        globalMap[ident] = t;
     }
-    else {
+    else
+    {
         auto it = sym_table.lookup(ident);
-        if (it != nullptr) {
+        if (it != nullptr)
+        {
             fprintf(stderr, "Error: %s has been defined\n", ident.c_str());
             return nullptr;
         }
-        Type* t = nullptr;
-        if (s == nullptr) {
+        Type *t = nullptr;
+        if (s == nullptr)
+        {
             t = Type::getInt32Ty(*TheContext);
         }
-        else {
-            t = (Type*) s->eval();
+        else
+        {
+            t = (Type *)s->eval();
         }
-        Value* v = Builder->CreateAlloca(t, nullptr, ident);
+        Value *v = Builder->CreateAlloca(t, nullptr, ident);
         local_var = v;
         local_type = t;
         sym_table.insert(ident, v, t, false);
-        if (iv != nullptr) {
+        if (iv != nullptr)
+        {
+            isAssign = true;
             iv->eval();
+            isAssign = false;
         }
     }
     return nullptr;
@@ -342,34 +382,43 @@ void InitVal::print(int dep)
     }
 }
 
-Value* InitVal::eval() {
-    if (iv_const) {
+Value *InitVal::eval()
+{
+    if (iv_const)
+    {
         // global var must be constant
-        std::vector<Constant*> vals;
-        for (auto init_val : _init_vals) {
-            if (!init_val->isConst()) {
+        std::vector<Constant *> vals;
+        for (auto init_val : _init_vals)
+        {
+            if (!init_val->isConst())
+            {
                 fprintf(stderr, "Error: InitVal should be constant at this\n");
                 return nullptr;
             }
             int val = init_val->getConstValue();
             vals.push_back(ConstantInt::get(Type::getInt32Ty(*TheContext), val, true));
         }
-        if (vals.size() == 1) {
+        if (vals.size() == 1)
+        {
             return vals[0];
         }
-        else {
-            Constant* retVal = ConstantArray::get(ArrayType::get(Type::getInt32Ty(*TheContext), vals.size()), vals);
+        else
+        {
+            Constant *retVal = ConstantArray::get(ArrayType::get(Type::getInt32Ty(*TheContext), vals.size()), vals);
             return retVal;
         }
     }
     // local array
-    if (_init_vals.size() > 1) {
-        for (int i = 0; i < _init_vals.size(); i++) {
-            Value* v = _init_vals[i]->eval();
+    if (_init_vals.size() > 1)
+    {
+        for (int i = 0; i < _init_vals.size(); i++)
+        {
+            Value *v = _init_vals[i]->eval();
             Builder->CreateStore(v, Builder->CreateConstGEP2_32(local_type, local_var, 0, i));
         }
     }
-    else {
+    else
+    {
         Builder->CreateStore(_init_vals[0]->eval(), local_var);
     }
     return nullptr;
@@ -428,97 +477,130 @@ void FuncFParams::print(int dep)
     }
 }
 
-Value* VarDecls::eval() {
+Value *VarDecls::eval()
+{
     fprintf(stderr, "Called from VarDecls, This should not be called\n");
     return nullptr;
 }
 
-Value* ConstSelector::eval() {
-    Type* ret = nullptr;
-    for (int i = (int)selects.size() - 1; i >=0; --i) {
-        if (!selects[i]->isConst()) {
+Value *ConstSelector::eval()
+{
+    Type *ret = nullptr;
+    for (int i = (int)selects.size() - 1; i >= 0; --i)
+    {
+        if (!selects[i]->isConst())
+        {
             fprintf(stderr, "Error: ConstSelector should be constant at this\n");
             return nullptr;
         }
         int val = selects[i]->getConstValue();
-        if (ret == nullptr) {
+        if (ret == nullptr)
+        {
             ret = ArrayType::get(Type::getInt32Ty(*TheContext), val);
         }
-        else {
+        else
+        {
             ret = ArrayType::get(ret, val);
         }
     }
-    return (Value*)ret;
+    return (Value *)ret;
 }
 
-Value* FuncFParamList::eval() {
+Value *FuncFParamList::eval()
+{
     return nullptr;
 }
 
-Value* ConstDecls::eval() {
+Value *ConstDecls::eval()
+{
     return nullptr;
 }
 
-Value* InitVals::eval() {
+Value *InitVals::eval()
+{
     return nullptr;
 }
 
-Value* FuncDef::eval() {
+Value *FuncDef::eval()
+{
     // check if function has been defined
     auto it = TheModule->getFunction(ident);
-    if (it != nullptr) {
+    if (it != nullptr)
+    {
         fprintf(stderr, "Error: %s has been defined\n", ident.c_str());
         return nullptr;
     }
     sym_table.createScope();
     int _type = this->type->type;
-    std::vector<Type*> Params;
+    std::vector<Type *> Params;
     auto p = params->_params;
-    for (int i = 0; i < p.size(); ++i) {
-        Params.push_back((Type*)p[i]->eval());
+    for (int i = 0; i < p.size(); ++i)
+    {
+        Params.push_back((Type *)p[i]->eval());
     }
-    FunctionType* FT = FunctionType::get(_type == 1 ? Type::getInt32Ty(*TheContext) : Type::getVoidTy(*TheContext), Params, false);
-    Function* TheFunction = Function::Create(FT, Function::ExternalLinkage, ident, *TheModule);
+    FunctionType *FT = FunctionType::get(_type == 1 ? Type::getInt32Ty(*TheContext) : Type::getVoidTy(*TheContext), Params, false);
+    Function *TheFunction = Function::Create(FT, Function::ExternalLinkage, ident, *TheModule);
+    int i = 0;
+    for (auto &Arg : TheFunction->args())
+    {
+        Arg.setName(((FuncFParam *)p[i])->ident);
+        sym_table.setValue(((FuncFParam *)p[i])->ident, &Arg);
+        i++;
+    }
     BasicBlock *bb = BasicBlock::Create(*TheContext, "entry", TheFunction);
     Builder->SetInsertPoint(bb);
-    if (block) {
-        Value* ret = block->eval();
+    if (block)
+    {
+        Value *ret = block->eval();
     }
-    else {
+    else
+    {
         Builder->CreateRetVoid();
     }
     sym_table.popScope();
     return nullptr;
 }
 
-Value* ConstInits::eval() {
+Value *ConstInits::eval()
+{
     fprintf(stderr, "Called from ConstInits, This should not be called\n");
     return nullptr;
 }
 
-Value* FuncType::eval() {
+Value *FuncType::eval()
+{
     return nullptr;
 }
 
-Value* FuncFParam::eval() {
-    Type* type = nullptr;
-    for (int i = (int)_dims.size() - 1; i >= 0; --i) {
-        if (_dims[i] == nullptr) {
+Value *FuncFParam::eval()
+{
+    Type *type = nullptr;
+    if (_dims.empty())
+    {
+        type = Type::getInt32Ty(*TheContext);
+    }
+    for (int i = (int)_dims.size() - 1; i >= 0; --i)
+    {
+        if (_dims[i] == nullptr)
+        {
             type = PointerType::get(type, 0);
         }
-        else {
+        else
+        {
             type = ArrayType::get(type, _dims[i]->getConstValue());
         }
     }
     sym_table.insert(ident, nullptr, type);
-    return (Value*)type;
+    return (Value *)type;
 }
 
-Value* Dim::eval() {
+Value *Dim::eval()
+{
     return nullptr;
 }
 
-Value* FuncFParams::eval() {
+Value *FuncFParams::eval()
+{
     return nullptr;
 }
 
@@ -536,17 +618,21 @@ void BlockItem::print(int dep)
     }
 }
 
-Value* BlockItem::eval() {
-    if (_stmt) {
+Value *BlockItem::eval()
+{
+    if (_stmt)
+    {
         return _stmt->eval();
     }
-    if (_decl) {
+    if (_decl)
+    {
         return _decl->eval();
     }
     return nullptr;
 }
 
-Value* BlockItems::eval() {
+Value *BlockItems::eval()
+{
     fprintf(stderr, "Called from BlockItems, This should not be called\n");
     return nullptr;
 }
@@ -561,12 +647,13 @@ void Block::print(int dep)
     }
 }
 
-Value* Block::eval() {
-    Value *ret = nullptr;
-    for (auto item : _block_items) {
-        ret = item->eval();
+Value *Block::eval()
+{
+    for (auto item : _block_items)
+    {
+        item->eval();
     }
-    return ret;
+    return nullptr;
 }
 
 void Assignment::print(int dep)
@@ -577,9 +664,14 @@ void Assignment::print(int dep)
     _exp->print(dep + 2);
 }
 
-Value* Assignment::eval() {
+Value *Assignment::eval()
+{
     auto l = this->_lval->eval();
+    isAssign = true;
     auto r = this->_exp->eval();
+    isAssign = false;
+    l->dump();
+    r->dump();
     return Builder->CreateStore(r, l);
 }
 
@@ -595,10 +687,12 @@ void IfStmt::print(int dep)
     }
 }
 
-Value* IfStmt::eval() {
-    Value* cond = this->condition->eval();
+Value *IfStmt::eval()
+{
+    Value *cond = this->condition->eval();
     auto TheFunction = Builder->GetInsertBlock()->getParent();
-    if (this->false_part) {
+    if (this->false_part)
+    {
         auto TrueBB = BasicBlock::Create(*TheContext, "true");
         auto FalseBB = BasicBlock::Create(*TheContext, "false");
         auto ToEndBB = BasicBlock::Create(*TheContext, "toend");
@@ -615,7 +709,8 @@ Value* IfStmt::eval() {
         Builder->SetInsertPoint(ToEndBB);
         return nullptr;
     }
-    else {
+    else
+    {
         auto TrueBB = BasicBlock::Create(*TheContext, "true");
         auto ToEndBB = BasicBlock::Create(*TheContext, "toend");
         Builder->CreateCondBr(cond, TrueBB, ToEndBB);
@@ -650,12 +745,13 @@ Value *WhileStmt::eval()
     Builder->SetInsertPoint(CondBB);
 
     auto cond_val = condition->eval();
-    
+
     if (cond_val->getType() != Type::getInt1Ty(*TheContext))
     {
         cond_val = Builder->CreateICmpNE(cond_val, ConstantInt::get(*TheContext, APInt(32, 0)), "ifcond");
     }
-    else {
+    else
+    {
         cond_val = Builder->CreateICmpNE(cond_val, ConstantInt::get(*TheContext, APInt(1, 0)), "ifcond");
     }
     Builder->CreateCondBr(cond_val, BodyBB, ToCondBB);
@@ -735,7 +831,9 @@ Value *Stmt::eval()
         if (type == 0)
         {
             // return stmt
-            return Builder->CreateRet(exp->eval());
+            auto v = exp->eval();
+            auto ret = Builder->CreateLoad(Type::getInt32Ty(*TheContext), v);
+            return Builder->CreateRet(ret);
         }
         else
         {
@@ -763,7 +861,8 @@ Value *Stmt::eval()
         }
         else if (type == 1)
         {
-            if (holeStack.empty()) {
+            if (holeStack.empty())
+            {
                 fprintf(stderr, "Error: break stmt should be in a loop\n");
                 return nullptr;
             }
@@ -773,7 +872,8 @@ Value *Stmt::eval()
         }
         else if (type == 2)
         {
-            if (holeStack.empty()) {
+            if (holeStack.empty())
+            {
                 fprintf(stderr, "Error: continue stmt should be in a loop\n");
                 return nullptr;
             }
@@ -868,6 +968,7 @@ void LVal::print(int dep)
 Value *LVal::eval()
 {
     Value *val = TheModule->getNamedGlobal(ident);
+    bool isGlobal = true;
     if (val == nullptr)
     {
         // try local
@@ -878,20 +979,40 @@ Value *LVal::eval()
             fprintf(stderr, "Error: variable %s not found\n", ident.c_str());
             return nullptr;
         }
+        // val = Builder->CreateLoad(sym_table.getType(ident), val);
+        isGlobal = false;
+    }
+    // TODO TYPE CHECK
+    if (this->selectors.empty())
+    {
+        // just a variable
+
+        return val;
     }
     else
     {
-        // TODO TYPE CHECK
-        if (this->selectors.empty())
+        // array
+        Type *t = nullptr;
+        if (isGlobal)
         {
-            // just a variable
-            return val;
+            t = globalMap[ident];
         }
         else
         {
-            // array
-            Type *t = val->getType();
-            // Type Check
+            t = sym_table.getType(ident);
+        }
+        // Type Check
+        if (t->isArrayTy())
+        {
+            // ok
+        }
+        else
+        {
+            fprintf(stderr, "Error: %s is not an array\n", ident.c_str());
+            return nullptr;
+        }
+        for (auto selector : selectors)
+        {
             if (t->isArrayTy())
             {
                 // ok
@@ -901,34 +1022,26 @@ Value *LVal::eval()
                 fprintf(stderr, "Error: %s is not an array\n", ident.c_str());
                 return nullptr;
             }
-            for (auto selector : selectors)
+            Value *idx = selector->eval();
+            if (idx == nullptr)
             {
-                if (t->isArrayTy())
-                {
-                    // ok
-                }
-                else
-                {
-                    fprintf(stderr, "Error: %s is not an array\n", ident.c_str());
-                    return nullptr;
-                }
-                Value *idx = selector->eval();
-                if (idx == nullptr)
-                {
-                    return nullptr;
-                }
-                if (idx->getType() != Type::getInt32Ty(*TheContext))
-                {
-                    fprintf(stderr, "Error: array index must be int\n");
-                    return nullptr;
-                }
-                val = Builder->CreateGEP(t, val, idx);
-                t = t->getArrayElementType();
+                return nullptr;
             }
-            return val;
+            if (idx->getType() != Type::getInt32Ty(*TheContext))
+            {
+                fprintf(stderr, "Error: array index must be int\n");
+                return nullptr;
+            }
+            val = Builder->CreateGEP(t, val, {ConstantInt::get(Type::getInt32Ty(*TheContext), 0), idx});
+            t = t->getArrayElementType();
         }
+        if (isAssign)
+            return Builder->CreateLoad(t, val);
+        // isGEP = true;
+        // GEPType
+        // val->dump();
+        return val;
     }
-    return val;
 }
 
 void PrimaryExp::print(int dep)
@@ -1239,55 +1352,80 @@ Value *FuncRParams::eval()
     return nullptr;
 }
 
-bool ConstExp::isConst() {
+bool ConstExp::isConst()
+{
     return add->isConst();
 }
 
-int ConstExp::getConstValue() {
+int ConstExp::getConstValue()
+{
     return add->getConstValue();
 }
 
-bool AddExp::isConst() {
-    if (add_exp) {
+bool AddExp::isConst()
+{
+    if (add_exp)
+    {
         return add_exp->isConst() && mul_exp->isConst();
-    } else {
+    }
+    else
+    {
         return mul_exp->isConst();
     }
 }
 
-int AddExp::getConstValue() {
-    if (add_exp) {
-        if (op == '+') {
+int AddExp::getConstValue()
+{
+    if (add_exp)
+    {
+        if (op == '+')
+        {
             return add_exp->getConstValue() + mul_exp->getConstValue();
-        } else {
+        }
+        else
+        {
             return add_exp->getConstValue() - mul_exp->getConstValue();
         }
-    } else {
+    }
+    else
+    {
         return mul_exp->getConstValue();
     }
 }
 
-bool MulExp::isConst() {
-    if (mul_exp) {
+bool MulExp::isConst()
+{
+    if (mul_exp)
+    {
         return mul_exp->isConst() && unary_exp->isConst();
-    } else {
+    }
+    else
+    {
         return unary_exp->isConst();
     }
 }
 
-int MulExp::getConstValue() {
-    if (mul_exp) {
-        if (op == '*') {
+int MulExp::getConstValue()
+{
+    if (mul_exp)
+    {
+        if (op == '*')
+        {
             return mul_exp->getConstValue() * unary_exp->getConstValue();
-        } else {
+        }
+        else
+        {
             return mul_exp->getConstValue() / unary_exp->getConstValue();
         }
-    } else {
+    }
+    else
+    {
         return unary_exp->getConstValue();
     }
 }
 
-bool UnaryExp::isConst() {
+bool UnaryExp::isConst()
+{
     if (primary_exp)
         return primary_exp->isConst();
     else if (unary_exp)
@@ -1296,7 +1434,8 @@ bool UnaryExp::isConst() {
         return false;
 }
 
-int UnaryExp::getConstValue() {
+int UnaryExp::getConstValue()
+{
     if (primary_exp)
         return primary_exp->getConstValue();
     else if (unary_exp)
@@ -1305,7 +1444,8 @@ int UnaryExp::getConstValue() {
         return 0;
 }
 
-bool PrimaryExp::isConst() {
+bool PrimaryExp::isConst()
+{
     if (lval)
         return lval->isConst();
     else if (exp)
@@ -1314,7 +1454,8 @@ bool PrimaryExp::isConst() {
         return true;
 }
 
-int PrimaryExp::getConstValue() {
+int PrimaryExp::getConstValue()
+{
     if (lval)
         return lval->getConstValue();
     else if (exp)
@@ -1323,47 +1464,61 @@ int PrimaryExp::getConstValue() {
         return this->num;
 }
 
-bool LVal::isConst() {
-    if (sym_table.isempty()) {
+bool LVal::isConst()
+{
+    if (sym_table.isempty())
+    {
         // just global
         auto i = TheModule->getGlobalVariable(ident);
-        if (i) {
+        if (i)
+        {
             return true;
-        } else {
+        }
+        else
+        {
             return false;
         }
     }
-    else {
+    else
+    {
         auto i = sym_table.lookup(ident);
-        if (i) {
+        if (i)
+        {
             return sym_table.isConst(ident);
         }
-        else {
+        else
+        {
             return TheModule->getGlobalVariable(ident) != nullptr;
         }
     }
 }
 
-int LVal::getConstValue() {
+int LVal::getConstValue()
+{
     // TODO
     return 0;
 }
 
-bool Exp::isConst() {
+bool Exp::isConst()
+{
     return this->add_exp->isConst();
 }
 
-int Exp::getConstValue() {
+int Exp::getConstValue()
+{
     return this->add_exp->getConstValue();
 }
 
-bool InitVal::isConst() {
-    if (_init_vals.size() != 1) {
+bool InitVal::isConst()
+{
+    if (_init_vals.size() != 1)
+    {
         return false;
     }
     return _init_vals[0]->isConst();
 }
 
-int InitVal::getConstValue() {
+int InitVal::getConstValue()
+{
     return _init_vals[0]->getConstValue();
 }

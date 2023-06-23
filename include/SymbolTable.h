@@ -4,6 +4,7 @@
 #include <map>
 #include <string>
 #include <stack>
+#include <vector>
 #include <llvm/IR/Value.h>
 
 class SymbolTable {
@@ -24,6 +25,7 @@ class SymbolTable {
         llvm::Type* getType(const std::string&);
         bool isConst(const std::string&);
         bool isempty() const;
+        void setValue(const std::string&, llvm::Value*);
 };
 
 #endif
