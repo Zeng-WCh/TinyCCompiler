@@ -6,6 +6,7 @@
 #include "ast.h"
 
 #include <llvm/IR/IRBuilder.h>
+#include <llvm/IR/LLVMContext.h>
 
 extern AST *result;
 
@@ -132,6 +133,8 @@ int parser_mode(const char *filename)
 
     assert(result);
     result->print(0);
+
+    delete result;
 
     return 0;
 }

@@ -6,6 +6,7 @@ FLEXSRC=scanner.l
 COMPILER=clang++
 BISON_COMPILER=bison
 BISONSRC=parser.y
+LLVMFLAG=`llvm-config --cxxflags --ldflags --system-libs --libs core orcjit native`
 
 .PHONY: all clean
 all: build
@@ -16,7 +17,7 @@ clean:
 
 all: build
 
-build: ast parser lex driver
+build: symtab ast parser lex driver
 
 lex: ${SRCDIR}/${FLEXSRC}
 	@mkdir -p ./lib
@@ -33,10 +34,13 @@ parser:
 	${COMPILER} ${INCLUDES} -shared -fPIC -o ${LIBDIR}/libparser.so ${SRCDIR}/${BISONSRC:.y=.cpp}
 
 driver:
-	${COMPILER} ${INCLUDES} -o tcc ${SRCDIR}/driver.cpp -L${LIBDIR} -lscanner -lparser -last
+	${COMPILER} ${INCLUDES} ${LLVMFLAG} -o tcc ${SRCDIR}/driver.cpp -L${LIBDIR} -lscanner -lparser -last -ltable
 
 ast:
-	${COMPILER} ${INCLUDES} -shared -fPIC -o ${LIBDIR}/libast.so ${SRCDIR}/ast.cpp
+	${COMPILER} ${INCLUDES} ${LLVMFLAG} -shared -fPIC -o ${LIBDIR}/libast.so ${SRCDIR}/ast.cpp
+
+symtab:
+	${COMPILER} ${INCLUDES} -shared -fPIC -o ${LIBDIR}/libtable.so ${SRCDIR}/SymbolTable.cpp
 
 run: 
 	LD_LIBRARY_PATH=${LIBDIR} ./tcc
