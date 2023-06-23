@@ -12,8 +12,8 @@ LLVMFLAG=`llvm-config --cxxflags --ldflags --system-libs --libs core orcjit nati
 all: build
 
 clean:
-	rm -f *.o
-	rm -f *.yy.c
+	@rm ./lib/*
+	@rm ./tcc
 
 all: build
 
