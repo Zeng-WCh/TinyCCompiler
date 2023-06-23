@@ -37,9 +37,11 @@ driver:
 	${COMPILER} ${INCLUDES} ${LLVMFLAG} -o tcc ${SRCDIR}/driver.cpp -L${LIBDIR} -lscanner -lparser -last -ltable
 
 ast:
+	@mkdir -p ./lib
 	${COMPILER} ${INCLUDES} ${LLVMFLAG} -shared -fPIC -o ${LIBDIR}/libast.so ${SRCDIR}/ast.cpp
 
 symtab:
+	@mkdir -p ./lib
 	${COMPILER} ${INCLUDES} -shared -fPIC -o ${LIBDIR}/libtable.so ${SRCDIR}/SymbolTable.cpp
 
 run: 
