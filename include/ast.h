@@ -28,6 +28,8 @@ public:
     virtual ~AST() = 0;
     virtual void print(int dep) = 0;
     virtual llvm::Value* eval() = 0;
+    virtual bool isConst();
+    virtual int getConstValue();
     void print_space(int n);
 };
 
@@ -208,7 +210,9 @@ class ConstDef : public AST
 {
 private:
     std::string ident;
+    // should return a Constant*
     ConstInitVal *iv;
+    // should return a Type*
     ConstSelector *s;
 
 public:
@@ -248,6 +252,7 @@ public:
     }
 
     void print(int dep) override;
+    // this should return a Type*
     llvm::Value* eval() override;
 };
 
@@ -294,6 +299,8 @@ public:
 
     void print(int dep) override;
     llvm::Value* eval() override;
+    bool isConst() override;
+    int getConstValue() override;
 };
 
 class ConstInits : public AST
@@ -317,7 +324,9 @@ class VarDef : public AST
 {
 private:
     std::string ident;
+    // should return a Type*
     ConstSelector *s;
+    // should return a Value*/Constant*
     InitVal *iv;
 
 public:
@@ -361,6 +370,8 @@ public:
 
     void print(int dep) override;
     llvm::Value* eval() override;
+    bool isConst() override;
+    int getConstValue() override;
 };
 
 class InitVals : public AST
@@ -382,11 +393,9 @@ public:
 
 class FuncType : public AST
 {
-private:
+public:
     // 1 for int, 0 for void
     int type;
-
-public:
     FuncType(int type) : type(type) {}
     ~FuncType() = default;
 
@@ -396,13 +405,12 @@ public:
 
 class FuncFParam : public AST
 {
-private:
+public:
     std::string ident;
     // nullptr means unspecified,
     // only 0 index can be nullptr, others must be positive
     std::vector<AST *> _dims;
 
-public:
     FuncFParam(const std::string &name) : ident(name) {}
     FuncFParam(const std::string &name, const std::vector<AST *> &_dim) : ident(name), _dims(_dim) {}
     ~FuncFParam()
@@ -461,11 +469,9 @@ public:
 
 class FuncFParams : public AST
 {
-private:
+public:
     // AST should be like func_fparam
     std::vector<AST *> _params;
-
-public:
     FuncFParams() = default;
     FuncFParams(const std::vector<AST *> &params) : _params(params) {}
     ~FuncFParams()
@@ -690,6 +696,8 @@ public:
 
     void print(int dep) override;
     llvm::Value* eval() override;
+    bool isConst() override;
+    int getConstValue() override;
 };
 
 class Exp : public AST
@@ -709,6 +717,8 @@ public:
 
     void print(int dep) override;
     llvm::Value* eval() override;
+    bool isConst() override;
+    int getConstValue() override;
 };
 
 class Cond : public AST
@@ -748,6 +758,8 @@ public:
 
     void print(int dep) override;
     llvm::Value* eval() override;
+    bool isConst() override;
+    int getConstValue() override;
 };
 
 class PrimaryExp : public AST
@@ -775,6 +787,8 @@ public:
 
     void print(int dep) override;
     llvm::Value* eval() override;
+    bool isConst() override;
+    int getConstValue() override;
 };
 
 class UnaryExp : public AST
@@ -808,6 +822,8 @@ public:
 
     void print(int dep) override;
     llvm::Value* eval() override;
+    bool isConst() override;
+    int getConstValue() override;
 };
 
 class MulExp : public AST
@@ -834,6 +850,8 @@ public:
 
     void print(int dep) override;
     llvm::Value* eval() override;
+    bool isConst() override;
+    int getConstValue() override;
 };
 
 class RelExp : public AST
