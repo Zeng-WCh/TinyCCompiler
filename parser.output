@@ -30,7 +30,7 @@ Grammar
 
    11 ConstDef: tok_identifier ConstSelector tok_assign ConstInitVal
 
-   12 ConstSelector: ε
+   12 ConstSelector: %empty
    13              | ConstSelector tok_lbracket ConstExp tok_rbracket
 
    14 ConstInitVal: ConstExp
@@ -58,7 +58,7 @@ Grammar
    29 FuncDef: tok_int tok_identifier tok_lparen FuncFParams tok_rparen Block
    30        | tok_void tok_identifier tok_lparen FuncFParams tok_rparen Block
 
-   31 FuncFParams: ε
+   31 FuncFParams: %empty
    32            | FuncFParamList
 
    33 FuncFParamList: FuncFParam
@@ -67,12 +67,12 @@ Grammar
    35 FuncFParam: tok_int tok_identifier
    36           | tok_int tok_identifier tok_lbracket tok_rbracket FuncFParamDim
 
-   37 FuncFParamDim: ε
+   37 FuncFParamDim: %empty
    38              | FuncFParamDim tok_lbracket Exp tok_rbracket
 
    39 Block: tok_lbrace BlockItems tok_rbrace
 
-   40 BlockItems: ε
+   40 BlockItems: %empty
    41           | BlockItems BlockItem
 
    42 BlockItem: Stmt
@@ -96,7 +96,7 @@ Grammar
 
    57 LVal: tok_identifier LValSelector
 
-   58 LValSelector: ε
+   58 LValSelector: %empty
    59             | LValSelector tok_lbracket Exp tok_rbracket
 
    60 PrimaryExp: tok_lparen Exp tok_rparen
@@ -109,7 +109,7 @@ Grammar
    66         | tok_minus UnaryExp
    67         | tok_not UnaryExp
 
-   68 FuncRParams: ε
+   68 FuncRParams: %empty
    69            | Exp
    70            | FuncRParams tok_comma Exp
 

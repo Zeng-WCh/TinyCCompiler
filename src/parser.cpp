@@ -1,4 +1,4 @@
-/* A Bison parser, made by GNU Bison 3.8.2.  */
+/* A Bison parser, made by GNU Bison 3.7.5.  */
 
 /* Bison implementation for Yacc-like parsers in C
 
@@ -16,7 +16,7 @@
    GNU General Public License for more details.
 
    You should have received a copy of the GNU General Public License
-   along with this program.  If not, see <https://www.gnu.org/licenses/>.  */
+   along with this program.  If not, see <http://www.gnu.org/licenses/>.  */
 
 /* As a special exception, you may create a larger work that contains
    part or all of the Bison parser skeleton and distribute that work
@@ -46,10 +46,10 @@
    USER NAME SPACE" below.  */
 
 /* Identify Bison output, and Bison version.  */
-#define YYBISON 30802
+#define YYBISON 30705
 
 /* Bison version string.  */
-#define YYBISON_VERSION "3.8.2"
+#define YYBISON_VERSION "3.7.5"
 
 /* Skeleton name.  */
 #define YYSKELETON_NAME "yacc.c"
@@ -347,18 +347,12 @@ typedef int yy_state_fast_t;
 # define YY_USE(E) /* empty */
 #endif
 
+#if defined __GNUC__ && ! defined __ICC && 407 <= __GNUC__ * 100 + __GNUC_MINOR__
 /* Suppress an incorrect diagnostic about yylval being uninitialized.  */
-#if defined __GNUC__ && ! defined __ICC && 406 <= __GNUC__ * 100 + __GNUC_MINOR__
-# if __GNUC__ * 100 + __GNUC_MINOR__ < 407
-#  define YY_IGNORE_MAYBE_UNINITIALIZED_BEGIN                           \
-    _Pragma ("GCC diagnostic push")                                     \
-    _Pragma ("GCC diagnostic ignored \"-Wuninitialized\"")
-# else
-#  define YY_IGNORE_MAYBE_UNINITIALIZED_BEGIN                           \
+# define YY_IGNORE_MAYBE_UNINITIALIZED_BEGIN                            \
     _Pragma ("GCC diagnostic push")                                     \
     _Pragma ("GCC diagnostic ignored \"-Wuninitialized\"")              \
     _Pragma ("GCC diagnostic ignored \"-Wmaybe-uninitialized\"")
-# endif
 # define YY_IGNORE_MAYBE_UNINITIALIZED_END      \
     _Pragma ("GCC diagnostic pop")
 #else
@@ -576,7 +570,7 @@ static const yytype_int8 yytranslate[] =
 };
 
 #if YYDEBUG
-/* YYRLINE[YYN] -- Source line where rule number YYN was defined.  */
+  /* YYRLINE[YYN] -- Source line where rule number YYN was defined.  */
 static const yytype_int16 yyrline[] =
 {
        0,    46,    46,    50,    55,    62,    65,    70,    75,    82,
@@ -628,6 +622,18 @@ yysymbol_name (yysymbol_kind_t yysymbol)
 }
 #endif
 
+#ifdef YYPRINT
+/* YYTOKNUM[NUM] -- (External) token number corresponding to the
+   (internal) symbol number NUM (which must be that of a token).  */
+static const yytype_int16 yytoknum[] =
+{
+       0,   256,   257,   258,   259,   260,   261,   262,   263,   264,
+     265,   266,   267,   268,   269,   270,   271,   272,   273,   274,
+     275,   276,   277,   278,   279,   280,   281,   282,   283,   284,
+     285,   286,   287,   288,   289,   290,   291,   292,   293,   294
+};
+#endif
+
 #define YYPACT_NINF (-135)
 
 #define yypact_value_is_default(Yyn) \
@@ -638,8 +644,8 @@ yysymbol_name (yysymbol_kind_t yysymbol)
 #define yytable_value_is_error(Yyn) \
   0
 
-/* YYPACT[STATE-NUM] -- Index in YYTABLE of the portion describing
-   STATE-NUM.  */
+  /* YYPACT[STATE-NUM] -- Index in YYTABLE of the portion describing
+     STATE-NUM.  */
 static const yytype_int16 yypact[] =
 {
        4,   -25,   -12,    30,    35,     4,  -135,  -135,  -135,  -135,
@@ -661,9 +667,9 @@ static const yytype_int16 yypact[] =
       60,   130,   149,  -135,    61,  -135
 };
 
-/* YYDEFACT[STATE-NUM] -- Default reduction number in state STATE-NUM.
-   Performed when YYTABLE does not specify something else to do.  Zero
-   means the default is an error.  */
+  /* YYDEFACT[STATE-NUM] -- Default reduction number in state STATE-NUM.
+     Performed when YYTABLE does not specify something else to do.  Zero
+     means the default is an error.  */
 static const yytype_int8 yydefact[] =
 {
        0,     0,     0,     0,     0,     2,     3,     5,     7,     8,
@@ -685,7 +691,7 @@ static const yytype_int8 yydefact[] =
       86,    88,    90,    51,     0,    50
 };
 
-/* YYPGOTO[NTERM-NUM].  */
+  /* YYPGOTO[NTERM-NUM].  */
 static const yytype_int16 yypgoto[] =
 {
     -135,  -135,  -135,   177,    99,  -135,  -135,   148,   165,   -78,
@@ -694,7 +700,7 @@ static const yytype_int16 yypgoto[] =
      -17,  -135,    83,   -31,    20,    41,    43,  -135,   168
 };
 
-/* YYDEFGOTO[NTERM-NUM].  */
+  /* YYDEFGOTO[NTERM-NUM].  */
 static const yytype_uint8 yydefgoto[] =
 {
        0,     4,     5,     6,     7,     8,    24,    25,    19,    81,
@@ -703,9 +709,9 @@ static const yytype_uint8 yydefgoto[] =
       52,    89,    53,    54,   135,   136,   137,   138,    82
 };
 
-/* YYTABLE[YYPACT[STATE-NUM]] -- What to do in state STATE-NUM.  If
-   positive, shift that token.  If negative, reduce the rule whose
-   number is the opposite.  If YYTABLE_NINF, syntax error.  */
+  /* YYTABLE[YYPACT[STATE-NUM]] -- What to do in state STATE-NUM.  If
+     positive, shift that token.  If negative, reduce the rule whose
+     number is the opposite.  If YYTABLE_NINF, syntax error.  */
 static const yytype_uint8 yytable[] =
 {
       55,   113,    97,    49,    68,    62,   100,     1,     2,   154,
@@ -754,8 +760,8 @@ static const yytype_int16 yycheck[] =
      122,   150,    -1,    -1,   151,    -1,    -1,    -1,    -1,    31
 };
 
-/* YYSTOS[STATE-NUM] -- The symbol kind of the accessing symbol of
-   state STATE-NUM.  */
+  /* YYSTOS[STATE-NUM] -- The (internal number of the) accessing
+     symbol of state STATE-NUM.  */
 static const yytype_int8 yystos[] =
 {
        0,     3,     4,     7,    41,    42,    43,    44,    45,    51,
@@ -777,7 +783,7 @@ static const yytype_int8 yystos[] =
       74,    75,    76,    64,    32,    64
 };
 
-/* YYR1[RULE-NUM] -- Symbol kind of the left-hand side of rule RULE-NUM.  */
+  /* YYR1[YYN] -- Symbol number of symbol that rule YYN derives.  */
 static const yytype_int8 yyr1[] =
 {
        0,    40,    41,    42,    42,    43,    43,    44,    44,    45,
@@ -792,7 +798,7 @@ static const yytype_int8 yyr1[] =
       77,    78
 };
 
-/* YYR2[RULE-NUM] -- Number of symbols on the right-hand side of rule RULE-NUM.  */
+  /* YYR2[YYN] -- Number of symbols on the right hand side of rule YYN.  */
 static const yytype_int8 yyr2[] =
 {
        0,     2,     1,     1,     2,     1,     1,     1,     1,     4,
@@ -816,7 +822,6 @@ enum { YYENOMEM = -2 };
 #define YYACCEPT        goto yyacceptlab
 #define YYABORT         goto yyabortlab
 #define YYERROR         goto yyerrorlab
-#define YYNOMEM         goto yyexhaustedlab
 
 
 #define YYRECOVERING()  (!!yyerrstatus)
@@ -857,7 +862,10 @@ do {                                            \
     YYFPRINTF Args;                             \
 } while (0)
 
-
+/* This macro is provided for backward compatibility. */
+# ifndef YY_LOCATION_PRINT
+#  define YY_LOCATION_PRINT(File, Loc) ((void) 0)
+# endif
 
 
 # define YY_SYMBOL_PRINT(Title, Kind, Value, Location)                    \
@@ -884,6 +892,10 @@ yy_symbol_value_print (FILE *yyo,
   YY_USE (yyoutput);
   if (!yyvaluep)
     return;
+# ifdef YYPRINT
+  if (yykind < YYNTOKENS)
+    YYPRINT (yyo, yytoknum[yykind], *yyvaluep);
+# endif
   YY_IGNORE_MAYBE_UNINITIALIZED_BEGIN
   YY_USE (yykind);
   YY_IGNORE_MAYBE_UNINITIALIZED_END
@@ -1068,7 +1080,6 @@ yyparse (void)
   YYDPRINTF ((stderr, "Starting parse\n"));
 
   yychar = YYEMPTY; /* Cause a token to be read.  */
-
   goto yysetstate;
 
 
@@ -1094,7 +1105,7 @@ yysetstate:
 
   if (yyss + yystacksize - 1 <= yyssp)
 #if !defined yyoverflow && !defined YYSTACK_RELOCATE
-    YYNOMEM;
+    goto yyexhaustedlab;
 #else
     {
       /* Get the current used size of the three stacks, in elements.  */
@@ -1122,7 +1133,7 @@ yysetstate:
 # else /* defined YYSTACK_RELOCATE */
       /* Extend the stack our own way.  */
       if (YYMAXDEPTH <= yystacksize)
-        YYNOMEM;
+        goto yyexhaustedlab;
       yystacksize *= 2;
       if (YYMAXDEPTH < yystacksize)
         yystacksize = YYMAXDEPTH;
@@ -1133,7 +1144,7 @@ yysetstate:
           YY_CAST (union yyalloc *,
                    YYSTACK_ALLOC (YY_CAST (YYSIZE_T, YYSTACK_BYTES (yystacksize))));
         if (! yyptr)
-          YYNOMEM;
+          goto yyexhaustedlab;
         YYSTACK_RELOCATE (yyss_alloc, yyss);
         YYSTACK_RELOCATE (yyvs_alloc, yyvs);
 #  undef YYSTACK_RELOCATE
@@ -1154,7 +1165,6 @@ yysetstate:
         YYABORT;
     }
 #endif /* !defined yyoverflow && !defined YYSTACK_RELOCATE */
-
 
   if (yystate == YYFINAL)
     YYACCEPT;
@@ -1272,7 +1282,7 @@ yyreduce:
                    {
     result = (AST*) (yyvsp[0].ast);
 }
-#line 1276 "parser.cpp"
+#line 1286 "parser.cpp"
     break;
 
   case 3: /* CompUnits: CompUnit  */
@@ -1282,7 +1292,7 @@ yyreduce:
     tmp->add_comp_unit((AST*) (yyvsp[0].ast));
     (yyval.ast) = (void*) tmp;
  }
-#line 1286 "parser.cpp"
+#line 1296 "parser.cpp"
     break;
 
   case 4: /* CompUnits: CompUnits CompUnit  */
@@ -1292,7 +1302,7 @@ yyreduce:
     tmp->add_comp_unit((AST*) (yyvsp[0].ast));
     (yyval.ast) = (void*) tmp;
 }
-#line 1296 "parser.cpp"
+#line 1306 "parser.cpp"
     break;
 
   case 5: /* CompUnit: Decl  */
@@ -1300,7 +1310,7 @@ yyreduce:
                {
     (yyval.ast) = (void*) (yyvsp[0].ast);
 }
-#line 1304 "parser.cpp"
+#line 1314 "parser.cpp"
     break;
 
   case 6: /* CompUnit: FuncDef  */
@@ -1308,7 +1318,7 @@ yyreduce:
           {
     (yyval.ast) = (void*) (yyvsp[0].ast);
 }
-#line 1312 "parser.cpp"
+#line 1322 "parser.cpp"
     break;
 
   case 7: /* Decl: ConstDecl  */
@@ -1318,7 +1328,7 @@ yyreduce:
     auto tmp = new Decl(const_);
     (yyval.ast) = (void*) tmp;
 }
-#line 1322 "parser.cpp"
+#line 1332 "parser.cpp"
     break;
 
   case 8: /* Decl: VarDecl  */
@@ -1328,7 +1338,7 @@ yyreduce:
     auto tmp = new Decl(var);
     (yyval.ast) = (void*) tmp;
 }
-#line 1332 "parser.cpp"
+#line 1342 "parser.cpp"
     break;
 
   case 9: /* ConstDecl: tok_const tok_int ConstDecls tok_semicolon  */
@@ -1339,7 +1349,7 @@ yyreduce:
     (yyval.ast) = (void*) const_;
     delete (ConstDecls*)(yyvsp[-1].ast);
 }
-#line 1343 "parser.cpp"
+#line 1353 "parser.cpp"
     break;
 
   case 10: /* ConstDecls: ConstDef  */
@@ -1349,7 +1359,7 @@ yyreduce:
     tmp->add_const_decl((ConstDef*) (yyvsp[0].ast));
     (yyval.ast) = (void*) tmp;
 }
-#line 1353 "parser.cpp"
+#line 1363 "parser.cpp"
     break;
 
   case 11: /* ConstDecls: ConstDecls tok_comma ConstDef  */
@@ -1359,7 +1369,7 @@ yyreduce:
     tmp->add_const_decl((ConstDef*) (yyvsp[0].ast));
     (yyval.ast) = (void*) tmp;
 }
-#line 1363 "parser.cpp"
+#line 1373 "parser.cpp"
     break;
 
   case 12: /* ConstDef: tok_identifier ConstSelector tok_assign ConstInitVal  */
@@ -1372,7 +1382,7 @@ yyreduce:
     auto tmp = new ConstDef(name, selector, init_val);
     (yyval.ast) = (void*) tmp;
 }
-#line 1376 "parser.cpp"
+#line 1386 "parser.cpp"
     break;
 
   case 13: /* ConstSelector: %empty  */
@@ -1380,7 +1390,7 @@ yyreduce:
                {
     (yyval.ast) = nullptr;
 }
-#line 1384 "parser.cpp"
+#line 1394 "parser.cpp"
     break;
 
   case 14: /* ConstSelector: ConstSelector tok_lbracket ConstExp tok_rbracket  */
@@ -1392,7 +1402,7 @@ yyreduce:
     tmp->add_selector((ConstExp*) (yyvsp[-1].ast));
     (yyval.ast) = (void*) tmp;
 }
-#line 1396 "parser.cpp"
+#line 1406 "parser.cpp"
     break;
 
   case 15: /* ConstInitVal: ConstExp  */
@@ -1402,7 +1412,7 @@ yyreduce:
     tmp->add_const_val((ConstExp*) (yyvsp[0].ast));
     (yyval.ast) = (void*) tmp;
 }
-#line 1406 "parser.cpp"
+#line 1416 "parser.cpp"
     break;
 
   case 16: /* ConstInitVal: tok_lbrace tok_rbrace  */
@@ -1411,7 +1421,7 @@ yyreduce:
     auto tmp = new ConstInitVal();
     (yyval.ast) = (void*) tmp;
 }
-#line 1415 "parser.cpp"
+#line 1425 "parser.cpp"
     break;
 
   case 17: /* ConstInitVal: tok_lbrace ConstInits tok_rbrace  */
@@ -1422,7 +1432,7 @@ yyreduce:
     (yyval.ast) = (void*) init_val;
     delete (ConstInits*) (yyvsp[-1].ast);
 }
-#line 1426 "parser.cpp"
+#line 1436 "parser.cpp"
     break;
 
   case 18: /* ConstInits: ConstInitVal  */
@@ -1432,7 +1442,7 @@ yyreduce:
     tmp->add_const_init((ConstInitVal*) (yyvsp[0].ast));
     (yyval.ast) = (void*) tmp;
 }
-#line 1436 "parser.cpp"
+#line 1446 "parser.cpp"
     break;
 
   case 19: /* ConstInits: ConstInits tok_comma ConstInitVal  */
@@ -1442,7 +1452,7 @@ yyreduce:
     tmp->add_const_init((ConstInitVal*) (yyvsp[0].ast));
     (yyval.ast) = (void*) tmp;
 }
-#line 1446 "parser.cpp"
+#line 1456 "parser.cpp"
     break;
 
   case 20: /* VarDecl: tok_int VarDecls tok_semicolon  */
@@ -1453,7 +1463,7 @@ yyreduce:
     (yyval.ast) = (void*) var;
     delete (VarDecls*) (yyvsp[-1].ast);
 }
-#line 1457 "parser.cpp"
+#line 1467 "parser.cpp"
     break;
 
   case 21: /* VarDecls: VarDef  */
@@ -1463,7 +1473,7 @@ yyreduce:
     tmp->add_var_decl((VarDef*) (yyvsp[0].ast));
     (yyval.ast) = (void*) tmp;
 }
-#line 1467 "parser.cpp"
+#line 1477 "parser.cpp"
     break;
 
   case 22: /* VarDecls: VarDecls tok_comma VarDef  */
@@ -1473,7 +1483,7 @@ yyreduce:
     tmp->add_var_decl((AST*) (yyvsp[0].ast));
     (yyval.ast) = (void*) tmp;
 }
-#line 1477 "parser.cpp"
+#line 1487 "parser.cpp"
     break;
 
   case 23: /* VarDef: tok_identifier ConstSelector  */
@@ -1485,7 +1495,7 @@ yyreduce:
     auto tmp = new VarDef(ident, selector, nullptr);
     (yyval.ast) = (void*) tmp;
 }
-#line 1489 "parser.cpp"
+#line 1499 "parser.cpp"
     break;
 
   case 24: /* VarDef: tok_identifier ConstSelector tok_assign InitVal  */
@@ -1498,7 +1508,7 @@ yyreduce:
     auto tmp = new VarDef(ident, selector, init_val);
     (yyval.ast) = (void*) tmp;
 }
-#line 1502 "parser.cpp"
+#line 1512 "parser.cpp"
     break;
 
   case 25: /* InitVal: Exp  */
@@ -1508,7 +1518,7 @@ yyreduce:
     tmp->add_init_val((Exp*) (yyvsp[0].ast));
     (yyval.ast) = (void*) tmp;
 }
-#line 1512 "parser.cpp"
+#line 1522 "parser.cpp"
     break;
 
   case 26: /* InitVal: tok_lbrace tok_rbrace  */
@@ -1517,7 +1527,7 @@ yyreduce:
     auto tmp = new InitVal();
     (yyval.ast) = (void*) tmp;
 }
-#line 1521 "parser.cpp"
+#line 1531 "parser.cpp"
     break;
 
   case 27: /* InitVal: tok_lbrace InitVals tok_rbrace  */
@@ -1528,7 +1538,7 @@ yyreduce:
     (yyval.ast) = (void*) init_val;
     delete (InitVals*)(yyvsp[-1].ast);
 }
-#line 1532 "parser.cpp"
+#line 1542 "parser.cpp"
     break;
 
   case 28: /* InitVals: InitVal  */
@@ -1538,7 +1548,7 @@ yyreduce:
     tmp->add_init_val((AST*) (yyvsp[0].ast));
     (yyval.ast) = (void*) tmp;
 }
-#line 1542 "parser.cpp"
+#line 1552 "parser.cpp"
     break;
 
   case 29: /* InitVals: InitVals tok_comma InitVal  */
@@ -1548,7 +1558,7 @@ yyreduce:
     tmp->add_init_val((InitVal*) (yyvsp[0].ast));
     (yyval.ast) = (void*) tmp;
 }
-#line 1552 "parser.cpp"
+#line 1562 "parser.cpp"
     break;
 
   case 30: /* FuncDef: tok_int tok_identifier tok_lparen FuncFParams tok_rparen Block  */
@@ -1562,7 +1572,7 @@ yyreduce:
     auto tmp = new FuncDef(func_type, ident, func_fparams, block);
     (yyval.ast) = (void*) tmp;
 }
-#line 1566 "parser.cpp"
+#line 1576 "parser.cpp"
     break;
 
   case 31: /* FuncDef: tok_void tok_identifier tok_lparen FuncFParams tok_rparen Block  */
@@ -1576,7 +1586,7 @@ yyreduce:
     auto tmp = new FuncDef(func_type, ident, func_fparams, block);
     (yyval.ast) = (void*) tmp;
 }
-#line 1580 "parser.cpp"
+#line 1590 "parser.cpp"
     break;
 
   case 32: /* FuncFParams: %empty  */
@@ -1585,7 +1595,7 @@ yyreduce:
     auto tmp = new FuncFParams();
     (yyval.ast) = (void*) tmp;
 }
-#line 1589 "parser.cpp"
+#line 1599 "parser.cpp"
     break;
 
   case 33: /* FuncFParams: FuncFParamList  */
@@ -1595,7 +1605,7 @@ yyreduce:
     auto tmp = new FuncFParams(t);
     (yyval.ast) = (void*) tmp;
 }
-#line 1599 "parser.cpp"
+#line 1609 "parser.cpp"
     break;
 
   case 34: /* FuncFParamList: FuncFParam  */
@@ -1605,7 +1615,7 @@ yyreduce:
     tmp->add_param((FuncFParam*) (yyvsp[0].ast));
     (yyval.ast) = (void*) tmp;
 }
-#line 1609 "parser.cpp"
+#line 1619 "parser.cpp"
     break;
 
   case 35: /* FuncFParamList: FuncFParamList tok_comma FuncFParam  */
@@ -1615,7 +1625,7 @@ yyreduce:
     tmp->add_param((FuncFParam*) (yyvsp[0].ast));
     (yyval.ast) = (void*) tmp;
 }
-#line 1619 "parser.cpp"
+#line 1629 "parser.cpp"
     break;
 
   case 36: /* FuncFParam: tok_int tok_identifier  */
@@ -1625,7 +1635,7 @@ yyreduce:
     delete (char*)(yyvsp[0].strVal);
     (yyval.ast) = (void*) (new FuncFParam(ident));
 }
-#line 1629 "parser.cpp"
+#line 1639 "parser.cpp"
     break;
 
   case 37: /* FuncFParam: tok_int tok_identifier tok_lbracket tok_rbracket FuncFParamDim  */
@@ -1643,7 +1653,7 @@ yyreduce:
     delete dim;
     (yyval.ast) = (void*) (new FuncFParam(ident, d));
 }
-#line 1647 "parser.cpp"
+#line 1657 "parser.cpp"
     break;
 
   case 38: /* FuncFParamDim: %empty  */
@@ -1652,7 +1662,7 @@ yyreduce:
     auto tmp = new Dim();
     (yyval.ast) = (void*) tmp;
 }
-#line 1656 "parser.cpp"
+#line 1666 "parser.cpp"
     break;
 
   case 39: /* FuncFParamDim: FuncFParamDim tok_lbracket Exp tok_rbracket  */
@@ -1662,7 +1672,7 @@ yyreduce:
     tmp->add_dim((AST*) (yyvsp[-1].ast));
     (yyval.ast) = (void*) tmp;
 }
-#line 1666 "parser.cpp"
+#line 1676 "parser.cpp"
     break;
 
   case 40: /* Block: tok_lbrace BlockItems tok_rbrace  */
@@ -1673,7 +1683,7 @@ yyreduce:
     delete (BlockItems*)(yyvsp[-1].ast);
     (yyval.ast) = (void*) block;
 }
-#line 1677 "parser.cpp"
+#line 1687 "parser.cpp"
     break;
 
   case 41: /* BlockItems: %empty  */
@@ -1682,7 +1692,7 @@ yyreduce:
     auto tmp = new BlockItems();
     (yyval.ast) = (void*) tmp;
 }
-#line 1686 "parser.cpp"
+#line 1696 "parser.cpp"
     break;
 
   case 42: /* BlockItems: BlockItems BlockItem  */
@@ -1692,7 +1702,7 @@ yyreduce:
     tmp->add_block_item((BlockItem*) (yyvsp[0].ast));
     (yyval.ast) = (void*) tmp;
 }
-#line 1696 "parser.cpp"
+#line 1706 "parser.cpp"
     break;
 
   case 43: /* BlockItem: Stmt  */
@@ -1701,7 +1711,7 @@ yyreduce:
     auto tmp = (Stmt*) (yyvsp[0].ast);
     (yyval.ast) = (void*) (new BlockItem(tmp));
 }
-#line 1705 "parser.cpp"
+#line 1715 "parser.cpp"
     break;
 
   case 44: /* BlockItem: Decl  */
@@ -1710,7 +1720,7 @@ yyreduce:
     auto tmp = (Decl*) (yyvsp[0].ast);
     (yyval.ast) = (void*) (new BlockItem(tmp));
 }
-#line 1714 "parser.cpp"
+#line 1724 "parser.cpp"
     break;
 
   case 45: /* Stmt: LVal tok_assign Exp tok_semicolon  */
@@ -1721,7 +1731,7 @@ yyreduce:
     auto tmp = new Assignment(lval, exp);
     (yyval.ast) = (void*) (new Stmt(tmp));
 }
-#line 1725 "parser.cpp"
+#line 1735 "parser.cpp"
     break;
 
   case 46: /* Stmt: tok_semicolon  */
@@ -1729,7 +1739,7 @@ yyreduce:
                 {
     (yyval.ast) = (void*) (new Stmt());
 }
-#line 1733 "parser.cpp"
+#line 1743 "parser.cpp"
     break;
 
   case 47: /* Stmt: Exp tok_semicolon  */
@@ -1738,7 +1748,7 @@ yyreduce:
     auto exp = (Exp*) (yyvsp[-1].ast);
     (yyval.ast) = (void*) (new Stmt(exp));
 }
-#line 1742 "parser.cpp"
+#line 1752 "parser.cpp"
     break;
 
   case 48: /* Stmt: Block  */
@@ -1747,7 +1757,7 @@ yyreduce:
     auto block = (Block*) (yyvsp[0].ast);
     (yyval.ast) = (void*) (new Stmt(block));
 }
-#line 1751 "parser.cpp"
+#line 1761 "parser.cpp"
     break;
 
   case 49: /* Stmt: tok_if tok_lparen Cond tok_rparen Stmt  */
@@ -1758,7 +1768,7 @@ yyreduce:
     auto tmp = new IfStmt(cond, stmt);
     (yyval.ast) = (void*) (new Stmt(tmp));
 }
-#line 1762 "parser.cpp"
+#line 1772 "parser.cpp"
     break;
 
   case 50: /* Stmt: tok_if tok_lparen Cond tok_rparen Stmt tok_else Stmt  */
@@ -1770,7 +1780,7 @@ yyreduce:
     auto tmp = new IfStmt(cond, stmt1, stmt2);
     (yyval.ast) = (void*) (new Stmt(tmp));
 }
-#line 1774 "parser.cpp"
+#line 1784 "parser.cpp"
     break;
 
   case 51: /* Stmt: tok_while tok_lparen Cond tok_rparen Stmt  */
@@ -1781,7 +1791,7 @@ yyreduce:
     auto tmp = new WhileStmt(cond, stmt);
     (yyval.ast) = (void*) (new Stmt(tmp));
 }
-#line 1785 "parser.cpp"
+#line 1795 "parser.cpp"
     break;
 
   case 52: /* Stmt: tok_break tok_semicolon  */
@@ -1789,7 +1799,7 @@ yyreduce:
                           {
     (yyval.ast) = (void*) (new Stmt(1));
 }
-#line 1793 "parser.cpp"
+#line 1803 "parser.cpp"
     break;
 
   case 53: /* Stmt: tok_continue tok_semicolon  */
@@ -1797,7 +1807,7 @@ yyreduce:
                              {
     (yyval.ast) = (void*) (new Stmt(2));
 }
-#line 1801 "parser.cpp"
+#line 1811 "parser.cpp"
     break;
 
   case 54: /* Stmt: tok_return Exp tok_semicolon  */
@@ -1805,7 +1815,7 @@ yyreduce:
                                {
     (yyval.ast) = (void*) (new Stmt(0, (Exp*) (yyvsp[-1].ast)));
 }
-#line 1809 "parser.cpp"
+#line 1819 "parser.cpp"
     break;
 
   case 55: /* Stmt: tok_return tok_semicolon  */
@@ -1813,7 +1823,7 @@ yyreduce:
                            {
     (yyval.ast) = (void*) (new Stmt(0));
 }
-#line 1817 "parser.cpp"
+#line 1827 "parser.cpp"
     break;
 
   case 56: /* Exp: AddExp  */
@@ -1821,7 +1831,7 @@ yyreduce:
             {
     (yyval.ast) = (void*) (new Exp((AddExp*) (yyvsp[0].ast)));
 }
-#line 1825 "parser.cpp"
+#line 1835 "parser.cpp"
     break;
 
   case 57: /* Cond: LOrExp  */
@@ -1829,7 +1839,7 @@ yyreduce:
              {
     (yyval.ast) = (void*) (new Cond((LOrExp*) (yyvsp[0].ast)));
 }
-#line 1833 "parser.cpp"
+#line 1843 "parser.cpp"
     break;
 
   case 58: /* LVal: tok_identifier LValSelector  */
@@ -1842,7 +1852,7 @@ yyreduce:
     (yyval.ast) = (void*) lval;
     delete (yyvsp[0].ast);
 }
-#line 1846 "parser.cpp"
+#line 1856 "parser.cpp"
     break;
 
   case 59: /* LValSelector: %empty  */
@@ -1851,7 +1861,7 @@ yyreduce:
     auto tmp = new LValSelector();
     (yyval.ast) = (void*) tmp;
 }
-#line 1855 "parser.cpp"
+#line 1865 "parser.cpp"
     break;
 
   case 60: /* LValSelector: LValSelector tok_lbracket Exp tok_rbracket  */
@@ -1861,7 +1871,7 @@ yyreduce:
     tmp->add_selector((AST*) (yyvsp[-1].ast));
     (yyval.ast) = (void*) tmp;
 }
-#line 1865 "parser.cpp"
+#line 1875 "parser.cpp"
     break;
 
   case 61: /* PrimaryExp: tok_lparen Exp tok_rparen  */
@@ -1869,7 +1879,7 @@ yyreduce:
                                       {
     (yyval.ast) = (void*) (new PrimaryExp((Exp*) (yyvsp[-1].ast)));
 }
-#line 1873 "parser.cpp"
+#line 1883 "parser.cpp"
     break;
 
   case 62: /* PrimaryExp: LVal  */
@@ -1877,7 +1887,7 @@ yyreduce:
        {
     (yyval.ast) = (void*) (new PrimaryExp((LVal*) (yyvsp[0].ast)));
 }
-#line 1881 "parser.cpp"
+#line 1891 "parser.cpp"
     break;
 
   case 63: /* PrimaryExp: tok_number  */
@@ -1885,7 +1895,7 @@ yyreduce:
              {
     (yyval.ast) = (void*) (new PrimaryExp((yyvsp[0].intVal)));
 }
-#line 1889 "parser.cpp"
+#line 1899 "parser.cpp"
     break;
 
   case 64: /* UnaryExp: PrimaryExp  */
@@ -1893,7 +1903,7 @@ yyreduce:
                      {
     (yyval.ast) = (void*) (new UnaryExp((PrimaryExp*) (yyvsp[0].ast)));
 }
-#line 1897 "parser.cpp"
+#line 1907 "parser.cpp"
     break;
 
   case 65: /* UnaryExp: tok_identifier tok_lparen FuncRParams tok_rparen  */
@@ -1905,7 +1915,7 @@ yyreduce:
     (yyval.ast) = (void*) (new UnaryExp(ident, tmp));
     delete (yyvsp[-1].ast);
 }
-#line 1909 "parser.cpp"
+#line 1919 "parser.cpp"
     break;
 
   case 66: /* UnaryExp: tok_plus UnaryExp  */
@@ -1913,7 +1923,7 @@ yyreduce:
                     {
     (yyval.ast) = (void*) (new UnaryExp('+', (UnaryExp*) (yyvsp[0].ast)));
 }
-#line 1917 "parser.cpp"
+#line 1927 "parser.cpp"
     break;
 
   case 67: /* UnaryExp: tok_minus UnaryExp  */
@@ -1921,7 +1931,7 @@ yyreduce:
                      {
     (yyval.ast) = (void*) (new UnaryExp('-', (UnaryExp*) (yyvsp[0].ast)));
 }
-#line 1925 "parser.cpp"
+#line 1935 "parser.cpp"
     break;
 
   case 68: /* UnaryExp: tok_not UnaryExp  */
@@ -1929,7 +1939,7 @@ yyreduce:
                    {
     (yyval.ast) = (void*) (new UnaryExp('!', (UnaryExp*) (yyvsp[0].ast)));
 }
-#line 1933 "parser.cpp"
+#line 1943 "parser.cpp"
     break;
 
   case 69: /* FuncRParams: %empty  */
@@ -1937,7 +1947,7 @@ yyreduce:
              {
     (yyval.ast) = (void*) (new FuncRParams());
 }
-#line 1941 "parser.cpp"
+#line 1951 "parser.cpp"
     break;
 
   case 70: /* FuncRParams: Exp  */
@@ -1947,7 +1957,7 @@ yyreduce:
     tmp->add_param((AST*) (yyvsp[0].ast));
     (yyval.ast) = (void*) tmp;
 }
-#line 1951 "parser.cpp"
+#line 1961 "parser.cpp"
     break;
 
   case 71: /* FuncRParams: FuncRParams tok_comma Exp  */
@@ -1957,7 +1967,7 @@ yyreduce:
     tmp->add_param((AST*) (yyvsp[0].ast));
     (yyval.ast) = (void*) tmp;
 }
-#line 1961 "parser.cpp"
+#line 1971 "parser.cpp"
     break;
 
   case 72: /* MulExp: UnaryExp  */
@@ -1965,7 +1975,7 @@ yyreduce:
                  {
     (yyval.ast) = (void*) (new MulExp((UnaryExp*) (yyvsp[0].ast)));
 }
-#line 1969 "parser.cpp"
+#line 1979 "parser.cpp"
     break;
 
   case 73: /* MulExp: MulExp tok_star UnaryExp  */
@@ -1973,7 +1983,7 @@ yyreduce:
                            {
     (yyval.ast) = (void*) (new MulExp((MulExp*) (yyvsp[-2].ast), '*', (UnaryExp*) (yyvsp[0].ast)));
 }
-#line 1977 "parser.cpp"
+#line 1987 "parser.cpp"
     break;
 
   case 74: /* MulExp: MulExp tok_slash UnaryExp  */
@@ -1981,7 +1991,7 @@ yyreduce:
                             {
     (yyval.ast) = (void*) (new MulExp((MulExp*) (yyvsp[-2].ast), '/', (UnaryExp*) (yyvsp[0].ast)));
 }
-#line 1985 "parser.cpp"
+#line 1995 "parser.cpp"
     break;
 
   case 75: /* MulExp: MulExp tok_mod UnaryExp  */
@@ -1989,7 +1999,7 @@ yyreduce:
                           {
     (yyval.ast) = (void*) (new MulExp((MulExp*) (yyvsp[-2].ast), '%', (UnaryExp*) (yyvsp[0].ast)));
 }
-#line 1993 "parser.cpp"
+#line 2003 "parser.cpp"
     break;
 
   case 76: /* AddExp: MulExp  */
@@ -1997,7 +2007,7 @@ yyreduce:
                {
     (yyval.ast) = (void*) (new AddExp((MulExp*) (yyvsp[0].ast)));
 }
-#line 2001 "parser.cpp"
+#line 2011 "parser.cpp"
     break;
 
   case 77: /* AddExp: AddExp tok_plus MulExp  */
@@ -2005,7 +2015,7 @@ yyreduce:
                          {
     (yyval.ast) = (void*) (new AddExp((AddExp*) (yyvsp[-2].ast), '+', (MulExp*) (yyvsp[0].ast)));
 }
-#line 2009 "parser.cpp"
+#line 2019 "parser.cpp"
     break;
 
   case 78: /* AddExp: AddExp tok_minus MulExp  */
@@ -2013,7 +2023,7 @@ yyreduce:
                           {
     (yyval.ast) = (void*) (new AddExp((AddExp*) (yyvsp[-2].ast), '-', (MulExp*) (yyvsp[0].ast)));
 }
-#line 2017 "parser.cpp"
+#line 2027 "parser.cpp"
     break;
 
   case 79: /* RelExp: AddExp  */
@@ -2021,7 +2031,7 @@ yyreduce:
                {
     (yyval.ast) = (void*) (new RelExp((AddExp*)(yyvsp[0].ast)));
 }
-#line 2025 "parser.cpp"
+#line 2035 "parser.cpp"
     break;
 
   case 80: /* RelExp: RelExp tok_gt AddExp  */
@@ -2029,7 +2039,7 @@ yyreduce:
                        {
     (yyval.ast) = (void*) (new RelExp((RelExp*)(yyvsp[-2].ast), ">", (AddExp*)(yyvsp[0].ast)));
 }
-#line 2033 "parser.cpp"
+#line 2043 "parser.cpp"
     break;
 
   case 81: /* RelExp: RelExp tok_lt AddExp  */
@@ -2037,7 +2047,7 @@ yyreduce:
                        {
     (yyval.ast) = (void*) (new RelExp((RelExp*)(yyvsp[-2].ast), "<", (AddExp*)(yyvsp[0].ast)));
 }
-#line 2041 "parser.cpp"
+#line 2051 "parser.cpp"
     break;
 
   case 82: /* RelExp: RelExp tok_ge AddExp  */
@@ -2045,7 +2055,7 @@ yyreduce:
                        {
     (yyval.ast) = (void*) (new RelExp((RelExp*)(yyvsp[-2].ast), ">=", (AddExp*)(yyvsp[0].ast)));
 }
-#line 2049 "parser.cpp"
+#line 2059 "parser.cpp"
     break;
 
   case 83: /* RelExp: RelExp tok_le AddExp  */
@@ -2053,7 +2063,7 @@ yyreduce:
                        {
     (yyval.ast) = (void*) (new RelExp((RelExp*)(yyvsp[-2].ast), "<=", (AddExp*)(yyvsp[0].ast)));
 }
-#line 2057 "parser.cpp"
+#line 2067 "parser.cpp"
     break;
 
   case 84: /* EqExp: RelExp  */
@@ -2061,7 +2071,7 @@ yyreduce:
               {
     (yyval.ast) = (void*) (new EqExp((RelExp*)(yyvsp[0].ast)));
 }
-#line 2065 "parser.cpp"
+#line 2075 "parser.cpp"
     break;
 
   case 85: /* EqExp: EqExp tok_eq RelExp  */
@@ -2069,7 +2079,7 @@ yyreduce:
                       {
     (yyval.ast) = (void*) (new EqExp((EqExp*)(yyvsp[-2].ast), "==", (RelExp*)(yyvsp[0].ast)));
 }
-#line 2073 "parser.cpp"
+#line 2083 "parser.cpp"
     break;
 
   case 86: /* EqExp: EqExp tok_ne RelExp  */
@@ -2077,7 +2087,7 @@ yyreduce:
                       {
     (yyval.ast) = (void*) (new EqExp((EqExp*)(yyvsp[-2].ast), "!=", (RelExp*)(yyvsp[0].ast)));
 }
-#line 2081 "parser.cpp"
+#line 2091 "parser.cpp"
     break;
 
   case 87: /* LAndExp: EqExp  */
@@ -2085,7 +2095,7 @@ yyreduce:
                {
     (yyval.ast) = (void*) (new LAndExp((EqExp*)(yyvsp[0].ast)));
 }
-#line 2089 "parser.cpp"
+#line 2099 "parser.cpp"
     break;
 
   case 88: /* LAndExp: LAndExp tok_and EqExp  */
@@ -2093,7 +2103,7 @@ yyreduce:
                         {
     (yyval.ast) = (void*) (new LAndExp((LAndExp*)(yyvsp[-2].ast), (EqExp*)(yyvsp[0].ast)));
 }
-#line 2097 "parser.cpp"
+#line 2107 "parser.cpp"
     break;
 
   case 89: /* LOrExp: LAndExp  */
@@ -2101,7 +2111,7 @@ yyreduce:
                 {
     (yyval.ast) = (void*) (new LOrExp((LAndExp*)(yyvsp[0].ast)));
 }
-#line 2105 "parser.cpp"
+#line 2115 "parser.cpp"
     break;
 
   case 90: /* LOrExp: LOrExp tok_or LAndExp  */
@@ -2109,7 +2119,7 @@ yyreduce:
                         {
     (yyval.ast) = (void*) (new LOrExp((LOrExp*)(yyvsp[-2].ast), (LAndExp*)(yyvsp[0].ast)));
 }
-#line 2113 "parser.cpp"
+#line 2123 "parser.cpp"
     break;
 
   case 91: /* ConstExp: AddExp  */
@@ -2117,11 +2127,11 @@ yyreduce:
                  {
     (yyval.ast) = (void*) (new ConstExp((AddExp*) (yyvsp[0].ast)));
 }
-#line 2121 "parser.cpp"
+#line 2131 "parser.cpp"
     break;
 
 
-#line 2125 "parser.cpp"
+#line 2135 "parser.cpp"
 
       default: break;
     }
@@ -2203,7 +2213,6 @@ yyerrorlab:
      label yyerrorlab therefore never appears in user code.  */
   if (0)
     YYERROR;
-  ++yynerrs;
 
   /* Do not reclaim the symbols of the rule whose action triggered
      this YYERROR.  */
@@ -2264,7 +2273,7 @@ yyerrlab1:
 `-------------------------------------*/
 yyacceptlab:
   yyresult = 0;
-  goto yyreturnlab;
+  goto yyreturn;
 
 
 /*-----------------------------------.
@@ -2272,22 +2281,24 @@ yyacceptlab:
 `-----------------------------------*/
 yyabortlab:
   yyresult = 1;
-  goto yyreturnlab;
+  goto yyreturn;
 
 
-/*-----------------------------------------------------------.
-| yyexhaustedlab -- YYNOMEM (memory exhaustion) comes here.  |
-`-----------------------------------------------------------*/
+#if !defined yyoverflow
+/*-------------------------------------------------.
+| yyexhaustedlab -- memory exhaustion comes here.  |
+`-------------------------------------------------*/
 yyexhaustedlab:
   yyerror (YY_("memory exhausted"));
   yyresult = 2;
-  goto yyreturnlab;
+  goto yyreturn;
+#endif
 
 
-/*----------------------------------------------------------.
-| yyreturnlab -- parsing is finished, clean up and return.  |
-`----------------------------------------------------------*/
-yyreturnlab:
+/*-------------------------------------------------------.
+| yyreturn -- parsing is finished, clean up and return.  |
+`-------------------------------------------------------*/
+yyreturn:
   if (yychar != YYEMPTY)
     {
       /* Make sure we have latest lookahead translation.  See comments at
