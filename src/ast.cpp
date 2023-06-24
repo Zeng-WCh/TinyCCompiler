@@ -23,7 +23,8 @@ namespace
     Value *local_var;
     Type *local_type;
 
-    bool isAssign = false;
+    bool isAssign = true;
+    bool isRet = false;
 }
 
 bool AST::isConst()
@@ -364,9 +365,11 @@ Value *VarDef::eval()
         sym_table.insert(ident, v, t, false);
         if (iv != nullptr)
         {
+            bool t = isAssign;
             isAssign = true;
             iv->eval();
             isAssign = false;
+            isAssign = t;
         }
     }
     return nullptr;
@@ -666,12 +669,15 @@ void Assignment::print(int dep)
 
 Value *Assignment::eval()
 {
+    bool t= isAssign;
+    isAssign = false;
     auto l = this->_lval->eval();
     isAssign = true;
     auto r = this->_exp->eval();
     isAssign = false;
-    l->dump();
-    r->dump();
+    isAssign = t;
+    // l->dump();
+    // r->dump();
     return Builder->CreateStore(r, l);
 }
 
@@ -690,6 +696,9 @@ void IfStmt::print(int dep)
 Value *IfStmt::eval()
 {
     Value *cond = this->condition->eval();
+    if (cond->getType() != Type::getInt1Ty(*TheContext)) {
+        cond = Builder->CreateICmpNE(cond, ConstantInt::get(Type::getInt32Ty(*TheContext), 0, true), "ifcond");
+    }
     auto TheFunction = Builder->GetInsertBlock()->getParent();
     if (this->false_part)
     {
@@ -700,11 +709,15 @@ Value *IfStmt::eval()
         TheFunction->getBasicBlockList().push_back(TrueBB);
         Builder->SetInsertPoint(TrueBB);
         auto true_val = this->true_part->eval();
-        Builder->CreateBr(ToEndBB);
+        if (!isRet)
+            Builder->CreateBr(ToEndBB);
+        isRet = false;
         TheFunction->getBasicBlockList().push_back(FalseBB);
         Builder->SetInsertPoint(FalseBB);
         auto false_val = this->false_part->eval();
-        Builder->CreateBr(ToEndBB);
+        if (!isRet)
+            Builder->CreateBr(ToEndBB);
+        isRet = false;
         TheFunction->getBasicBlockList().push_back(ToEndBB);
         Builder->SetInsertPoint(ToEndBB);
         return nullptr;
@@ -717,7 +730,9 @@ Value *IfStmt::eval()
         TheFunction->getBasicBlockList().push_back(TrueBB);
         Builder->SetInsertPoint(TrueBB);
         auto true_val = this->true_part->eval();
-        Builder->CreateBr(ToEndBB);
+        if (!isRet)
+            Builder->CreateBr(ToEndBB);
+        isRet = false;
         TheFunction->getBasicBlockList().push_back(ToEndBB);
         Builder->SetInsertPoint(ToEndBB);
         return nullptr;
@@ -831,9 +846,12 @@ Value *Stmt::eval()
         if (type == 0)
         {
             // return stmt
+            isRet = true;
             auto v = exp->eval();
-            auto ret = Builder->CreateLoad(Type::getInt32Ty(*TheContext), v);
-            return Builder->CreateRet(ret);
+            if (v->getType() == Type::getInt32PtrTy(*TheContext)) {
+                v = Builder->CreateLoad(Type::getInt32Ty(*TheContext), v);
+            }
+            return Builder->CreateRet(v);
         }
         else
         {
@@ -857,6 +875,7 @@ Value *Stmt::eval()
         if (type == 0)
         {
             // return stmt
+            isRet = true;
             return Builder->CreateRetVoid();
         }
         else if (type == 1)
@@ -911,8 +930,11 @@ Value *AddExp::eval()
 {
     if (add_exp && mul_exp)
     {
+        bool t= isAssign;
+        isAssign = true;
         Value *left = add_exp->eval();
         Value *right = mul_exp->eval();
+        isAssign = t;
         switch (op)
         {
         case '+':
@@ -1167,8 +1189,11 @@ Value *MulExp::eval()
 {
     if (mul_exp)
     {
+        bool t= isAssign;
+        isAssign = true;
         auto left = mul_exp->eval();
         auto right = unary_exp->eval();
+        isAssign = t;
         if (op == '*')
         {
             return Builder->CreateMul(left, right);

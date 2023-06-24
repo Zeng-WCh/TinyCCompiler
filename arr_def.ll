@@ -8,10 +8,25 @@ target triple = "x86_64-pc-linux-gnu"
 ; Function Attrs: noinline nounwind optnone uwtable
 define dso_local i32 @main() #0 {
   %1 = alloca i32, align 4
-  %2 = load i32, i32* getelementptr inbounds ([4 x i32], [4 x i32]* @arr, i64 0, i64 0), align 16
-  store i32 %2, i32* %1, align 4
-  store i32 10, i32* %1, align 4
-  ret i32 0
+  store i32 0, i32* %1, align 4
+  %2 = load i32, i32* getelementptr inbounds ([4 x i32], [4 x i32]* @arr, i64 0, i64 1), align 4
+  %3 = icmp sgt i32 %2, 1
+  br i1 %3, label %4, label %5
+
+4:                                                ; preds = %0
+  store i32 1, i32* %1, align 4
+  br label %9
+
+5:                                                ; preds = %0
+  %6 = load i32, i32* getelementptr inbounds ([4 x i32], [4 x i32]* @arr, i64 0, i64 1), align 4
+  %7 = load i32, i32* getelementptr inbounds ([4 x i32], [4 x i32]* @arr, i64 0, i64 2), align 8
+  %8 = add nsw i32 %6, %7
+  store i32 %8, i32* %1, align 4
+  br label %9
+
+9:                                                ; preds = %5, %4
+  %10 = load i32, i32* %1, align 4
+  ret i32 %10
 }
 
 attributes #0 = { noinline nounwind optnone uwtable "frame-pointer"="all" "min-legal-vector-width"="0" "no-trapping-math"="true" "stack-protector-buffer-size"="8" "target-cpu"="x86-64" "target-features"="+cx8,+fxsr,+mmx,+sse,+sse2,+x87" "tune-cpu"="generic" }
