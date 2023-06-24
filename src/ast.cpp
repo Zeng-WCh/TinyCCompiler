@@ -25,6 +25,8 @@ namespace
 
     bool isAssign = true;
     bool isRet = false;
+    bool genConst = false;
+    Type *arr_type = nullptr;
 }
 
 bool AST::isConst()
@@ -322,6 +324,7 @@ Value *VarDef::eval()
         else
         {
             t = (Type *)s->eval();
+            arr_type = t;
         }
         if (iv == nullptr)
         {
@@ -393,21 +396,33 @@ Value *InitVal::eval()
         std::vector<Constant *> vals;
         for (auto init_val : _init_vals)
         {
-            if (!init_val->isConst())
-            {
-                fprintf(stderr, "Error: InitVal should be constant at this\n");
-                return nullptr;
+            // if (!init_val->isConst())
+            // {
+            //     fprintf(stderr, "Error: InitVal should be constant at this\n");
+            //     return nullptr;
+            // }
+            // int val = init_val->getConstValue();
+            // auto t_bak = arr_type;
+            // arr_type->print(llvm::errs());
+            Type *bak = arr_type;
+            if (arr_type != Type::getInt32Ty(*TheContext)) {
+                arr_type = arr_type->getArrayElementType();
             }
-            int val = init_val->getConstValue();
-            vals.push_back(ConstantInt::get(Type::getInt32Ty(*TheContext), val, true));
+            Constant* val = (Constant*) init_val->eval();
+            arr_type = bak;
+            bool tmp = genConst;
+            genConst = true;
+            vals.push_back(val);
+            genConst = tmp;
         }
-        if (vals.size() == 1)
+        if (!this->is_array)
         {
             return vals[0];
         }
         else
         {
-            Constant *retVal = ConstantArray::get(ArrayType::get(Type::getInt32Ty(*TheContext), vals.size()), vals);
+            // arr_type->print(llvm::errs());
+            Constant *retVal = ConstantArray::get(ArrayType::get(arr_type->getArrayElementType(), vals.size()), vals);
             return retVal;
         }
     }
@@ -960,6 +975,13 @@ void Exp::print(int dep)
 
 Value *Exp::eval()
 {
+    if (genConst) {
+        if (!add_exp->isConst()) {
+            fprintf(stderr, "Error: const expression expected\n");
+            return nullptr;
+        }
+        return ConstantInt::get(Type::getInt32Ty(*TheContext), add_exp->getConstValue());
+    }
     return add_exp->eval();
 }
 

@@ -188,11 +188,13 @@ InitVal: Exp {
 }
 | tok_lbrace tok_rbrace {
     auto tmp = new InitVal();
+    tmp->set_array();
     $$ = (void*) tmp;
 }
 | tok_lbrace InitVals tok_rbrace {
     auto tmp = ((InitVals*) $2)->_init_vals;
     auto init_val = new InitVal(tmp);
+    init_val->set_array();
     $$ = (void*) init_val;
     delete (InitVals*)$2;
 };

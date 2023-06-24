@@ -5,6 +5,7 @@
 #include "scanner.h"
 #include "ast.h"
 
+#include <llvm/IR/Module.h>
 #include <llvm/IR/IRBuilder.h>
 #include <llvm/IR/LLVMContext.h>
 
@@ -164,7 +165,7 @@ int ir_mode(const char* filename) {
 
     result->eval();
 
-    module.dump();
+    module.print(llvm::errs(), nullptr);
     return 0;
 }
 

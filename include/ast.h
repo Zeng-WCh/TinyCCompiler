@@ -352,6 +352,7 @@ class InitVal : public AST
 private:
     // AST should be exp
     std::vector<AST *> _init_vals;
+    bool is_array = false;
 
 public:
     InitVal() = default;
@@ -366,6 +367,10 @@ public:
     void add_init_val(AST *init_val)
     {
         _init_vals.push_back(init_val);
+    }
+
+    void set_array() {
+        this->is_array = true;
     }
 
     void print(int dep) override;
