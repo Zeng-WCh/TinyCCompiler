@@ -25,6 +25,7 @@ namespace
 
     bool isAssign = true;
     bool isRet = false;
+    bool isBranch = false;
     bool genConst = false;
     Type *arr_type = nullptr;
 }
@@ -724,15 +725,17 @@ Value *IfStmt::eval()
         TheFunction->getBasicBlockList().push_back(TrueBB);
         Builder->SetInsertPoint(TrueBB);
         auto true_val = this->true_part->eval();
-        if (!isRet)
+        if (!isRet && !isBranch)
             Builder->CreateBr(ToEndBB);
         isRet = false;
+        isBranch = false;
         TheFunction->getBasicBlockList().push_back(FalseBB);
         Builder->SetInsertPoint(FalseBB);
         auto false_val = this->false_part->eval();
-        if (!isRet)
+        if (!isRet && !isBranch)
             Builder->CreateBr(ToEndBB);
         isRet = false;
+        isBranch = false;
         TheFunction->getBasicBlockList().push_back(ToEndBB);
         Builder->SetInsertPoint(ToEndBB);
         return nullptr;
@@ -745,9 +748,10 @@ Value *IfStmt::eval()
         TheFunction->getBasicBlockList().push_back(TrueBB);
         Builder->SetInsertPoint(TrueBB);
         auto true_val = this->true_part->eval();
-        if (!isRet)
+        if (!isRet && !isBranch)
             Builder->CreateBr(ToEndBB);
         isRet = false;
+        isBranch = false;
         TheFunction->getBasicBlockList().push_back(ToEndBB);
         Builder->SetInsertPoint(ToEndBB);
         return nullptr;
@@ -764,35 +768,65 @@ void WhileStmt::print(int dep)
 
 Value *WhileStmt::eval()
 {
-    Value *cond = this->condition->eval();
+    // Value *cond = this->condition->eval();
+    // auto TheFunction = Builder->GetInsertBlock()->getParent();
+    // auto CondBB = BasicBlock::Create(*TheContext, "cond");
+    // auto BodyBB = BasicBlock::Create(*TheContext, "body");
+    // auto ToCondBB = BasicBlock::Create(*TheContext, "tocond");
+
+    // Builder->CreateBr(CondBB);
+    // TheFunction->getBasicBlockList().push_back(CondBB);
+    // Builder->SetInsertPoint(CondBB);
+
+    // auto cond_val = condition->eval();
+
+    // if (cond_val->getType() != Type::getInt1Ty(*TheContext))
+    // {
+    //     cond_val = Builder->CreateICmpNE(cond_val, ConstantInt::get(*TheContext, APInt(32, 0)), "ifcond");
+    // }
+    // else
+    // {
+    //     cond_val = Builder->CreateICmpNE(cond_val, ConstantInt::get(*TheContext, APInt(1, 0)), "ifcond");
+    // }
+    // Builder->CreateCondBr(cond_val, BodyBB, ToCondBB);
+    // Builder->SetInsertPoint(BodyBB);
+    // holeStack.push({CondBB, ToCondBB});
+    // body->eval();
+    // holeStack.pop();
+
+    // Builder->CreateBr(CondBB);
+    // TheFunction->getBasicBlockList().push_back(ToCondBB);
+    // Builder->SetInsertPoint(ToCondBB);
+    // return nullptr;
     auto TheFunction = Builder->GetInsertBlock()->getParent();
+    if (TheFunction == nullptr)
+    {
+        fprintf(stderr, "TheFunction is null\n");
+        return nullptr;
+    }
+    auto cur = Builder->GetInsertBlock();
+
     auto CondBB = BasicBlock::Create(*TheContext, "cond");
     auto BodyBB = BasicBlock::Create(*TheContext, "body");
-    auto ToCondBB = BasicBlock::Create(*TheContext, "tocond");
-
-    Builder->CreateBr(CondBB);
+    auto EndBB = BasicBlock::Create(*TheContext, "end");
     TheFunction->getBasicBlockList().push_back(CondBB);
     Builder->SetInsertPoint(CondBB);
-
-    auto cond_val = condition->eval();
-
-    if (cond_val->getType() != Type::getInt1Ty(*TheContext))
-    {
-        cond_val = Builder->CreateICmpNE(cond_val, ConstantInt::get(*TheContext, APInt(32, 0)), "ifcond");
+    Value *cond = this->condition->eval();
+    if (cond->getType() != Type::getInt1Ty(*TheContext)) {
+        cond = Builder->CreateICmpNE(cond, ConstantInt::get(Type::getInt32Ty(*TheContext), 0, true), "ifcond");
     }
-    else
-    {
-        cond_val = Builder->CreateICmpNE(cond_val, ConstantInt::get(*TheContext, APInt(1, 0)), "ifcond");
-    }
-    Builder->CreateCondBr(cond_val, BodyBB, ToCondBB);
+    Builder->CreateCondBr(cond, BodyBB, EndBB);
+    TheFunction->getBasicBlockList().push_back(BodyBB);
     Builder->SetInsertPoint(BodyBB);
-    holeStack.push({CondBB, ToCondBB});
+    holeStack.push({BodyBB, EndBB});
     body->eval();
     holeStack.pop();
-
     Builder->CreateBr(CondBB);
-    TheFunction->getBasicBlockList().push_back(ToCondBB);
-    Builder->SetInsertPoint(ToCondBB);
+    Builder->SetInsertPoint(cur);
+    Builder->CreateBr(CondBB);
+    
+    TheFunction->getBasicBlockList().push_back(EndBB);
+    Builder->SetInsertPoint(EndBB);
     return nullptr;
 }
 
@@ -902,6 +936,7 @@ Value *Stmt::eval()
             }
             auto top = holeStack.top();
             // break stmt
+            isBranch = true;
             return Builder->CreateBr(top.second);
         }
         else if (type == 2)
@@ -915,6 +950,7 @@ Value *Stmt::eval()
             // we will generate the stmt later
             // use 2 to represent continue
             auto top = holeStack.top();
+            isBranch = true;
             return Builder->CreateBr(top.first);
         }
         else
@@ -948,7 +984,15 @@ Value *AddExp::eval()
         bool t= isAssign;
         isAssign = true;
         Value *left = add_exp->eval();
+        // left->dump();
         Value *right = mul_exp->eval();
+        // right->dump();
+        if (left && left->getType() != Type::getInt32Ty(*TheContext)) {
+            left = Builder->CreateLoad(Type::getInt32Ty(*TheContext), left);
+        }
+        if (right && right->getType() != Type::getInt32Ty(*TheContext)) {
+            right = Builder->CreateLoad(Type::getInt32Ty(*TheContext), right);
+        }
         isAssign = t;
         switch (op)
         {
@@ -962,7 +1006,11 @@ Value *AddExp::eval()
     }
     else
     {
-        return mul_exp->eval();
+        auto l = mul_exp->eval();
+        // if (l && l->getType() == Type::getInt32Ty(*TheContext)) {
+        //     l = Builder->CreateLoad(Type::getInt32Ty(*TheContext), l);
+        // }
+        return l;
     }
 }
 
@@ -1115,7 +1163,8 @@ Value *PrimaryExp::eval()
     }
     else if (lval)
     {
-        return lval->eval();
+        auto l = lval->eval();
+        return Builder->CreateLoad(Type::getInt32Ty(*TheContext), l);
     }
     else
     {
@@ -1215,6 +1264,12 @@ Value *MulExp::eval()
         isAssign = true;
         auto left = mul_exp->eval();
         auto right = unary_exp->eval();
+        if (left->getType() != Type::getInt32Ty(*TheContext)) {
+            left = Builder->CreateLoad(Type::getInt32Ty(*TheContext), left);
+        }
+        if (right->getType() != Type::getInt32Ty(*TheContext)) {
+            right = Builder->CreateLoad(Type::getInt32Ty(*TheContext), right);
+        }
         isAssign = t;
         if (op == '*')
         {
@@ -1257,7 +1312,13 @@ Value *RelExp::eval()
     if (rel)
     {
         auto left = rel->eval();
+        if (left->getType() != Type::getInt32Ty(*TheContext)) {
+            left = Builder->CreateLoad(Type::getInt32Ty(*TheContext), left);
+        }
         auto right = add->eval();
+        if (right->getType() != Type::getInt32Ty(*TheContext)) {
+            right = Builder->CreateLoad(Type::getInt32Ty(*TheContext), right);
+        }
         if (op == "<")
         {
             return Builder->CreateICmpSLT(left, right);
@@ -1368,7 +1429,14 @@ Value *LOrExp::eval()
     if (lor)
     {
         auto left = lor->eval();
+        if (left->getType() == Type::getInt32Ty(*TheContext)) {
+            left = Builder->CreateICmpNE(left, ConstantInt::get(Type::getInt32Ty(*TheContext), 0));    
+        }
         auto right = land->eval();
+        if (right->getType() == Type::getInt32Ty(*TheContext)) {
+            right = Builder->CreateICmpNE(right, ConstantInt::get(Type::getInt32Ty(*TheContext), 0));    
+        }
+
         return Builder->CreateOr(left, right);
     }
     else
