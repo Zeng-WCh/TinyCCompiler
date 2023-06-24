@@ -768,36 +768,6 @@ void WhileStmt::print(int dep)
 
 Value *WhileStmt::eval()
 {
-    // Value *cond = this->condition->eval();
-    // auto TheFunction = Builder->GetInsertBlock()->getParent();
-    // auto CondBB = BasicBlock::Create(*TheContext, "cond");
-    // auto BodyBB = BasicBlock::Create(*TheContext, "body");
-    // auto ToCondBB = BasicBlock::Create(*TheContext, "tocond");
-
-    // Builder->CreateBr(CondBB);
-    // TheFunction->getBasicBlockList().push_back(CondBB);
-    // Builder->SetInsertPoint(CondBB);
-
-    // auto cond_val = condition->eval();
-
-    // if (cond_val->getType() != Type::getInt1Ty(*TheContext))
-    // {
-    //     cond_val = Builder->CreateICmpNE(cond_val, ConstantInt::get(*TheContext, APInt(32, 0)), "ifcond");
-    // }
-    // else
-    // {
-    //     cond_val = Builder->CreateICmpNE(cond_val, ConstantInt::get(*TheContext, APInt(1, 0)), "ifcond");
-    // }
-    // Builder->CreateCondBr(cond_val, BodyBB, ToCondBB);
-    // Builder->SetInsertPoint(BodyBB);
-    // holeStack.push({CondBB, ToCondBB});
-    // body->eval();
-    // holeStack.pop();
-
-    // Builder->CreateBr(CondBB);
-    // TheFunction->getBasicBlockList().push_back(ToCondBB);
-    // Builder->SetInsertPoint(ToCondBB);
-    // return nullptr;
     auto TheFunction = Builder->GetInsertBlock()->getParent();
     if (TheFunction == nullptr)
     {
@@ -987,10 +957,10 @@ Value *AddExp::eval()
         // left->dump();
         Value *right = mul_exp->eval();
         // right->dump();
-        if (left && left->getType() != Type::getInt32Ty(*TheContext)) {
+        if (left && left->getType()->getTypeID() != Type::TypeID::IntegerTyID) {
             left = Builder->CreateLoad(Type::getInt32Ty(*TheContext), left);
         }
-        if (right && right->getType() != Type::getInt32Ty(*TheContext)) {
+        if (left && left->getType()->getTypeID() != Type::TypeID::IntegerTyID) {
             right = Builder->CreateLoad(Type::getInt32Ty(*TheContext), right);
         }
         isAssign = t;
@@ -1060,6 +1030,7 @@ void LVal::print(int dep)
 Value *LVal::eval()
 {
     Value *val = TheModule->getNamedGlobal(ident);
+    Function* TheFunction = Builder->GetInsertBlock()->getParent();
     bool isGlobal = true;
     if (val == nullptr)
     {
@@ -1078,7 +1049,6 @@ Value *LVal::eval()
     if (this->selectors.empty())
     {
         // just a variable
-
         return val;
     }
     else
@@ -1164,7 +1134,9 @@ Value *PrimaryExp::eval()
     else if (lval)
     {
         auto l = lval->eval();
-        return Builder->CreateLoad(Type::getInt32Ty(*TheContext), l);
+        if (l->getType()->getTypeID() != Type::TypeID::IntegerTyID)
+            return Builder->CreateLoad(Type::getInt32Ty(*TheContext), l);
+        return l;
     }
     else
     {
