@@ -8,12 +8,17 @@
 #include <llvm/IR/Module.h>
 #include <llvm/IR/IRBuilder.h>
 #include <llvm/IR/LLVMContext.h>
+#include <llvm/Target/TargetMachine.h>
+#include <llvm/ExecutionEngine/ExecutionEngine.h>
+#include <llvm/ExecutionEngine/MCJIT.h>
 
 extern AST *result;
 
-llvm::LLVMContext *TheContext;
-llvm::IRBuilder<> *Builder;
-llvm::Module *TheModule;
+using namespace llvm;
+
+LLVMContext *TheContext;
+IRBuilder<> *Builder;
+Module *TheModule;
 
 const char *token_to_string(int tok)
 {
@@ -156,9 +161,9 @@ int ir_mode(const char* filename) {
 
     assert(result);
 
-    llvm::LLVMContext context;
-    llvm::Module module(filename, context);
-    llvm::IRBuilder<> builder(context);
+    LLVMContext context;
+    Module module(filename, context);
+    IRBuilder<> builder(context);
     TheContext = &context;
     Builder = &builder;
     TheModule = &module;
@@ -166,6 +171,47 @@ int ir_mode(const char* filename) {
     result->eval();
 
     module.print(llvm::errs(), nullptr);
+    return 0;
+}
+
+int jit_mode(const char* filename) {
+    LLVMInitializeNativeTarget();
+    LLVMInitializeNativeAsmPrinter();
+
+    TargetMachine *machine = EngineBuilder().selectTarget();
+
+    yyin = fopen(filename, "r");
+    if (yyin == nullptr) {
+        fprintf(stderr, "Error: cannot open file %s\n", filename);
+        return 1;
+    }
+    // fprintf(stderr, "Parsing file %s\n", filename);
+
+    int yyresult = yyparse();
+    if (yyresult != 0) {
+        fprintf(stderr, "Error: parsing failed\n");
+        return 1;
+    }
+
+    assert(result);
+
+    LLVMContext context;
+    Module module(filename, context);
+    IRBuilder<> builder(context);
+    TheContext = &context;
+    Builder = &builder;
+    TheModule = &module;
+
+    result->eval();
+
+    const DataLayout dl = machine->createDataLayout();
+    // LinkLayer layer(module);
+
+
+    // module.print(llvm::errs(), nullptr);
+
+    // Init the JIT engine
+
     return 0;
 }
 
