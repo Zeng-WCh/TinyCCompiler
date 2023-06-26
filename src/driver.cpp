@@ -12,6 +12,8 @@
 #include <llvm/ExecutionEngine/ExecutionEngine.h>
 #include <llvm/ExecutionEngine/MCJIT.h>
 
+const char *helpMsg = "Usage: %s --[lexer|parser|IR|JIT] <file>\n";
+
 extern AST *result;
 
 using namespace llvm;
@@ -220,7 +222,7 @@ int main(int argc, const char **argv)
     yydebug = 0;
     if (argc < 2)
     {
-        fprintf(stderr, "Usage: %s --[lexer|parser|IR] <file>\n", argv[0]);
+        fprintf(stderr, helpMsg, argv[0]);
         return 1;
     }
 
@@ -229,7 +231,7 @@ int main(int argc, const char **argv)
         // lexer mode
         if (argc < 3)
         {
-            fprintf(stderr, "Usage: %s --[lexer|parser|IR] <file>\n", argv[0]);
+            fprintf(stderr, helpMsg, argv[0]);
             return 1;
         }
         return lexer_mode(argv[2]);
@@ -239,7 +241,7 @@ int main(int argc, const char **argv)
         // parser mode
         if (argc < 3)
         {
-            fprintf(stderr, "Usage: %s --[lexer|parser|IR] <file>\n", argv[0]);
+            fprintf(stderr, helpMsg, argv[0]);
             return 1;
         }
         return parser_mode(argv[2]);
@@ -249,14 +251,21 @@ int main(int argc, const char **argv)
         // IR-GEN 
         if (argc < 3)
         {
-            fprintf(stderr, "Usage: %s --[lexer|parser|IR] <file>\n", argv[0]);
+            fprintf(stderr, helpMsg, argv[0]);
             return 1;
         }
         return ir_mode(argv[2]);
     }
+    else if (argv[1] == std::string("JIT")) {
+        if (argc < 3) {
+            fprintf(stderr, helpMsg, argv[0]);
+            return 1;
+        }
+        return jit_mode(argv[2]);
+    }
     else
     {
-        fprintf(stderr, "Usage: %s --[lexer|parser|IR] <file>\n", argv[0]);
+        fprintf(stderr, helpMsg, argv[0]);
         return 1;
     }
 
