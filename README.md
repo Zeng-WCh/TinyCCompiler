@@ -20,7 +20,7 @@ InitVal -> Exp
 FuncDef -> FuncType Ident '(' [FuncFParams] ')'
 FuncType -> 'void'
             | 'int'
-FuncFParamss -> FuncFParam {',' FuncFParam}
+FuncFParams -> FuncFParam {',' FuncFParam}
 FuncFParam -> BType Ident ['[' ']' {'[' Exp ']'}]
 Block -> '{' {BlockItem} '}'
 BlockItem -> Decl 
