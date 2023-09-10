@@ -1,5 +1,7 @@
 # TinyCCompiler
 
+## Program
+
 ## Grammar
 
 This project use a subset of C language, which is called SysY(tiny C), the grammar is shown below.
